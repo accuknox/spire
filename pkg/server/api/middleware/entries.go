@@ -3,9 +3,9 @@ package middleware
 import (
 	"context"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
 	"github.com/spiffe/spire/pkg/server/api/rpccontext"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

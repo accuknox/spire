@@ -9,8 +9,8 @@ import (
 	"net"
 
 	"github.com/Microsoft/go-winio"
-	"github.com/spiffe/go-spiffe/v2/workloadapi"
 	"github.com/spiffe/spire/pkg/common/namedpipe"
+	"github.com/vishnusomank/go-spiffe/v2/workloadapi"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )

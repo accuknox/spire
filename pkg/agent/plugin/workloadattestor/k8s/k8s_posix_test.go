@@ -176,7 +176,7 @@ func (s *Suite) TestAttestWithPidNotInPod() {
 	p := s.loadInsecurePlugin()
 	s.addCgroupsResponse(cgPidNotInPodFilePath)
 
-	selectors, err := p.Attest(context.Background(), pid)
+	selectors, err := p.Attest(context.Background(), pid, map[string]string{})
 	s.Require().NoError(err)
 	s.Require().Empty(selectors)
 }
@@ -200,7 +200,7 @@ func (s *Suite) TestAttestAgainstNodeOverride() {
 	p := s.loadInsecurePlugin()
 	s.addCgroupsResponse(cgPidNotInPodFilePath)
 
-	selectors, err := p.Attest(context.Background(), pid)
+	selectors, err := p.Attest(context.Background(), pid, map[string]string{})
 	s.Require().NoError(err)
 	s.Require().Empty(selectors)
 }

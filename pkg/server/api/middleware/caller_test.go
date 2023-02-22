@@ -8,10 +8,10 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire/pkg/server/api/rpccontext"
 	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/assert"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/peer"

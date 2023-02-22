@@ -6,8 +6,6 @@ import (
 	discovery_v2 "github.com/envoyproxy/go-control-plane/envoy/service/discovery/v2"
 	secret_v3 "github.com/envoyproxy/go-control-plane/envoy/service/secret/v3"
 	"github.com/sirupsen/logrus"
-	workload_pb "github.com/spiffe/go-spiffe/v2/proto/spiffe/workload"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	healthv1 "github.com/spiffe/spire/pkg/agent/api/health/v1"
 	attestor "github.com/spiffe/spire/pkg/agent/attestor/workload"
 	"github.com/spiffe/spire/pkg/agent/endpoints/sdsv2"
@@ -15,11 +13,15 @@ import (
 	"github.com/spiffe/spire/pkg/agent/endpoints/workload"
 	"github.com/spiffe/spire/pkg/agent/manager"
 	"github.com/spiffe/spire/pkg/common/telemetry"
+	workload_pb "github.com/vishnusomank/go-spiffe/v2/proto/spiffe/workload"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 	"google.golang.org/grpc/health/grpc_health_v1"
 )
 
 type Config struct {
 	BindAddr net.Addr
+
+	AgentAddr *net.TCPAddr
 
 	Attestor attestor.Attestor
 

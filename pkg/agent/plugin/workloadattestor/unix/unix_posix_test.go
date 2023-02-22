@@ -238,7 +238,7 @@ func (s *Suite) TestAttest() {
 			defer s.logHook.Reset()
 
 			p := s.loadPlugin(t, testCase.config)
-			selectors, err := p.Attest(ctx, testCase.pid)
+			selectors, err := p.Attest(ctx, testCase.pid, map[string]string{})
 			spiretest.RequireGRPCStatus(t, err, testCase.expectCode, testCase.expectMsg)
 			if testCase.expectCode != codes.OK {
 				require.Nil(t, selectors)

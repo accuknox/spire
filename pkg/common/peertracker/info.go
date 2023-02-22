@@ -13,6 +13,7 @@ type CallerInfo struct {
 	PID  int32
 	UID  uint32
 	GID  uint32
+	Meta map[string]string
 }
 
 type AuthInfo struct {

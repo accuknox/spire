@@ -2,30 +2,27 @@ package ca_test
 
 import (
 	"context"
-	"crypto/rand"
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"errors"
 	"testing"
 	"time"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	upstreamauthorityv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/server/upstreamauthority/v1"
-	plugintypes "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/types"
 	"github.com/spiffe/spire/pkg/server/ca"
-	"github.com/spiffe/spire/pkg/server/credtemplate"
 	"github.com/spiffe/spire/proto/spire/common"
 	"github.com/spiffe/spire/test/fakes/fakeupstreamauthority"
 	"github.com/spiffe/spire/test/spiretest"
 	"github.com/spiffe/spire/test/testkey"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
+	upstreamauthorityv1 "github.com/vishnusomank/spire-plugin-sdk/proto/spire/plugin/server/upstreamauthority/v1"
+	plugintypes "github.com/vishnusomank/spire-plugin-sdk/proto/spire/plugin/types"
 	"google.golang.org/grpc/codes"
 )
 
 var (
-	caKey       = testkey.MustEC256()
-	csr         = generateServerCACSR()
+	csr, _      = ca.GenerateServerCACSR(testkey.MustEC256(), spiffeid.RequireTrustDomainFromString("example.org"), pkix.Name{CommonName: "FAKE CA"})
 	trustDomain = spiffeid.RequireTrustDomainFromString("example.org")
 )
 
@@ -252,28 +249,4 @@ func makePublicKey(t *testing.T, kid string) *common.PublicKey {
 		Kid:       kid,
 		PkixBytes: pkixBytes,
 	}
-}
-
-func generateServerCACSR() []byte {
-	builder, err := credtemplate.NewBuilder(credtemplate.Config{
-		TrustDomain:   trustDomain,
-		X509CASubject: pkix.Name{CommonName: "FAKE CA"},
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	template, err := builder.BuildUpstreamSignedX509CACSR(context.Background(), credtemplate.UpstreamSignedX509CAParams{
-		PublicKey: caKey.Public(),
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	csr, err := x509.CreateCertificateRequest(rand.Reader, template, caKey)
-	if err != nil {
-		panic(err)
-	}
-
-	return csr
 }

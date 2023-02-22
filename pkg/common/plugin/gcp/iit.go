@@ -1,9 +1,9 @@
 package gcp
 
 import (
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire/pkg/common/agentpathtemplate"
 	"github.com/spiffe/spire/pkg/common/idutil"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 	"gopkg.in/square/go-jose.v2/jwt"
 )
 

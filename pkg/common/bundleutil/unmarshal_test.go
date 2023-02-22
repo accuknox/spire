@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/stretchr/testify/require"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 )
 
 func TestUnmarshal(t *testing.T) {

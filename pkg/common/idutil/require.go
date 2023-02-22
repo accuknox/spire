@@ -1,8 +1,8 @@
 package idutil
 
 import (
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 )
 
 // RequireIDProtoString constructs a SPIFFE ID string for the given ID proto.

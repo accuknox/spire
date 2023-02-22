@@ -9,10 +9,10 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire/pkg/common/agentpathtemplate"
 	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 	"golang.org/x/crypto/ssh"
 	"google.golang.org/grpc/codes"
 )

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 )
 
 // maxTrustDomainLength is the maximum length of a trust domain according

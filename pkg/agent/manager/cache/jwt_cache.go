@@ -7,8 +7,8 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire/pkg/agent/client"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 )
 
 type JWTSVIDCache struct {

@@ -163,7 +163,7 @@ func (s *Suite) TestAttestWithPidNotInPodCancelsEarly() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
-	selectors, err := p.Attest(ctx, pid)
+	selectors, err := p.Attest(ctx, pid, map[string]string{})
 	s.RequireGRPCStatus(err, codes.Canceled, "workloadattestor(k8s): context canceled")
 	s.Require().Nil(selectors)
 }
@@ -770,13 +770,13 @@ func (s *Suite) requireAttestSuccessWithPod(p workloadattestor.WorkloadAttestor)
 }
 
 func (s *Suite) requireAttestSuccess(p workloadattestor.WorkloadAttestor, expectedSelectors []*common.Selector) {
-	selectors, err := p.Attest(context.Background(), pid)
+	selectors, err := p.Attest(context.Background(), pid, map[string]string{})
 	s.Require().NoError(err)
 	s.requireSelectorsEqual(expectedSelectors, selectors)
 }
 
 func (s *Suite) requireAttestFailure(p workloadattestor.WorkloadAttestor, code codes.Code, contains string) {
-	selectors, err := p.Attest(context.Background(), pid)
+	selectors, err := p.Attest(context.Background(), pid, map[string]string{})
 	s.RequireGRPCStatusContains(err, code, contains)
 	s.Require().Nil(selectors)
 }
@@ -793,7 +793,7 @@ func (s *Suite) requireSelectorsEqual(expected, actual []*common.Selector) {
 func (s *Suite) goAttest(p workloadattestor.WorkloadAttestor) <-chan attestResult {
 	resultCh := make(chan attestResult, 1)
 	go func() {
-		selectors, err := p.Attest(context.Background(), pid)
+		selectors, err := p.Attest(context.Background(), pid, map[string]string{})
 		resultCh <- attestResult{
 			selectors: selectors,
 			err:       err,

@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire-plugin-sdk/pluginsdk"
-	"github.com/spiffe/spire-plugin-sdk/private"
 	"github.com/spiffe/spire/pkg/common/telemetry"
+	"github.com/vishnusomank/spire-plugin-sdk/pluginsdk"
+	"github.com/vishnusomank/spire-plugin-sdk/private"
 	"google.golang.org/grpc"
 )
 

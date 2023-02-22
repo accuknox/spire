@@ -3,9 +3,9 @@ package idutil
 import (
 	"testing"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
 	"github.com/stretchr/testify/assert"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 )
 
 func TestRequireIDProtoString(t *testing.T) {

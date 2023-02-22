@@ -5,15 +5,15 @@ import (
 	"crypto/x509"
 	"testing"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	identityproviderv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/hostservice/server/identityprovider/v1"
-	plugintypes "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/types"
 	"github.com/spiffe/spire/pkg/common/pemutil"
 	"github.com/spiffe/spire/proto/spire/common"
 	"github.com/spiffe/spire/test/fakes/fakedatastore"
 	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
+	identityproviderv1 "github.com/vishnusomank/spire-plugin-sdk/proto/spire/hostservice/server/identityprovider/v1"
+	plugintypes "github.com/vishnusomank/spire-plugin-sdk/proto/spire/plugin/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

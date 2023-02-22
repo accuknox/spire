@@ -5,9 +5,9 @@ import (
 	"errors"
 	"testing"
 
-	agentstorev1 "github.com/spiffe/spire-plugin-sdk/proto/spire/hostservice/server/agentstore/v1"
 	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/assert"
+	agentstorev1 "github.com/vishnusomank/spire-plugin-sdk/proto/spire/hostservice/server/agentstore/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

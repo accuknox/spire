@@ -9,7 +9,6 @@ import (
 
 	"github.com/andres-erbsen/clock"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire/pkg/common/bundleutil"
 	"github.com/spiffe/spire/pkg/common/telemetry"
 	"github.com/spiffe/spire/pkg/server/api"
@@ -27,6 +26,7 @@ import (
 	"github.com/spiffe/spire/pkg/server/catalog"
 	"github.com/spiffe/spire/pkg/server/endpoints/bundle"
 	"github.com/spiffe/spire/pkg/server/svid"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 	"golang.org/x/net/context"
 )
 
@@ -49,6 +49,9 @@ type Config struct {
 
 	// Server CA for signing SVIDs
 	ServerCA ca.ServerCA
+
+	// TTL to use when signing agent SVIDs
+	AgentTTL time.Duration
 
 	// Bundle endpoint configuration
 	BundleEndpoint bundle.EndpointConfig
@@ -123,6 +126,7 @@ func (c *Config) makeAPIServers(entryFetcher api.AuthorizedEntryFetcher) APIServ
 		AgentServer: agentv1.New(agentv1.Config{
 			DataStore:   ds,
 			ServerCA:    c.ServerCA,
+			AgentTTL:    c.AgentTTL,
 			TrustDomain: c.TrustDomain,
 			Catalog:     c.Catalog,
 			Clock:       c.Clock,

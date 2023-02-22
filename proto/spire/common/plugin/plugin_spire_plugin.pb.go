@@ -3,7 +3,7 @@
 package plugin
 
 import (
-	pluginsdk "github.com/spiffe/spire-plugin-sdk/pluginsdk"
+	pluginsdk "github.com/vishnusomank/spire-plugin-sdk/pluginsdk"
 	grpc "google.golang.org/grpc"
 )
 

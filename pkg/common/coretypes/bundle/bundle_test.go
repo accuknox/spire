@@ -6,7 +6,6 @@ import (
 	"time"
 
 	apitypes "github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	plugintypes "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/types"
 	"github.com/spiffe/spire/pkg/common/coretypes/bundle"
 	"github.com/spiffe/spire/pkg/common/pemutil"
 	"github.com/spiffe/spire/proto/spire/common"
@@ -14,6 +13,7 @@ import (
 	"github.com/spiffe/spire/test/testkey"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	plugintypes "github.com/vishnusomank/spire-plugin-sdk/proto/spire/plugin/types"
 )
 
 var (

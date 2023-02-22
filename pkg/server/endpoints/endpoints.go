@@ -8,9 +8,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/spiffe/go-spiffe/v2/spiffetls/tlsconfig"
 	"github.com/spiffe/spire/pkg/server/cache/entrycache"
 	"github.com/spiffe/spire/pkg/server/endpoints/bundle"
+	"github.com/vishnusomank/go-spiffe/v2/spiffetls/tlsconfig"
 	"golang.org/x/net/context"
 	"golang.org/x/net/http2"
 	"google.golang.org/grpc"
@@ -20,7 +20,6 @@ import (
 
 	"github.com/andres-erbsen/clock"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	agentv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/agent/v1"
 	bundlev1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/bundle/v1"
 	debugv1_pb "github.com/spiffe/spire-api-sdk/proto/spire/api/server/debug/v1"
@@ -35,6 +34,7 @@ import (
 	"github.com/spiffe/spire/pkg/server/authpolicy"
 	"github.com/spiffe/spire/pkg/server/datastore"
 	"github.com/spiffe/spire/pkg/server/svid"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 )
 
 const (

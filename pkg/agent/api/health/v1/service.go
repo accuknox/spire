@@ -5,11 +5,11 @@ import (
 	"net"
 
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/workloadapi"
 	"github.com/spiffe/spire/pkg/common/telemetry"
 	"github.com/spiffe/spire/pkg/common/util"
 	"github.com/spiffe/spire/pkg/server/api"
 	"github.com/spiffe/spire/pkg/server/api/rpccontext"
+	"github.com/vishnusomank/go-spiffe/v2/workloadapi"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/health/grpc_health_v1"
@@ -53,7 +53,7 @@ func (s *Service) Check(ctx context.Context, req *grpc_health_v1.HealthCheckRequ
 	if err != nil {
 		return nil, api.MakeErr(log, codes.InvalidArgument, "could not get Workload API client options", err)
 	}
-	_, err = workloadapi.FetchX509Context(ctx, clientOption)
+	_, err = workloadapi.FetchX509Context(ctx, nil, clientOption)
 
 	healthStatus := grpc_health_v1.HealthCheckResponse_SERVING
 	switch status.Code(err) {

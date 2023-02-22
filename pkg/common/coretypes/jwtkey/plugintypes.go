@@ -2,8 +2,8 @@ package jwtkey
 
 import (
 	apitypes "github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	plugintypes "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/types"
 	"github.com/spiffe/spire/proto/spire/common"
+	plugintypes "github.com/vishnusomank/spire-plugin-sdk/proto/spire/plugin/types"
 )
 
 func FromPluginProto(pb *plugintypes.JWTKey) (JWTKey, error) {

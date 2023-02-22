@@ -14,7 +14,7 @@ import (
 	"sort"
 	"sync"
 
-	keymanagerv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/agent/keymanager/v1"
+	keymanagerv1 "github.com/vishnusomank/spire-plugin-sdk/proto/spire/plugin/agent/keymanager/v1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"

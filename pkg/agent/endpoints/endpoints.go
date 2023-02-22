@@ -8,7 +8,6 @@ import (
 	discovery_v2 "github.com/envoyproxy/go-control-plane/envoy/service/discovery/v2"
 	secret_v3 "github.com/envoyproxy/go-control-plane/envoy/service/secret/v3"
 	"github.com/sirupsen/logrus"
-	workload_pb "github.com/spiffe/go-spiffe/v2/proto/spiffe/workload"
 	healthv1 "github.com/spiffe/spire/pkg/agent/api/health/v1"
 	"github.com/spiffe/spire/pkg/agent/endpoints/sdsv2"
 	"github.com/spiffe/spire/pkg/agent/endpoints/sdsv3"
@@ -16,16 +15,19 @@ import (
 	"github.com/spiffe/spire/pkg/common/api/middleware"
 	"github.com/spiffe/spire/pkg/common/peertracker"
 	"github.com/spiffe/spire/pkg/common/telemetry"
+	workload_pb "github.com/vishnusomank/go-spiffe/v2/proto/spiffe/workload"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"
 )
 
 type Server interface {
 	ListenAndServe(ctx context.Context) error
+	RunTCPAgent(ctx context.Context) error
 }
 
 type Endpoints struct {
 	addr              net.Addr
+	TCPAddr           *net.TCPAddr
 	log               logrus.FieldLogger
 	metrics           telemetry.Metrics
 	workloadAPIServer workload_pb.SpiffeWorkloadAPIServer
@@ -98,6 +100,7 @@ func New(c Config) *Endpoints {
 
 	return &Endpoints{
 		addr:              c.BindAddr,
+		TCPAddr:           c.AgentAddr,
 		log:               c.Log,
 		metrics:           c.Metrics,
 		workloadAPIServer: workloadAPIServer,
@@ -140,8 +143,9 @@ func (e *Endpoints) ListenAndServe(ctx context.Context) error {
 	}).Info("Starting Workload and SDS APIs")
 	e.triggerListeningHook()
 	errChan := make(chan error)
-	go func() { errChan <- server.Serve(l) }()
-
+	go func() {
+		errChan <- server.Serve(l)
+	}()
 	select {
 	case err = <-errChan:
 	case <-ctx.Done():
@@ -159,4 +163,53 @@ func (e *Endpoints) triggerListeningHook() {
 	if e.hooks.listening != nil {
 		e.hooks.listening <- struct{}{}
 	}
+}
+
+func (e *Endpoints) createTCPAgent(ctx context.Context) *grpc.Server {
+
+	unaryInterceptor, streamInterceptor := middleware.Interceptors(
+		Middleware(e.log, e.metrics),
+	)
+	return grpc.NewServer(
+		grpc.Creds(peertracker.NewCredentials()),
+		grpc.UnaryInterceptor(unaryInterceptor),
+		grpc.StreamInterceptor(streamInterceptor),
+	)
+}
+
+// runTCPServer will start the agent and block until it exits or we are dying.
+func (e *Endpoints) RunTCPAgent(ctx context.Context) error {
+	tcpServer := e.createTCPAgent(ctx)
+	grpc_health_v1.RegisterHealthServer(tcpServer, e.healthServer)
+	workload_pb.RegisterSpiffeWorkloadAPIServer(tcpServer, e.workloadAPIServer)
+	discovery_v2.RegisterSecretDiscoveryServiceServer(tcpServer, e.sdsv2Server)
+	secret_v3.RegisterSecretDiscoveryServiceServer(tcpServer, e.sdsv3Server)
+
+	l, err := e.createTCPListener()
+	if err != nil {
+		return err
+	}
+	defer l.Close()
+
+	e.log.WithFields(logrus.Fields{
+		telemetry.Network: e.TCPAddr.Network(),
+		telemetry.Address: e.TCPAddr,
+	}).Info("Starting Workload and SDS APIs")
+	e.triggerListeningHook()
+	errChan := make(chan error)
+	go func() {
+		errChan <- tcpServer.Serve(l)
+	}()
+	select {
+	case err = <-errChan:
+	case <-ctx.Done():
+		e.log.Info("Stopping Workload and SDS APIs")
+		tcpServer.Stop()
+		err = <-errChan
+		if errors.Is(err, grpc.ErrServerStopped) {
+			err = nil
+		}
+	}
+	return err
+
 }

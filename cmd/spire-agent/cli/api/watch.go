@@ -9,10 +9,10 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/spiffe/go-spiffe/v2/workloadapi"
 	"github.com/spiffe/spire/cmd/spire-agent/cli/common"
 	commoncli "github.com/spiffe/spire/pkg/common/cli"
 	"github.com/spiffe/spire/pkg/common/util"
+	"github.com/vishnusomank/go-spiffe/v2/workloadapi"
 )
 
 type WatchCLI struct {
@@ -50,7 +50,7 @@ func (w *WatchCLI) Run(args []string) int {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
 
-	if err := workloadapi.WatchX509Context(ctx, newWatcher(), clientOption); err != nil {
+	if err := workloadapi.WatchX509Context(ctx, newWatcher(), nil, clientOption); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		return 1
 	}

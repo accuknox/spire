@@ -6,10 +6,10 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/go-hclog"
-	"github.com/spiffe/spire-plugin-sdk/pluginsdk"
-	"github.com/spiffe/spire-plugin-sdk/private/proto/test"
-	configv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/service/common/config/v1"
 	"github.com/spiffe/spire/pkg/common/catalog"
+	"github.com/vishnusomank/spire-plugin-sdk/pluginsdk"
+	"github.com/vishnusomank/spire-plugin-sdk/private/proto/test"
+	configv1 "github.com/vishnusomank/spire-plugin-sdk/proto/spire/service/common/config/v1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

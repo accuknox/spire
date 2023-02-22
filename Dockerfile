@@ -1,7 +1,7 @@
 # syntax = docker/dockerfile:1.4.2@sha256:443aab4ca21183e069e7d8b2dc68006594f40bddf1b15bbd83f5137bd93e80e2
 
 # Build stage
-ARG goversion
+ARG goversion=1.20.1
 FROM --platform=${BUILDPLATFORM} golang:${goversion}-alpine as base
 WORKDIR /spire
 RUN apk --no-cache --update add file bash clang lld pkgconfig git make

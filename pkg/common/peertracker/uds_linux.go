@@ -11,7 +11,6 @@ func getCallerInfoFromFileDescriptor(fd uintptr) (CallerInfo, error) {
 	if err != nil {
 		return CallerInfo{}, err
 	}
-
 	info := CallerInfo{
 		PID: ucred.Pid,
 		UID: ucred.Uid,

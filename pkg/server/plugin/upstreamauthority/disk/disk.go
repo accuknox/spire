@@ -9,18 +9,18 @@ import (
 
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/hcl"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
 	"github.com/andres-erbsen/clock"
-	upstreamauthorityv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/server/upstreamauthority/v1"
-	configv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/service/common/config/v1"
 	"github.com/spiffe/spire/pkg/common/catalog"
 	"github.com/spiffe/spire/pkg/common/coretypes/x509certificate"
 	"github.com/spiffe/spire/pkg/common/pemutil"
 	"github.com/spiffe/spire/pkg/common/x509svid"
 	"github.com/spiffe/spire/pkg/common/x509util"
+	upstreamauthorityv1 "github.com/vishnusomank/spire-plugin-sdk/proto/spire/plugin/server/upstreamauthority/v1"
+	configv1 "github.com/vishnusomank/spire-plugin-sdk/proto/spire/service/common/config/v1"
 )
 
 func BuiltIn() catalog.BuiltIn {

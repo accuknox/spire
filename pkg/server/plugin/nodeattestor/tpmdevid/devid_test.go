@@ -15,8 +15,6 @@ import (
 
 	"github.com/google/go-tpm/tpm2"
 	"github.com/hashicorp/go-hclog"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	configv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/service/common/config/v1"
 	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor/tpmdevid/tpmutil"
 	"github.com/spiffe/spire/pkg/common/catalog"
 	"github.com/spiffe/spire/pkg/common/pemutil"
@@ -28,6 +26,8 @@ import (
 	"github.com/spiffe/spire/test/tpmsimulator"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
+	configv1 "github.com/vishnusomank/spire-plugin-sdk/proto/spire/service/common/config/v1"
 )
 
 var (

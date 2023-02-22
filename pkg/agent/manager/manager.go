@@ -10,7 +10,6 @@ import (
 
 	"github.com/andres-erbsen/clock"
 	observer "github.com/imkira/go-observer"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire/pkg/agent/client"
 	"github.com/spiffe/spire/pkg/agent/common/backoff"
 	"github.com/spiffe/spire/pkg/agent/manager/cache"
@@ -23,6 +22,7 @@ import (
 	"github.com/spiffe/spire/pkg/common/telemetry"
 	"github.com/spiffe/spire/pkg/common/util"
 	"github.com/spiffe/spire/proto/spire/common"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 )
 
 // Manager provides cache management functionalities for agents.

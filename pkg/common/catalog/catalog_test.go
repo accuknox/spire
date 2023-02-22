@@ -15,15 +15,15 @@ import (
 
 	"github.com/sirupsen/logrus"
 	log_test "github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire-plugin-sdk/pluginsdk"
-	"github.com/spiffe/spire-plugin-sdk/private/proto/test"
 	"github.com/spiffe/spire/pkg/common/catalog"
 	"github.com/spiffe/spire/pkg/common/catalog/testplugin"
 	"github.com/spiffe/spire/pkg/common/plugin"
 	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
+	"github.com/vishnusomank/spire-plugin-sdk/pluginsdk"
+	"github.com/vishnusomank/spire-plugin-sdk/private/proto/test"
 	"google.golang.org/grpc"
 )
 

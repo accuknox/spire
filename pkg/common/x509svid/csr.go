@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 )
 
 func ParseAndValidateCSR(csrDER []byte, td spiffeid.TrustDomain) (csr *x509.CertificateRequest, err error) {

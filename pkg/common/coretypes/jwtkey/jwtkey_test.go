@@ -7,13 +7,13 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	apitypes "github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	plugintypes "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/types"
 	"github.com/spiffe/spire/pkg/common/coretypes/jwtkey"
 	"github.com/spiffe/spire/proto/spire/common"
 	"github.com/spiffe/spire/test/spiretest"
 	"github.com/spiffe/spire/test/testkey"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	plugintypes "github.com/vishnusomank/spire-plugin-sdk/proto/spire/plugin/types"
 )
 
 var (

@@ -8,12 +8,12 @@ import (
 	"time"
 
 	"github.com/andres-erbsen/clock"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire/proto/spire/common"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 	"google.golang.org/protobuf/proto"
 
-	"github.com/spiffe/go-spiffe/v2/bundle/x509bundle"
 	"github.com/spiffe/spire/pkg/server/datastore"
+	"github.com/vishnusomank/go-spiffe/v2/bundle/x509bundle"
 )
 
 const (

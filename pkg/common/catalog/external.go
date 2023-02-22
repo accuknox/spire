@@ -11,9 +11,9 @@ import (
 
 	goplugin "github.com/hashicorp/go-plugin"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire-plugin-sdk/pluginsdk"
-	"github.com/spiffe/spire-plugin-sdk/private"
 	"github.com/spiffe/spire/pkg/common/log"
+	"github.com/vishnusomank/spire-plugin-sdk/pluginsdk"
+	"github.com/vishnusomank/spire-plugin-sdk/private"
 	"github.com/zeebo/errs"
 	"google.golang.org/grpc"
 )

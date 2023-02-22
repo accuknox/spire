@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire-plugin-sdk/pluginsdk"
 	"github.com/spiffe/spire/pkg/common/catalog"
+	"github.com/vishnusomank/spire-plugin-sdk/pluginsdk"
 )
 
 // Option is plugin test option

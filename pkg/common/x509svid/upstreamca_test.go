@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire/test/clock"
 	"github.com/stretchr/testify/suite"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 )
 
 func TestUpstreamCA(t *testing.T) {

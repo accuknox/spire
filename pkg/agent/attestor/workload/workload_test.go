@@ -66,19 +66,19 @@ func (s *WorkloadAttestorTestSuite) TestAttestWorkload() {
 	)
 
 	// both attestors succeed but with no selectors
-	selectors := s.attestor.Attest(ctx, 1)
+	selectors := s.attestor.Attest(ctx, 1, map[string]string{})
 	s.Empty(selectors)
 
 	// attestor1 has selectors, but not attestor2
-	selectors = s.attestor.Attest(ctx, 2)
+	selectors = s.attestor.Attest(ctx, 2, map[string]string{})
 	spiretest.AssertProtoListEqual(s.T(), selectors1, selectors)
 
 	// attestor2 has selectors, attestor1 fails
-	selectors = s.attestor.Attest(ctx, 3)
+	selectors = s.attestor.Attest(ctx, 3, map[string]string{})
 	spiretest.AssertProtoListEqual(s.T(), selectors2, selectors)
 
 	// both have selectors
-	selectors = s.attestor.Attest(ctx, 4)
+	selectors = s.attestor.Attest(ctx, 4, map[string]string{})
 	util.SortSelectors(selectors)
 	combined := make([]*common.Selector, 0, len(selectors1)+len(selectors2))
 	combined = append(combined, selectors1...)
@@ -97,7 +97,7 @@ func (s *WorkloadAttestorTestSuite) TestAttestWorkloadMetrics() {
 	metrics := fakemetrics.New()
 	s.attestor.c.Metrics = metrics
 
-	selectors := s.attestor.Attest(ctx, 2)
+	selectors := s.attestor.Attest(ctx, 2, map[string]string{})
 
 	// Create expected metrics
 	expected := fakemetrics.New()
@@ -114,7 +114,7 @@ func (s *WorkloadAttestorTestSuite) TestAttestWorkloadMetrics() {
 	s.attestor.c.Metrics = metrics
 
 	// No selectors expected
-	selectors = s.attestor.Attest(ctx, 3)
+	selectors = s.attestor.Attest(ctx, 3, map[string]string{})
 	s.Empty(selectors)
 
 	// Create expected metrics with error key

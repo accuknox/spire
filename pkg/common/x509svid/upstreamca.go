@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/andres-erbsen/clock"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire/pkg/common/x509util"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 )
 
 const (
@@ -86,7 +86,6 @@ func (ca *UpstreamCA) SignCSR(ctx context.Context, csrDER []byte, preferredTTL t
 			x509.KeyUsageCRLSign,
 		BasicConstraintsValid: true,
 		IsCA:                  true,
-		ExtraExtensions:       csr.ExtraExtensions,
 	}
 
 	certDER, err := ca.keypair.CreateCertificate(ctx, template, csr.PublicKey)

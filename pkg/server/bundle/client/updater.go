@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire/pkg/common/bundleutil"
 	"github.com/spiffe/spire/pkg/server/datastore"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 	"github.com/zeebo/errs"
 )
 

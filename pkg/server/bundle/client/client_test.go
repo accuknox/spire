@@ -6,8 +6,6 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
-	"io"
-	"log"
 	"math/big"
 	"net/http"
 	"net/http/httptest"
@@ -15,9 +13,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 )
 
 var (
@@ -99,7 +97,6 @@ func TestClient(t *testing.T) {
 				w.WriteHeader(testCase.status)
 				_, _ = w.Write([]byte(testCase.body))
 			}))
-			server.Config.ErrorLog = log.New(io.Discard, "", 0)
 			server.TLS = &tls.Config{
 				Certificates: []tls.Certificate{
 					{

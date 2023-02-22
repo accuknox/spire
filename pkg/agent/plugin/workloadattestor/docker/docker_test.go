@@ -205,7 +205,7 @@ func doAttest(t *testing.T, p *Plugin) ([]string, error) {
 func doAttestWithContext(ctx context.Context, t *testing.T, p *Plugin) ([]string, error) {
 	wp := new(workloadattestor.V1)
 	plugintest.Load(t, builtin(p), wp)
-	selectors, err := wp.Attest(ctx, 123)
+	selectors, err := wp.Attest(ctx, 123, map[string]string{})
 	if err != nil {
 		return nil, err
 	}

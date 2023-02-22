@@ -8,11 +8,6 @@ import (
 
 	"github.com/andres-erbsen/clock"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire-plugin-sdk/pluginsdk"
-	metricsv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/hostservice/common/metrics/v1"
-	agentstorev1 "github.com/spiffe/spire-plugin-sdk/proto/spire/hostservice/server/agentstore/v1"
-	identityproviderv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/hostservice/server/identityprovider/v1"
 	"github.com/spiffe/spire/pkg/common/catalog"
 	"github.com/spiffe/spire/pkg/common/health"
 	"github.com/spiffe/spire/pkg/common/hostservice/metricsservice"
@@ -30,6 +25,11 @@ import (
 	"github.com/spiffe/spire/pkg/server/plugin/nodeattestor/jointoken"
 	"github.com/spiffe/spire/pkg/server/plugin/notifier"
 	"github.com/spiffe/spire/pkg/server/plugin/upstreamauthority"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
+	"github.com/vishnusomank/spire-plugin-sdk/pluginsdk"
+	metricsv1 "github.com/vishnusomank/spire-plugin-sdk/proto/spire/hostservice/common/metrics/v1"
+	agentstorev1 "github.com/vishnusomank/spire-plugin-sdk/proto/spire/hostservice/server/agentstore/v1"
+	identityproviderv1 "github.com/vishnusomank/spire-plugin-sdk/proto/spire/hostservice/server/identityprovider/v1"
 )
 
 const (
@@ -80,11 +80,12 @@ type Repository struct {
 
 func (repo *Repository) Plugins() map[string]catalog.PluginRepo {
 	return map[string]catalog.PluginRepo{
-		credentialComposerType: &repo.credentialComposerRepository,
-		keyManagerType:         &repo.keyManagerRepository,
-		nodeAttestorType:       &repo.nodeAttestorRepository,
-		notifierType:           &repo.notifierRepository,
-		upstreamAuthorityType:  &repo.upstreamAuthorityRepository,
+		// TODO: wire this up once we're ready to release the feature
+		//credentialComposerType: &repo.credentialComposerRepository,
+		keyManagerType:        &repo.keyManagerRepository,
+		nodeAttestorType:      &repo.nodeAttestorRepository,
+		notifierType:          &repo.notifierRepository,
+		upstreamAuthorityType: &repo.upstreamAuthorityRepository,
 	}
 }
 

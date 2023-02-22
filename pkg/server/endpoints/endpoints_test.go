@@ -12,9 +12,6 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/go-spiffe/v2/spiffetls/tlsconfig"
-	"github.com/spiffe/go-spiffe/v2/svid/x509svid"
 	agentv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/agent/v1"
 	bundlev1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/bundle/v1"
 	debugv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/debug/v1"
@@ -39,6 +36,9 @@ import (
 	"github.com/spiffe/spire/test/testca"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
+	"github.com/vishnusomank/go-spiffe/v2/spiffetls/tlsconfig"
+	"github.com/vishnusomank/go-spiffe/v2/svid/x509svid"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
@@ -89,8 +89,6 @@ func TestNew(t *testing.T) {
 		CA:            serverCA,
 		Catalog:       cat,
 		TrustDomain:   testTD,
-		CredBuilder:   serverCA.CredBuilder(),
-		CredValidator: serverCA.CredValidator(),
 		Dir:           spiretest.TempDir(t),
 		Log:           log,
 		Metrics:       metrics,
@@ -156,8 +154,6 @@ func TestNewErrorCreatingAuthorizedEntryFetcher(t *testing.T) {
 		CA:            serverCA,
 		Catalog:       cat,
 		TrustDomain:   testTD,
-		CredBuilder:   serverCA.CredBuilder(),
-		CredValidator: serverCA.CredValidator(),
 		Dir:           spiretest.TempDir(t),
 		Log:           log,
 		Metrics:       metrics,

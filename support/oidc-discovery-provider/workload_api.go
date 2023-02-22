@@ -10,11 +10,11 @@ import (
 
 	"github.com/andres-erbsen/clock"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/bundle/jwtbundle"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/go-spiffe/v2/workloadapi"
 	"github.com/spiffe/spire/pkg/common/telemetry"
 	"github.com/spiffe/spire/pkg/common/util"
+	"github.com/vishnusomank/go-spiffe/v2/bundle/jwtbundle"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
+	"github.com/vishnusomank/go-spiffe/v2/workloadapi"
 	"github.com/zeebo/errs"
 	"gopkg.in/square/go-jose.v2"
 )
@@ -66,7 +66,7 @@ func NewWorkloadAPISource(config WorkloadAPISourceConfig) (*WorkloadAPISource, e
 		return nil, errs.Wrap(err)
 	}
 
-	client, err := workloadapi.New(context.Background(), opts...)
+	client, err := workloadapi.New(context.Background(), nil, opts...)
 	if err != nil {
 		return nil, errs.Wrap(err)
 	}

@@ -4,13 +4,13 @@ import (
 	"context"
 	"testing"
 
-	workloadattestorv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/agent/workloadattestor/v1"
 	"github.com/spiffe/spire/pkg/agent/plugin/workloadattestor"
 	"github.com/spiffe/spire/pkg/common/catalog"
 	"github.com/spiffe/spire/proto/spire/common"
 	"github.com/spiffe/spire/test/plugintest"
 	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
+	workloadattestorv1 "github.com/vishnusomank/spire-plugin-sdk/proto/spire/plugin/agent/workloadattestor/v1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -28,20 +28,20 @@ func TestV1(t *testing.T) {
 
 	t.Run("attest fails", func(t *testing.T) {
 		workloadAttestor := makeFakeV1Plugin(t, selectorValues)
-		_, err := workloadAttestor.Attest(context.Background(), 0)
+		_, err := workloadAttestor.Attest(context.Background(), 0, map[string]string{})
 		spiretest.RequireGRPCStatus(t, err, codes.InvalidArgument, "workloadattestor(test): ohno")
 	})
 
 	t.Run("no selectors for pid", func(t *testing.T) {
 		workloadAttestor := makeFakeV1Plugin(t, selectorValues)
-		actual, err := workloadAttestor.Attest(context.Background(), 1)
+		actual, err := workloadAttestor.Attest(context.Background(), 1, map[string]string{})
 		require.NoError(t, err)
 		require.Empty(t, actual)
 	})
 
 	t.Run("with selectors for pid", func(t *testing.T) {
 		workloadAttestor := makeFakeV1Plugin(t, selectorValues)
-		actual, err := workloadAttestor.Attest(context.Background(), 2)
+		actual, err := workloadAttestor.Attest(context.Background(), 2, map[string]string{})
 		require.NoError(t, err)
 		spiretest.RequireProtoListEqual(t, expected[2], actual)
 	})

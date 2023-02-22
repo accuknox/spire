@@ -4,9 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire/pkg/agent/client"
 	"github.com/stretchr/testify/assert"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 )
 
 func TestJWTSVIDCache(t *testing.T) {

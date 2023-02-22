@@ -6,7 +6,7 @@ import (
 	"crypto/x509/pkix"
 	"net/url"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 	"github.com/zeebo/errs"
 )
 

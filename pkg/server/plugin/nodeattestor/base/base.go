@@ -4,10 +4,10 @@ import (
 	"context"
 
 	"github.com/hashicorp/go-hclog"
-	"github.com/spiffe/spire-plugin-sdk/pluginsdk"
-	agentstorev1 "github.com/spiffe/spire-plugin-sdk/proto/spire/hostservice/server/agentstore/v1"
 	"github.com/spiffe/spire/pkg/common/telemetry"
 	"github.com/spiffe/spire/pkg/server/hostservice/agentstore"
+	"github.com/vishnusomank/spire-plugin-sdk/pluginsdk"
+	agentstorev1 "github.com/vishnusomank/spire-plugin-sdk/proto/spire/hostservice/server/agentstore/v1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

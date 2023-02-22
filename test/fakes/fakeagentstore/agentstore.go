@@ -4,7 +4,7 @@ import (
 	"context"
 	"sync"
 
-	agentstorev1 "github.com/spiffe/spire-plugin-sdk/proto/spire/hostservice/server/agentstore/v1"
+	agentstorev1 "github.com/vishnusomank/spire-plugin-sdk/proto/spire/hostservice/server/agentstore/v1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

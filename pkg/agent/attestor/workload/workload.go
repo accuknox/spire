@@ -18,7 +18,7 @@ type attestor struct {
 }
 
 type Attestor interface {
-	Attest(ctx context.Context, pid int) []*common.Selector
+	Attest(ctx context.Context, pid int, meta map[string]string) []*common.Selector
 }
 
 func New(config *Config) Attestor {
@@ -37,7 +37,7 @@ type Config struct {
 
 // Attest invokes all workload attestor plugins against the provided PID. If an error
 // is encountered, it is logged and selectors from the failing plugin are discarded.
-func (wla *attestor) Attest(ctx context.Context, pid int) []*common.Selector {
+func (wla *attestor) Attest(ctx context.Context, pid int, meta map[string]string) []*common.Selector {
 	counter := telemetry_workload.StartAttestationCall(wla.c.Metrics)
 	defer counter.Done(nil)
 
@@ -49,7 +49,7 @@ func (wla *attestor) Attest(ctx context.Context, pid int) []*common.Selector {
 
 	for _, p := range plugins {
 		go func(p workloadattestor.WorkloadAttestor) {
-			if selectors, err := wla.invokeAttestor(ctx, p, pid); err == nil {
+			if selectors, err := wla.invokeAttestor(ctx, p, pid, meta); err == nil {
 				sChan <- selectors
 			} else {
 				errChan <- err
@@ -60,6 +60,7 @@ func (wla *attestor) Attest(ctx context.Context, pid int) []*common.Selector {
 	// Collect the results
 	selectors := []*common.Selector{}
 	for i := 0; i < len(plugins); i++ {
+
 		select {
 		case s := <-sChan:
 			selectors = append(selectors, s...)
@@ -80,11 +81,11 @@ func (wla *attestor) Attest(ctx context.Context, pid int) []*common.Selector {
 }
 
 // invokeAttestor invokes attestation against the supplied plugin. Should be called from a goroutine.
-func (wla *attestor) invokeAttestor(ctx context.Context, a workloadattestor.WorkloadAttestor, pid int) (_ []*common.Selector, err error) {
+func (wla *attestor) invokeAttestor(ctx context.Context, a workloadattestor.WorkloadAttestor, pid int, meta map[string]string) (_ []*common.Selector, err error) {
 	counter := telemetry_workload.StartAttestorCall(wla.c.Metrics, a.Name())
 	defer counter.Done(&err)
 
-	selectors, err := a.Attest(ctx, pid)
+	selectors, err := a.Attest(ctx, pid, meta)
 	if err != nil {
 		return nil, fmt.Errorf("workload attestor %q failed: %w", a.Name(), err)
 	}

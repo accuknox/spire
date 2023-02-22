@@ -2,10 +2,10 @@ package awsiid
 
 import (
 	"github.com/aws/aws-sdk-go-v2/feature/ec2/imds"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire/pkg/common/agentpathtemplate"
 	"github.com/spiffe/spire/pkg/common/idutil"
 	"github.com/spiffe/spire/pkg/common/plugin/aws"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 )
 
 var defaultAgentPathTemplate = agentpathtemplate.MustParse("/{{ .PluginName}}/{{ .AccountID }}/{{ .Region }}/{{ .InstanceID }}")

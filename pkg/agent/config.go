@@ -7,16 +7,18 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire/pkg/agent/workloadkey"
 	"github.com/spiffe/spire/pkg/common/catalog"
 	"github.com/spiffe/spire/pkg/common/health"
 	"github.com/spiffe/spire/pkg/common/telemetry"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 )
 
 type Config struct {
 	// Address to bind the workload api to
 	BindAddress net.Addr
+
+	AgentAddress *net.TCPAddr
 
 	// Directory to store runtime data
 	DataDir string

@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	"github.com/hashicorp/hcl"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire/pkg/common/agentpathtemplate"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 	"golang.org/x/crypto/ssh"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

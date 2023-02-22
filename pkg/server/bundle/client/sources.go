@@ -5,9 +5,9 @@ import (
 	"sync"
 
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire/pkg/common/telemetry"
 	"github.com/spiffe/spire/pkg/server/datastore"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 )
 
 type TrustDomainConfigSource interface {

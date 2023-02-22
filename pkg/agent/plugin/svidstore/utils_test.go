@@ -4,10 +4,10 @@ import (
 	"crypto/x509"
 	"testing"
 
-	svidstorev1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/agent/svidstore/v1"
 	"github.com/spiffe/spire/pkg/agent/plugin/svidstore"
 	"github.com/spiffe/spire/pkg/common/pemutil"
 	"github.com/stretchr/testify/require"
+	svidstorev1 "github.com/vishnusomank/spire-plugin-sdk/proto/spire/plugin/agent/svidstore/v1"
 )
 
 const (

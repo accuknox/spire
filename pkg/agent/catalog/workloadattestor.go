@@ -31,6 +31,7 @@ func (repo *workloadAttestorRepository) BuiltIns() []catalog.BuiltIn {
 		k8s.BuiltIn(),
 		unix.BuiltIn(),
 		windows.BuiltIn(),
+		//k8swsat.BuiltIn(),
 	}
 }
 

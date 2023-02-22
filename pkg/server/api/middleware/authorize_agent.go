@@ -4,7 +4,7 @@ import (
 	"context"
 	"crypto/x509"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 )
 
 type AgentAuthorizer interface {

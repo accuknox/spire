@@ -6,10 +6,10 @@ import (
 	"io"
 	"testing"
 
-	nodeattestorv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/agent/nodeattestor/v1"
 	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor"
 	"github.com/spiffe/spire/pkg/common/catalog"
 	"github.com/spiffe/spire/test/plugintest"
+	nodeattestorv1 "github.com/vishnusomank/spire-plugin-sdk/proto/spire/plugin/agent/nodeattestor/v1"
 )
 
 type Config struct {

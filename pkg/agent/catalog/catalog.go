@@ -6,9 +6,6 @@ import (
 	"io"
 
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire-plugin-sdk/pluginsdk"
-	metricsv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/hostservice/common/metrics/v1"
 	"github.com/spiffe/spire/pkg/agent/plugin/keymanager"
 	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor"
 	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor/jointoken"
@@ -18,6 +15,9 @@ import (
 	"github.com/spiffe/spire/pkg/common/hostservice/metricsservice"
 	"github.com/spiffe/spire/pkg/common/telemetry"
 	km_telemetry "github.com/spiffe/spire/pkg/common/telemetry/agent/keymanager"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
+	"github.com/vishnusomank/spire-plugin-sdk/pluginsdk"
+	metricsv1 "github.com/vishnusomank/spire-plugin-sdk/proto/spire/hostservice/common/metrics/v1"
 )
 
 const (

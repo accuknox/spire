@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
 	"github.com/spiffe/spire/proto/spire/common"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 )
 
 func spiffeIDFromProto(protoID *types.SPIFFEID) (string, error) {

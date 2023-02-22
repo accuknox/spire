@@ -13,13 +13,13 @@ import (
 
 	"github.com/google/go-tpm/tpm2"
 	"github.com/hashicorp/hcl"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	nodeattestorv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/server/nodeattestor/v1"
-	configv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/service/common/config/v1"
 	"github.com/spiffe/spire/pkg/common/catalog"
 	"github.com/spiffe/spire/pkg/common/idutil"
 	common_devid "github.com/spiffe/spire/pkg/common/plugin/tpmdevid"
 	"github.com/spiffe/spire/pkg/common/util"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
+	nodeattestorv1 "github.com/vishnusomank/spire-plugin-sdk/proto/spire/plugin/server/nodeattestor/v1"
+	configv1 "github.com/vishnusomank/spire-plugin-sdk/proto/spire/service/common/config/v1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

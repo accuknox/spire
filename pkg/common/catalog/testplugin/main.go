@@ -1,3 +1,4 @@
+//go:build ignore
 // +build ignore
 
 package main
@@ -10,8 +11,8 @@ import (
 	"os"
 
 	goplugin "github.com/hashicorp/go-plugin"
-	"github.com/spiffe/spire-plugin-sdk/pluginmain"
 	"github.com/spiffe/spire/pkg/common/catalog/testplugin"
+	"github.com/vishnusomank/spire-plugin-sdk/pluginmain"
 	"google.golang.org/grpc"
 )
 

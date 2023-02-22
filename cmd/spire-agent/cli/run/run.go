@@ -24,7 +24,6 @@ import (
 	"github.com/imdario/mergo"
 	"github.com/mitchellh/cli"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire/pkg/agent"
 	"github.com/spiffe/spire/pkg/agent/workloadkey"
 	"github.com/spiffe/spire/pkg/common/bundleutil"
@@ -36,6 +35,7 @@ import (
 	"github.com/spiffe/spire/pkg/common/log"
 	"github.com/spiffe/spire/pkg/common/pemutil"
 	"github.com/spiffe/spire/pkg/common/telemetry"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 )
 
 const (
@@ -75,6 +75,8 @@ type agentConfig struct {
 	SDS                           sdsConfig `hcl:"sds"`
 	ServerAddress                 string    `hcl:"server_address"`
 	ServerPort                    int       `hcl:"server_port"`
+	AgentAddress                  string    `hcl:"agent_address"`
+	AgentPort                     int       `hcl:"agent_port"`
 	SocketPath                    string    `hcl:"socket_path"`
 	WorkloadX509SVIDKeyType       string    `hcl:"workload_x509_svid_key_type"`
 	TrustBundleFormat             string    `hcl:"trust_bundle_format"`
@@ -308,6 +310,8 @@ func parseFlags(name string, args []string, output io.Writer) (*agentConfig, err
 	flags.StringVar(&c.LogLevel, "logLevel", "", "'debug', 'info', 'warn', or 'error'")
 	flags.StringVar(&c.ServerAddress, "serverAddress", "", "IP address or DNS name of the SPIRE server")
 	flags.IntVar(&c.ServerPort, "serverPort", 0, "Port number of the SPIRE server")
+	flags.StringVar(&c.AgentAddress, "agentAddress", "", "IP address or DNS name of the SPIRE agent")
+	flags.IntVar(&c.AgentPort, "agentPort", 0, "Port number of the SPIRE agent")
 	flags.StringVar(&c.TrustDomain, "trustDomain", "", "The trust domain that this agent belongs to")
 	flags.StringVar(&c.TrustBundlePath, "trustBundle", "", "Path to the SPIRE server CA bundle")
 	flags.StringVar(&c.TrustBundleURL, "trustBundleUrl", "", "URL to download the SPIRE server CA bundle")
@@ -480,6 +484,10 @@ func NewAgentConfig(c *Config, logOptions []log.Option, allowUnknownConfig bool)
 	}
 	ac.TrustDomain = td
 
+	ac.AgentAddress, err = net.ResolveTCPAddr("tcp", fmt.Sprintf("%v:%v", c.Agent.AgentAddress, c.Agent.AgentPort))
+	if err != nil {
+		return nil, err
+	}
 	addr, err := c.Agent.getAddr()
 	if err != nil {
 		return nil, err

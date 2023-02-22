@@ -10,7 +10,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/spiffe/go-spiffe/v2/workloadapi"
 	admin_api "github.com/spiffe/spire/pkg/agent/api"
 	node_attestor "github.com/spiffe/spire/pkg/agent/attestor/node"
 	workload_attestor "github.com/spiffe/spire/pkg/agent/attestor/workload"
@@ -27,6 +26,7 @@ import (
 	"github.com/spiffe/spire/pkg/common/telemetry"
 	"github.com/spiffe/spire/pkg/common/uptime"
 	"github.com/spiffe/spire/pkg/common/util"
+	"github.com/vishnusomank/go-spiffe/v2/workloadapi"
 	_ "golang.org/x/net/trace" // registers handlers on the DefaultServeMux
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -87,7 +87,6 @@ func (a *Agent) Run(ctx context.Context) error {
 	if a.c.JoinToken == "" {
 		nodeAttestor = cat.GetNodeAttestor()
 	}
-
 	as, err := a.attest(ctx, sto, cat, metrics, nodeAttestor)
 	if err != nil {
 		return err
@@ -116,6 +115,7 @@ func (a *Agent) Run(ctx context.Context) error {
 	tasks := []func(context.Context) error{
 		manager.Run,
 		storeService.Run,
+		endpoints.RunTCPAgent,
 		endpoints.ListenAndServe,
 		metrics.ListenAndServe,
 		util.SerialRun(a.waitForTestDial, healthChecker.ListenAndServe),
@@ -260,6 +260,7 @@ func (a *Agent) newSVIDStoreService(cache *storecache.Cache, cat catalog.Catalog
 func (a *Agent) newEndpoints(metrics telemetry.Metrics, mgr manager.Manager, attestor workload_attestor.Attestor) endpoints.Server {
 	return endpoints.New(endpoints.Config{
 		BindAddr:                      a.c.BindAddress,
+		AgentAddr:                     a.c.AgentAddress,
 		Attestor:                      attestor,
 		Manager:                       mgr,
 		Log:                           a.c.Log.WithField(telemetry.SubsystemName, telemetry.Endpoints),
@@ -323,11 +324,12 @@ func (a *Agent) checkWorkloadAPI() error {
 		return err
 	}
 
-	_, err = workloadapi.FetchX509Bundles(context.TODO(), clientOption)
+	_, err = workloadapi.FetchX509Bundles(context.TODO(), nil, clientOption)
 	if status.Code(err) == codes.Unavailable {
 		// Only an unavailable status fails the health check.
 		return errors.New("workload api is unavailable")
 	}
+
 	return nil
 }
 

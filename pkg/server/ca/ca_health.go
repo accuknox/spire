@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire/pkg/common/health"
 	"github.com/spiffe/spire/pkg/common/pemutil"
+	"github.com/vishnusomank/go-spiffe/v2/spiffeid"
 )
 
 var (
@@ -31,8 +31,8 @@ func (h *caHealth) CheckHealth() health.State {
 
 	spiffeID, err := spiffeid.FromPath(h.td, "/for/health/check/only")
 	if err == nil {
-		_, err = h.ca.SignWorkloadX509SVID(ctx, WorkloadX509SVIDParams{
-			SPIFFEID:  spiffeID,
+		_, err = h.ca.SignX509SVID(ctx, X509SVIDParams{
+			SpiffeID:  spiffeID,
 			PublicKey: caHealthKey,
 		})
 	}

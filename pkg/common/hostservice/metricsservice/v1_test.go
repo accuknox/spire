@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	metricsv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/hostservice/common/metrics/v1"
 	"github.com/spiffe/spire/pkg/common/telemetry"
 	"github.com/spiffe/spire/test/fakes/fakemetrics"
 	"github.com/stretchr/testify/assert"
+	metricsv1 "github.com/vishnusomank/spire-plugin-sdk/proto/spire/hostservice/common/metrics/v1"
 )
 
 func TestV1SetGauge(t *testing.T) {

@@ -5,8 +5,8 @@ import (
 	"errors"
 	"sync"
 
-	identityproviderv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/hostservice/server/identityprovider/v1"
-	plugintypes "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/types"
+	identityproviderv1 "github.com/vishnusomank/spire-plugin-sdk/proto/spire/hostservice/server/identityprovider/v1"
+	plugintypes "github.com/vishnusomank/spire-plugin-sdk/proto/spire/plugin/types"
 )
 
 type IdentityProvider struct {

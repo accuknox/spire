@@ -34,6 +34,19 @@ func (e *Endpoints) createUDSListener() (net.Listener, error) {
 	return l, nil
 }
 
+func (e *Endpoints) createTCPListener() (net.Listener, error) {
+
+	tcpListener := &peertracker.ListenerFactory{
+		Log: e.log,
+	}
+
+	l, err := tcpListener.ListenTCP(e.TCPAddr.Network(), e.TCPAddr)
+	if err != nil {
+		return nil, fmt.Errorf("create TCP listener: %w", err)
+	}
+	return l, nil
+}
+
 func (e *Endpoints) createListener() (net.Listener, error) {
 	switch e.addr.Network() {
 	case "unix":
