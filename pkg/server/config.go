@@ -6,16 +6,16 @@ import (
 	"net"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	common "github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/health"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/server/authpolicy"
+	bundle_client "github.com/accuknox/spire/pkg/server/bundle/client"
+	"github.com/accuknox/spire/pkg/server/endpoints"
+	"github.com/accuknox/spire/pkg/server/endpoints/bundle"
+	"github.com/accuknox/spire/pkg/server/plugin/keymanager"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	common "github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/pkg/common/health"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/server/authpolicy"
-	bundle_client "github.com/spiffe/spire/pkg/server/bundle/client"
-	"github.com/spiffe/spire/pkg/server/endpoints"
-	"github.com/spiffe/spire/pkg/server/endpoints/bundle"
-	"github.com/spiffe/spire/pkg/server/plugin/keymanager"
 )
 
 type Config struct {

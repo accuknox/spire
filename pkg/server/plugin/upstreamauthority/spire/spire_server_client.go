@@ -7,16 +7,16 @@ import (
 	"net"
 	"sync"
 
+	"github.com/accuknox/go-spiffe/v2/logger"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/go-spiffe/v2/spiffetls/tlsconfig"
+	"github.com/accuknox/go-spiffe/v2/workloadapi"
+	"github.com/accuknox/spire/pkg/common/util"
+	"github.com/accuknox/spire/pkg/common/x509util"
 	"github.com/hashicorp/go-hclog"
-	"github.com/spiffe/go-spiffe/v2/logger"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/go-spiffe/v2/spiffetls/tlsconfig"
-	"github.com/spiffe/go-spiffe/v2/workloadapi"
 	bundlev1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/bundle/v1"
 	svidv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/svid/v1"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/common/util"
-	"github.com/spiffe/spire/pkg/common/x509util"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
@@ -53,7 +53,7 @@ func (c *serverClient) start(ctx context.Context) error {
 	if err != nil {
 		return status.Errorf(codes.Internal, "could not get Workload API client options: %v", err)
 	}
-	source, err := workloadapi.NewX509Source(ctx, workloadapi.WithClientOptions(clientOption,
+	source, err := workloadapi.NewX509Source(ctx, nil, workloadapi.WithClientOptions(clientOption,
 		workloadapi.WithLogger(c.log)))
 	if err != nil {
 		return status.Errorf(codes.Internal, "unable to create X509Source: %v", err)

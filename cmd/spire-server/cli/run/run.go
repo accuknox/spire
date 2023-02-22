@@ -17,6 +17,19 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	common_cli "github.com/accuknox/spire/pkg/common/cli"
+	"github.com/accuknox/spire/pkg/common/fflag"
+	"github.com/accuknox/spire/pkg/common/health"
+	"github.com/accuknox/spire/pkg/common/log"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/server"
+	"github.com/accuknox/spire/pkg/server/authpolicy"
+	bundleClient "github.com/accuknox/spire/pkg/server/bundle/client"
+	"github.com/accuknox/spire/pkg/server/ca"
+	"github.com/accuknox/spire/pkg/server/endpoints/bundle"
+	"github.com/accuknox/spire/pkg/server/plugin/keymanager"
 	"github.com/google/go-cmp/cmp"
 	"github.com/hashicorp/hcl"
 	"github.com/hashicorp/hcl/hcl/ast"
@@ -24,20 +37,6 @@ import (
 	"github.com/imdario/mergo"
 	"github.com/mitchellh/cli"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/pkg/common/catalog"
-	common_cli "github.com/spiffe/spire/pkg/common/cli"
-	"github.com/spiffe/spire/pkg/common/fflag"
-	"github.com/spiffe/spire/pkg/common/health"
-	"github.com/spiffe/spire/pkg/common/log"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/server"
-	"github.com/spiffe/spire/pkg/server/authpolicy"
-	bundleClient "github.com/spiffe/spire/pkg/server/bundle/client"
-	"github.com/spiffe/spire/pkg/server/ca"
-	"github.com/spiffe/spire/pkg/server/credtemplate"
-	"github.com/spiffe/spire/pkg/server/endpoints/bundle"
-	"github.com/spiffe/spire/pkg/server/plugin/keymanager"
 )
 
 const (
@@ -48,6 +47,11 @@ const (
 )
 
 var (
+	defaultCASubject = pkix.Name{
+		Country:      []string{"US"},
+		Organization: []string{"SPIFFE"},
+	}
+
 	defaultRateLimit = true
 )
 
@@ -475,7 +479,7 @@ func NewServerConfig(c *Config, logOptions []log.Option, allowUnknownConfig bool
 	default:
 		// If neither new nor deprecated config value is set, then use hard-coded default TTL
 		// Note, due to back-compat issues we cannot set this default inside defaultConfig() function
-		sc.X509SVIDTTL = credtemplate.DefaultX509SVIDTTL
+		sc.X509SVIDTTL = ca.DefaultX509SVIDTTL
 	}
 
 	if c.Server.DefaultJWTSVIDTTL != "" {
@@ -487,7 +491,7 @@ func NewServerConfig(c *Config, logOptions []log.Option, allowUnknownConfig bool
 	} else {
 		// If not set using new field then use hard-coded default TTL
 		// Note, due to back-compat issues we cannot set this default inside defaultConfig() function
-		sc.JWTSVIDTTL = credtemplate.DefaultJWTSVIDTTL
+		sc.JWTSVIDTTL = ca.DefaultJWTSVIDTTL
 	}
 
 	if c.Server.CATTL != "" {
@@ -587,7 +591,7 @@ func NewServerConfig(c *Config, logOptions []log.Option, allowUnknownConfig bool
 	}
 	// RFC3280(4.1.2.4) requires the issuer DN be set.
 	if isPKIXNameEmpty(sc.CASubject) {
-		sc.CASubject = credtemplate.DefaultX509CASubject()
+		sc.CASubject = defaultCASubject
 	}
 
 	sc.PluginConfigs, err = catalog.PluginConfigsFromHCLNode(c.Plugins)
@@ -740,7 +744,7 @@ func checkForUnknownConfig(c *Config, l logrus.FieldLogger) (err error) {
 		}
 
 		// TODO: Re-enable unused key detection for experimental config. See
-		// https://github.com/spiffe/spire/issues/1101 for more information
+		// https://github.com/accuknox/spire/issues/1101 for more information
 		//
 		// if len(c.Server.Experimental.UnusedKeys) != 0 {
 		//	detectedUnknown("experimental", c.Server.Experimental.UnusedKeys)
@@ -748,7 +752,7 @@ func checkForUnknownConfig(c *Config, l logrus.FieldLogger) (err error) {
 
 		if c.Server.Federation != nil {
 			// TODO: Re-enable unused key detection for federation config. See
-			// https://github.com/spiffe/spire/issues/1101 for more information
+			// https://github.com/accuknox/spire/issues/1101 for more information
 			//
 			// if len(c.Server.Federation.UnusedKeys) != 0 {
 			//	detectedUnknown("federation", c.Server.Federation.UnusedKeys)
@@ -765,7 +769,7 @@ func checkForUnknownConfig(c *Config, l logrus.FieldLogger) (err error) {
 			}
 
 			// TODO: Re-enable unused key detection for bundle endpoint profile config. See
-			// https://github.com/spiffe/spire/issues/1101 for more information
+			// https://github.com/accuknox/spire/issues/1101 for more information
 			//
 			// for k, v := range c.Server.Federation.FederatesWith {
 			//	if len(v.UnusedKeys) != 0 {
@@ -776,7 +780,7 @@ func checkForUnknownConfig(c *Config, l logrus.FieldLogger) (err error) {
 	}
 
 	// TODO: Re-enable unused key detection for telemetry. See
-	// https://github.com/spiffe/spire/issues/1101 for more information
+	// https://github.com/accuknox/spire/issues/1101 for more information
 	//
 	// if len(c.Telemetry.UnusedKeys) != 0 {
 	//	detectedUnknown("telemetry", c.Telemetry.UnusedKeys)
@@ -820,7 +824,7 @@ func defaultConfig() *Config {
 		Server: &serverConfig{
 			BindAddress:  "0.0.0.0",
 			BindPort:     8081,
-			CATTL:        credtemplate.DefaultX509CATTL.String(),
+			CATTL:        ca.DefaultCATTL.String(),
 			LogLevel:     defaultLogLevel,
 			LogFormat:    log.DefaultFormat,
 			Experimental: experimentalConfig{},

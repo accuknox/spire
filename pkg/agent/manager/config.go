@@ -5,18 +5,18 @@ import (
 	"sync"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/agent/catalog"
+	managerCache "github.com/accuknox/spire/pkg/agent/manager/cache"
+	"github.com/accuknox/spire/pkg/agent/manager/storecache"
+	"github.com/accuknox/spire/pkg/agent/plugin/keymanager"
+	"github.com/accuknox/spire/pkg/agent/plugin/nodeattestor"
+	"github.com/accuknox/spire/pkg/agent/storage"
+	"github.com/accuknox/spire/pkg/agent/svid"
+	"github.com/accuknox/spire/pkg/agent/workloadkey"
+	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/andres-erbsen/clock"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/pkg/agent/catalog"
-	managerCache "github.com/spiffe/spire/pkg/agent/manager/cache"
-	"github.com/spiffe/spire/pkg/agent/manager/storecache"
-	"github.com/spiffe/spire/pkg/agent/plugin/keymanager"
-	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor"
-	"github.com/spiffe/spire/pkg/agent/storage"
-	"github.com/spiffe/spire/pkg/agent/svid"
-	"github.com/spiffe/spire/pkg/agent/workloadkey"
-	"github.com/spiffe/spire/pkg/common/telemetry"
 )
 
 // Config holds a cache manager configuration

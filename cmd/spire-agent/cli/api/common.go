@@ -6,10 +6,10 @@ import (
 	"net"
 	"time"
 
-	"github.com/spiffe/go-spiffe/v2/proto/spiffe/workload"
-	"github.com/spiffe/spire/cmd/spire-agent/cli/common"
-	"github.com/spiffe/spire/pkg/common/cli"
-	"github.com/spiffe/spire/pkg/common/util"
+	"github.com/accuknox/go-spiffe/v2/proto/spiffe/workload"
+	"github.com/accuknox/spire/cmd/spire-agent/cli/common"
+	"github.com/accuknox/spire/pkg/common/cli"
+	"github.com/accuknox/spire/pkg/common/util"
 	"google.golang.org/grpc/metadata"
 )
 

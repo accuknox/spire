@@ -8,13 +8,13 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor"
-	nodeattestortest "github.com/spiffe/spire/pkg/agent/plugin/nodeattestor/test"
-	"github.com/spiffe/spire/pkg/common/plugin/x509pop"
-	"github.com/spiffe/spire/pkg/common/util"
-	"github.com/spiffe/spire/test/fixture"
-	"github.com/spiffe/spire/test/plugintest"
-	"github.com/spiffe/spire/test/spiretest"
+	"github.com/accuknox/spire/pkg/agent/plugin/nodeattestor"
+	nodeattestortest "github.com/accuknox/spire/pkg/agent/plugin/nodeattestor/test"
+	"github.com/accuknox/spire/pkg/common/plugin/x509pop"
+	"github.com/accuknox/spire/pkg/common/util"
+	"github.com/accuknox/spire/test/fixture"
+	"github.com/accuknox/spire/test/plugintest"
+	"github.com/accuknox/spire/test/spiretest"
 	"google.golang.org/grpc/codes"
 )
 

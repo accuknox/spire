@@ -9,18 +9,18 @@ import (
 	"testing"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/log"
+	"github.com/accuknox/spire/pkg/server"
+	bundleClient "github.com/accuknox/spire/pkg/server/bundle/client"
+	"github.com/accuknox/spire/pkg/server/ca"
+	"github.com/accuknox/spire/pkg/server/plugin/keymanager"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/hashicorp/hcl"
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/pkg/common/log"
-	"github.com/spiffe/spire/pkg/server"
-	bundleClient "github.com/spiffe/spire/pkg/server/bundle/client"
-	"github.com/spiffe/spire/pkg/server/credtemplate"
-	"github.com/spiffe/spire/pkg/server/plugin/keymanager"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -806,7 +806,7 @@ func TestNewServerConfig(t *testing.T) {
 				c.Server.CASubject = nil
 			},
 			test: func(t *testing.T, c *server.Config) {
-				require.Equal(t, credtemplate.DefaultX509CASubject(), c.CASubject)
+				require.Equal(t, defaultCASubject, c.CASubject)
 			},
 		},
 		{
@@ -815,7 +815,7 @@ func TestNewServerConfig(t *testing.T) {
 				c.Server.CASubject = &caSubjectConfig{}
 			},
 			test: func(t *testing.T, c *server.Config) {
-				require.Equal(t, credtemplate.DefaultX509CASubject(), c.CASubject)
+				require.Equal(t, defaultCASubject, c.CASubject)
 			},
 		},
 		{
@@ -1171,7 +1171,7 @@ func TestWarnOnUnknownConfig(t *testing.T) {
 			},
 		},
 		// TODO: Re-enable unused key detection for experimental config. See
-		// https://github.com/spiffe/spire/issues/1101 for more information
+		// https://github.com/accuknox/spire/issues/1101 for more information
 		//
 		// {
 		//	msg:            "in nested experimental block",
@@ -1214,7 +1214,7 @@ func TestWarnOnUnknownConfig(t *testing.T) {
 			},
 		},
 		// TODO: Re-enable unused key detection for experimental config. See
-		// https://github.com/spiffe/spire/issues/1101 for more information
+		// https://github.com/accuknox/spire/issues/1101 for more information
 		//
 		// {
 		//	msg:      "in nested federates_with block",
@@ -1526,13 +1526,13 @@ func TestHasCompatibleTTLs(t *testing.T) {
 	for _, testCase := range cases {
 		testCase := testCase
 		if testCase.caTTL == 0 {
-			testCase.caTTL = credtemplate.DefaultX509CATTL
+			testCase.caTTL = ca.DefaultCATTL
 		}
 		if testCase.x509SvidTTL == 0 {
-			testCase.x509SvidTTL = credtemplate.DefaultX509SVIDTTL
+			testCase.x509SvidTTL = ca.DefaultX509SVIDTTL
 		}
 		if testCase.jwtSvidTTL == 0 {
-			testCase.jwtSvidTTL = credtemplate.DefaultJWTSVIDTTL
+			testCase.jwtSvidTTL = ca.DefaultJWTSVIDTTL
 		}
 
 		t.Run(testCase.msg, func(t *testing.T) {
@@ -1573,7 +1573,7 @@ func TestMaxSVIDTTL(t *testing.T) {
 		},
 	} {
 		if v.caTTL == 0 {
-			v.caTTL = credtemplate.DefaultX509CATTL
+			v.caTTL = ca.DefaultCATTL
 		}
 
 		assert.Equal(t, v.expect, printMaxSVIDTTL(v.caTTL))
@@ -1649,10 +1649,10 @@ func TestMinCATTL(t *testing.T) {
 		},
 	} {
 		if v.x509SVIDTTL == 0 {
-			v.x509SVIDTTL = credtemplate.DefaultX509SVIDTTL
+			v.x509SVIDTTL = ca.DefaultX509SVIDTTL
 		}
 		if v.jwtSVIDTTL == 0 {
-			v.jwtSVIDTTL = credtemplate.DefaultJWTSVIDTTL
+			v.jwtSVIDTTL = ca.DefaultJWTSVIDTTL
 		}
 
 		// The expected value is the MinCATTL calculated from the largest of the available TTLs

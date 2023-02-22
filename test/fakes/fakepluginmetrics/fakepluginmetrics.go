@@ -3,8 +3,8 @@ package fakepluginmetrics
 import (
 	"time"
 
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/test/fakes/fakemetrics"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/test/fakes/fakemetrics"
 )
 
 // FakePluginMetrics mimics behavior of plugin metrics wrapper, delegates

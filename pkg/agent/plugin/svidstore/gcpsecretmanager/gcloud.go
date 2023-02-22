@@ -11,12 +11,12 @@ import (
 
 	"cloud.google.com/go/iam/apiv1/iampb"
 	"cloud.google.com/go/secretmanager/apiv1/secretmanagerpb"
+	svidstorev1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/agent/svidstore/v1"
+	configv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/service/common/config/v1"
+	"github.com/accuknox/spire/pkg/agent/plugin/svidstore"
+	"github.com/accuknox/spire/pkg/common/catalog"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/hcl"
-	svidstorev1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/agent/svidstore/v1"
-	configv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/service/common/config/v1"
-	"github.com/spiffe/spire/pkg/agent/plugin/svidstore"
-	"github.com/spiffe/spire/pkg/common/catalog"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

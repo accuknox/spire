@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/spiffe/spire/pkg/common/cliprinter/internal/errorpretty"
+	"github.com/accuknox/spire/pkg/common/cliprinter/internal/errorpretty"
 )
 
 // Print prints a struct prettily.

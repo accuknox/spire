@@ -18,13 +18,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/spiffe/spire/pkg/agent/plugin/workloadattestor"
-	"github.com/spiffe/spire/pkg/common/pemutil"
-	"github.com/spiffe/spire/pkg/common/util"
-	"github.com/spiffe/spire/proto/spire/common"
-	"github.com/spiffe/spire/test/clock"
-	"github.com/spiffe/spire/test/plugintest"
-	"github.com/spiffe/spire/test/spiretest"
+	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor"
+	"github.com/accuknox/spire/pkg/common/pemutil"
+	"github.com/accuknox/spire/pkg/common/util"
+	"github.com/accuknox/spire/proto/spire/common"
+	"github.com/accuknox/spire/test/clock"
+	"github.com/accuknox/spire/test/plugintest"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
@@ -163,7 +163,7 @@ func (s *Suite) TestAttestWithPidNotInPodCancelsEarly() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
-	selectors, err := p.Attest(ctx, pid)
+	selectors, err := p.Attest(ctx, pid, map[string]string{})
 	s.RequireGRPCStatus(err, codes.Canceled, "workloadattestor(k8s): context canceled")
 	s.Require().Nil(selectors)
 }
@@ -770,13 +770,13 @@ func (s *Suite) requireAttestSuccessWithPod(p workloadattestor.WorkloadAttestor)
 }
 
 func (s *Suite) requireAttestSuccess(p workloadattestor.WorkloadAttestor, expectedSelectors []*common.Selector) {
-	selectors, err := p.Attest(context.Background(), pid)
+	selectors, err := p.Attest(context.Background(), pid, map[string]string{})
 	s.Require().NoError(err)
 	s.requireSelectorsEqual(expectedSelectors, selectors)
 }
 
 func (s *Suite) requireAttestFailure(p workloadattestor.WorkloadAttestor, code codes.Code, contains string) {
-	selectors, err := p.Attest(context.Background(), pid)
+	selectors, err := p.Attest(context.Background(), pid, map[string]string{})
 	s.RequireGRPCStatusContains(err, code, contains)
 	s.Require().Nil(selectors)
 }
@@ -793,7 +793,7 @@ func (s *Suite) requireSelectorsEqual(expected, actual []*common.Selector) {
 func (s *Suite) goAttest(p workloadattestor.WorkloadAttestor) <-chan attestResult {
 	resultCh := make(chan attestResult, 1)
 	go func() {
-		selectors, err := p.Attest(context.Background(), pid)
+		selectors, err := p.Attest(context.Background(), pid, map[string]string{})
 		resultCh <- attestResult{
 			selectors: selectors,
 			err:       err,

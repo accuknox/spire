@@ -3,15 +3,15 @@ package token
 import (
 	"flag"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/cmd/spire-server/util"
 	"github.com/mitchellh/cli"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	agentv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/agent/v1"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
 	prototypes "github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/cmd/spire-server/util"
 
-	commoncli "github.com/spiffe/spire/pkg/common/cli"
-	"github.com/spiffe/spire/pkg/common/cliprinter"
+	commoncli "github.com/accuknox/spire/pkg/common/cli"
+	"github.com/accuknox/spire/pkg/common/cliprinter"
 
 	"golang.org/x/net/context"
 )

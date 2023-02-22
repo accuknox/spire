@@ -1,5 +1,5 @@
 syntax = "proto3";
-option go_package = "github.com/spiffe/spire/proto/private/server/journal";
+option go_package = "github.com/accuknox/spire/proto/private/server/journal";
 
 message X509CAEntry {
     // Which X509 CA slot this entry occupied.

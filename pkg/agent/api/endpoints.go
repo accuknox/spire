@@ -3,13 +3,13 @@ package api
 import (
 	"context"
 
+	debugv1 "github.com/accuknox/spire/pkg/agent/api/debug/v1"
+	delegatedidentityv1 "github.com/accuknox/spire/pkg/agent/api/delegatedidentity/v1"
+	"github.com/accuknox/spire/pkg/common/api/middleware"
+	"github.com/accuknox/spire/pkg/common/peertracker"
+	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/andres-erbsen/clock"
 	"github.com/sirupsen/logrus"
-	debugv1 "github.com/spiffe/spire/pkg/agent/api/debug/v1"
-	delegatedidentityv1 "github.com/spiffe/spire/pkg/agent/api/delegatedidentity/v1"
-	"github.com/spiffe/spire/pkg/common/api/middleware"
-	"github.com/spiffe/spire/pkg/common/peertracker"
-	"github.com/spiffe/spire/pkg/common/telemetry"
 
 	"google.golang.org/grpc"
 )

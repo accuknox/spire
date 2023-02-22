@@ -6,11 +6,11 @@ import (
 	"sync"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/util"
 	"github.com/andres-erbsen/clock"
 	"github.com/sirupsen/logrus"
 	bundlev1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/bundle/v1"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/common/util"
 	"github.com/zeebo/errs"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/proto"

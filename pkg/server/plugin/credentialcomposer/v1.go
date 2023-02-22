@@ -11,9 +11,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	credentialcomposerv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/server/credentialcomposer/v1"
-	"github.com/spiffe/spire/pkg/common/plugin"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	credentialcomposerv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/server/credentialcomposer/v1"
+	"github.com/accuknox/spire/pkg/common/plugin"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/structpb"

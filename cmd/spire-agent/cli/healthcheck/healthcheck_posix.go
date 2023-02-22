@@ -7,8 +7,8 @@ import (
 	"flag"
 	"net"
 
-	"github.com/spiffe/spire/cmd/spire-agent/cli/common"
-	"github.com/spiffe/spire/pkg/common/util"
+	"github.com/accuknox/spire/cmd/spire-agent/cli/common"
+	"github.com/accuknox/spire/pkg/common/util"
 )
 
 // healthCheckCommandOS has posix specific implementation

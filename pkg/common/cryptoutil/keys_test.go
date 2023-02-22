@@ -7,7 +7,7 @@ import (
 	"crypto/rsa"
 	"testing"
 
-	"github.com/spiffe/spire/test/testkey"
+	"github.com/accuknox/spire/test/testkey"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/square/go-jose.v2"
 )

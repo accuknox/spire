@@ -11,13 +11,13 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/accuknox/spire/pkg/agent/plugin/nodeattestor"
+	nodeattestortest "github.com/accuknox/spire/pkg/agent/plugin/nodeattestor/test"
+	"github.com/accuknox/spire/pkg/common/pemutil"
+	"github.com/accuknox/spire/pkg/common/plugin/aws"
+	"github.com/accuknox/spire/test/plugintest"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/aws/aws-sdk-go-v2/feature/ec2/imds"
-	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor"
-	nodeattestortest "github.com/spiffe/spire/pkg/agent/plugin/nodeattestor/test"
-	"github.com/spiffe/spire/pkg/common/pemutil"
-	"github.com/spiffe/spire/pkg/common/plugin/aws"
-	"github.com/spiffe/spire/test/plugintest"
-	"github.com/spiffe/spire/test/spiretest"
 	"google.golang.org/grpc/codes"
 )
 

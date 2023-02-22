@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/spiffe/spire/pkg/common/pemutil"
-	"github.com/spiffe/spire/test/spiretest"
+	"github.com/accuknox/spire/pkg/common/pemutil"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
 )
 

@@ -11,8 +11,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/telemetry"
 )
 
 const (

@@ -16,26 +16,26 @@ import (
 	"testing"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	telemetry_server "github.com/accuknox/spire/pkg/common/telemetry/server"
+	"github.com/accuknox/spire/pkg/server/plugin/keymanager"
+	"github.com/accuknox/spire/pkg/server/plugin/notifier"
+	"github.com/accuknox/spire/pkg/server/plugin/upstreamauthority"
+	"github.com/accuknox/spire/proto/spire/common"
+	"github.com/accuknox/spire/test/clock"
+	"github.com/accuknox/spire/test/fakes/fakedatastore"
+	"github.com/accuknox/spire/test/fakes/fakehealthchecker"
+	"github.com/accuknox/spire/test/fakes/fakemetrics"
+	"github.com/accuknox/spire/test/fakes/fakenotifier"
+	"github.com/accuknox/spire/test/fakes/fakeservercatalog"
+	"github.com/accuknox/spire/test/fakes/fakeserverkeymanager"
+	"github.com/accuknox/spire/test/fakes/fakeupstreamauthority"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	telemetry_server "github.com/spiffe/spire/pkg/common/telemetry/server"
-	"github.com/spiffe/spire/pkg/server/credtemplate"
-	"github.com/spiffe/spire/pkg/server/credvalidator"
-	"github.com/spiffe/spire/pkg/server/plugin/keymanager"
-	"github.com/spiffe/spire/pkg/server/plugin/notifier"
-	"github.com/spiffe/spire/pkg/server/plugin/upstreamauthority"
-	"github.com/spiffe/spire/proto/spire/common"
-	"github.com/spiffe/spire/test/clock"
-	"github.com/spiffe/spire/test/fakes/fakedatastore"
-	"github.com/spiffe/spire/test/fakes/fakehealthchecker"
-	"github.com/spiffe/spire/test/fakes/fakemetrics"
-	"github.com/spiffe/spire/test/fakes/fakenotifier"
-	"github.com/spiffe/spire/test/fakes/fakeservercatalog"
-	"github.com/spiffe/spire/test/fakes/fakeserverkeymanager"
-	"github.com/spiffe/spire/test/fakes/fakeupstreamauthority"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 )
 
@@ -60,7 +60,6 @@ type ManagerSuite struct {
 	ca            *fakeCA
 	log           logrus.FieldLogger
 	logHook       *test.Hook
-	metrics       *fakemetrics.FakeMetrics
 	dir           string
 	km            keymanager.KeyManager
 	ds            *fakedatastore.DataStore
@@ -74,7 +73,6 @@ func (s *ManagerSuite) SetupTest() {
 	s.clock = clock.NewMock(s.T())
 	s.ca = new(fakeCA)
 	s.log, s.logHook = test.NewNullLogger()
-	s.metrics = fakemetrics.New()
 	s.km = fakeserverkeymanager.New(s.T())
 	s.ds = fakedatastore.New(s.T())
 
@@ -151,7 +149,7 @@ func (s *ManagerSuite) TestSelfSigning() {
 	s.Require().Equal(x509.KeyUsageCertSign|x509.KeyUsageCRLSign, x509CA.Certificate.KeyUsage)
 
 	// Assert that the self-signed X.509 CA produces a valid certificate chain
-	s.validateSelfSignedX509CA(x509CA.Certificate, x509CA.Signer)
+	validateSelfSignedX509CA(s.T(), x509CA.Certificate, x509CA.Signer)
 }
 
 func (s *ManagerSuite) TestUpstreamSigned() {
@@ -336,13 +334,16 @@ func (s *ManagerSuite) TestX509CARotationMetric() {
 	s.initSelfSignedManager()
 
 	// use fake metric
+	metrics := fakemetrics.New()
+	s.m.c.Metrics = metrics
+
 	initTime := s.clock.Now()
 
 	// rotate CA to preparation mark
 	s.setTimeAndRotateX509CA(initTime.Add(prepareAfter + time.Second))
 
 	// reset the metrics rotate CA to activate mark
-	s.metrics.Reset()
+	metrics.Reset()
 	s.setTimeAndRotateX509CA(initTime.Add(activateAfter + time.Second))
 
 	// create expected metrics with ttl from certificate
@@ -351,7 +352,7 @@ func (s *ManagerSuite) TestX509CARotationMetric() {
 	telemetry_server.IncrActivateX509CAManagerCounter(expected)
 	telemetry_server.SetX509CARotateGauge(expected, s.m.c.TrustDomain.String(), float32(ttl.Seconds()))
 
-	s.Require().Equal(expected.AllMetrics(), s.metrics.AllMetrics())
+	s.Require().Equal(expected.AllMetrics(), metrics.AllMetrics())
 }
 
 func (s *ManagerSuite) TestJWTKeyRotation() {
@@ -720,32 +721,20 @@ func (s *ManagerSuite) selfSignedConfig() ManagerConfig {
 }
 
 func (s *ManagerSuite) selfSignedConfigWithKeyTypes(x509CAKeyType, jwtKeyType keymanager.KeyType) ManagerConfig {
-	credBuilder, err := credtemplate.NewBuilder(credtemplate.Config{
-		TrustDomain:   testTrustDomain,
-		X509CASubject: pkix.Name{CommonName: "SPIRE"},
-		Clock:         s.clock,
-		X509CATTL:     testCATTL,
-	})
-	s.Require().NoError(err)
-
-	credValidator, err := credvalidator.New(credvalidator.Config{
-		TrustDomain: testTrustDomain,
-		Clock:       s.clock,
-	})
-	s.Require().NoError(err)
-
 	return ManagerConfig{
-		CA:            s.ca,
-		Catalog:       s.cat,
-		TrustDomain:   testTrustDomain,
+		CA:          s.ca,
+		Catalog:     s.cat,
+		TrustDomain: testTrustDomain,
+		CASubject: pkix.Name{
+			CommonName: "SPIRE",
+		},
+		CATTL:         testCATTL,
 		X509CAKeyType: x509CAKeyType,
 		JWTKeyType:    jwtKeyType,
 		Dir:           s.dir,
-		Metrics:       s.metrics,
+		Metrics:       telemetry.Blackhole{},
 		Log:           s.log,
 		Clock:         s.clock,
-		CredBuilder:   credBuilder,
-		CredValidator: credValidator,
 		HealthChecker: s.healthChecker,
 	}
 }
@@ -947,21 +936,6 @@ func (s *ManagerSuite) countLogEntries(level logrus.Level, message string) int {
 	return count
 }
 
-func (s *ManagerSuite) validateSelfSignedX509CA(ca *x509.Certificate, signer crypto.Signer) {
-	credValidator, err := credvalidator.New(credvalidator.Config{
-		TrustDomain: testTrustDomain,
-		Clock:       s.clock,
-	})
-	s.Require().NoError(err)
-
-	validator := x509CAValidator{
-		TrustDomain:   testTrustDomain,
-		CredValidator: credValidator,
-		Signer:        signer,
-	}
-	s.Require().NoError(validator.ValidateSelfSignedX509CA(ca))
-}
-
 type fakeCA struct {
 	mu     sync.Mutex
 	x509CA *X509CA
@@ -990,4 +964,12 @@ func (s *fakeCA) SetJWTKey(jwtKey *JWTKey) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.jwtKey = jwtKey
+}
+
+func validateSelfSignedX509CA(t *testing.T, ca *x509.Certificate, signer crypto.Signer) {
+	validator := X509CAValidator{
+		TrustDomain: testTrustDomain,
+		Signer:      signer,
+	}
+	require.NoError(t, validator.ValidateSelfSignedX509CA(ca))
 }

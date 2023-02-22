@@ -9,7 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/spiffe/spire/pkg/common/peertracker"
+	"github.com/accuknox/spire/pkg/common/peertracker"
 )
 
 func (e *Endpoints) listen() (net.Listener, error) {

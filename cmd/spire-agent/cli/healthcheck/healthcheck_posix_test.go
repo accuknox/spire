@@ -6,7 +6,7 @@ package healthcheck
 import (
 	"testing"
 
-	"github.com/spiffe/spire/test/spiretest"
+	"github.com/accuknox/spire/test/spiretest"
 	"google.golang.org/grpc"
 )
 

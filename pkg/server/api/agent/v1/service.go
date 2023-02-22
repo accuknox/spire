@@ -7,26 +7,26 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/errorutil"
+	"github.com/accuknox/spire/pkg/common/fflag"
+	"github.com/accuknox/spire/pkg/common/idutil"
+	"github.com/accuknox/spire/pkg/common/nodeutil"
+	"github.com/accuknox/spire/pkg/common/selector"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/x509util"
+	"github.com/accuknox/spire/pkg/server/api"
+	"github.com/accuknox/spire/pkg/server/api/rpccontext"
+	"github.com/accuknox/spire/pkg/server/ca"
+	"github.com/accuknox/spire/pkg/server/catalog"
+	"github.com/accuknox/spire/pkg/server/datastore"
+	"github.com/accuknox/spire/pkg/server/plugin/nodeattestor"
+	"github.com/accuknox/spire/proto/spire/common"
 	"github.com/andres-erbsen/clock"
 	"github.com/gofrs/uuid"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	agentv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/agent/v1"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/common/errorutil"
-	"github.com/spiffe/spire/pkg/common/fflag"
-	"github.com/spiffe/spire/pkg/common/idutil"
-	"github.com/spiffe/spire/pkg/common/nodeutil"
-	"github.com/spiffe/spire/pkg/common/selector"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/common/x509util"
-	"github.com/spiffe/spire/pkg/server/api"
-	"github.com/spiffe/spire/pkg/server/api/rpccontext"
-	"github.com/spiffe/spire/pkg/server/ca"
-	"github.com/spiffe/spire/pkg/server/catalog"
-	"github.com/spiffe/spire/pkg/server/datastore"
-	"github.com/spiffe/spire/pkg/server/plugin/nodeattestor"
-	"github.com/spiffe/spire/proto/spire/common"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/peer"
@@ -40,6 +40,7 @@ type Config struct {
 	Clock       clock.Clock
 	DataStore   datastore.DataStore
 	ServerCA    ca.ServerCA
+	AgentTTL    time.Duration
 	TrustDomain spiffeid.TrustDomain
 }
 
@@ -47,21 +48,23 @@ type Config struct {
 type Service struct {
 	agentv1.UnsafeAgentServer
 
-	cat catalog.Catalog
-	clk clock.Clock
-	ds  datastore.DataStore
-	ca  ca.ServerCA
-	td  spiffeid.TrustDomain
+	cat      catalog.Catalog
+	clk      clock.Clock
+	ds       datastore.DataStore
+	ca       ca.ServerCA
+	td       spiffeid.TrustDomain
+	agentTTL time.Duration
 }
 
 // New creates a new agent service
 func New(config Config) *Service {
 	return &Service{
-		cat: config.Catalog,
-		clk: config.Clock,
-		ds:  config.DataStore,
-		ca:  config.ServerCA,
-		td:  config.TrustDomain,
+		cat:      config.Catalog,
+		clk:      config.Clock,
+		ds:       config.DataStore,
+		ca:       config.ServerCA,
+		td:       config.TrustDomain,
+		agentTTL: config.AgentTTL,
 	}
 }
 
@@ -530,9 +533,13 @@ func (s *Service) signSvid(ctx context.Context, agentID spiffeid.ID, csr []byte,
 	}
 
 	// Sign a new X509 SVID
-	x509Svid, err := s.ca.SignAgentX509SVID(ctx, ca.AgentX509SVIDParams{
-		SPIFFEID:  agentID,
+	x509Svid, err := s.ca.SignX509SVID(ctx, ca.X509SVIDParams{
+		SpiffeID:  agentID,
 		PublicKey: parsedCsr.PublicKey,
+
+		// If agent TTL is unset, CA will fall back to the default
+		// X509-SVID TTL which is the desired behavior
+		TTL: s.agentTTL,
 	})
 	if err != nil {
 		return nil, api.MakeErr(log, codes.Internal, "failed to sign X509 SVID", err)

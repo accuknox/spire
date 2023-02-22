@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/spiffe/spire/pkg/common/health"
+	"github.com/accuknox/spire/pkg/common/health"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -4,13 +4,13 @@ import (
 	"errors"
 	"io"
 
-	commoncli "github.com/spiffe/spire/pkg/common/cli"
-	"github.com/spiffe/spire/pkg/common/cliprinter/internal/errorjson"
-	"github.com/spiffe/spire/pkg/common/cliprinter/internal/errorpretty"
-	"github.com/spiffe/spire/pkg/common/cliprinter/internal/protojson"
-	"github.com/spiffe/spire/pkg/common/cliprinter/internal/protopretty"
-	"github.com/spiffe/spire/pkg/common/cliprinter/internal/structjson"
-	"github.com/spiffe/spire/pkg/common/cliprinter/internal/structpretty"
+	commoncli "github.com/accuknox/spire/pkg/common/cli"
+	"github.com/accuknox/spire/pkg/common/cliprinter/internal/errorjson"
+	"github.com/accuknox/spire/pkg/common/cliprinter/internal/errorpretty"
+	"github.com/accuknox/spire/pkg/common/cliprinter/internal/protojson"
+	"github.com/accuknox/spire/pkg/common/cliprinter/internal/protopretty"
+	"github.com/accuknox/spire/pkg/common/cliprinter/internal/structjson"
+	"github.com/accuknox/spire/pkg/common/cliprinter/internal/structpretty"
 	"google.golang.org/protobuf/proto"
 )
 

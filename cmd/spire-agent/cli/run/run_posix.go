@@ -12,10 +12,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/spiffe/spire/cmd/spire-agent/cli/common"
-	"github.com/spiffe/spire/pkg/agent"
-	common_cli "github.com/spiffe/spire/pkg/common/cli"
-	"github.com/spiffe/spire/pkg/common/util"
+	"github.com/accuknox/spire/cmd/spire-agent/cli/common"
+	"github.com/accuknox/spire/pkg/agent"
+	common_cli "github.com/accuknox/spire/pkg/common/cli"
+	"github.com/accuknox/spire/pkg/common/util"
 )
 
 func (c *agentConfig) addOSFlags(flags *flag.FlagSet) {

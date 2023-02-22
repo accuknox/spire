@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/spiffe/spire/test/clock"
+	"github.com/accuknox/spire/test/clock"
 )
 
 // modified from `TestBackoff` in "github.com/cenkalti/backoff/v3", narrowed down to specific usage

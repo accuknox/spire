@@ -1,9 +1,9 @@
 package audit
 
 import (
+	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/sirupsen/logrus"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/common/telemetry"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

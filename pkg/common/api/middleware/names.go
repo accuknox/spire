@@ -6,8 +6,8 @@ import (
 	"sync"
 	"unicode"
 
-	"github.com/spiffe/spire/pkg/common/api"
-	"github.com/spiffe/spire/pkg/common/api/rpccontext"
+	"github.com/accuknox/spire/pkg/common/api"
+	"github.com/accuknox/spire/pkg/common/api/rpccontext"
 )
 
 const (

@@ -3,8 +3,8 @@ package plugin
 import (
 	"strings"
 
+	"github.com/accuknox/spire/pkg/common/catalog"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/catalog"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

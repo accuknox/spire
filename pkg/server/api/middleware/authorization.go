@@ -3,14 +3,14 @@ package middleware
 import (
 	"context"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/api/middleware"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/server/api/rpccontext"
+	"github.com/accuknox/spire/pkg/server/authpolicy"
 	"github.com/gofrs/uuid"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/common/api/middleware"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/server/api/rpccontext"
-	"github.com/spiffe/spire/pkg/server/authpolicy"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

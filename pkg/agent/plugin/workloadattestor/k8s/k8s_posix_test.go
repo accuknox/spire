@@ -12,14 +12,14 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/accuknox/spire/pkg/agent/common/cgroups"
+	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor"
+	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor/k8s/sigstore"
+	"github.com/accuknox/spire/proto/spire/common"
+	"github.com/accuknox/spire/test/plugintest"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/hashicorp/go-hclog"
 	"github.com/sigstore/cosign/pkg/oci"
-	"github.com/spiffe/spire/pkg/agent/common/cgroups"
-	"github.com/spiffe/spire/pkg/agent/plugin/workloadattestor"
-	"github.com/spiffe/spire/pkg/agent/plugin/workloadattestor/k8s/sigstore"
-	"github.com/spiffe/spire/proto/spire/common"
-	"github.com/spiffe/spire/test/plugintest"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
@@ -176,7 +176,7 @@ func (s *Suite) TestAttestWithPidNotInPod() {
 	p := s.loadInsecurePlugin()
 	s.addCgroupsResponse(cgPidNotInPodFilePath)
 
-	selectors, err := p.Attest(context.Background(), pid)
+	selectors, err := p.Attest(context.Background(), pid, map[string]string{})
 	s.Require().NoError(err)
 	s.Require().Empty(selectors)
 }
@@ -200,7 +200,7 @@ func (s *Suite) TestAttestAgainstNodeOverride() {
 	p := s.loadInsecurePlugin()
 	s.addCgroupsResponse(cgPidNotInPodFilePath)
 
-	selectors, err := p.Attest(context.Background(), pid)
+	selectors, err := p.Attest(context.Background(), pid, map[string]string{})
 	s.Require().NoError(err)
 	s.Require().Empty(selectors)
 }

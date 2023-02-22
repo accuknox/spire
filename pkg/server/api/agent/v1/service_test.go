@@ -10,27 +10,27 @@ import (
 	"testing"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/idutil"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/x509util"
+	"github.com/accuknox/spire/pkg/server/api"
+	agent "github.com/accuknox/spire/pkg/server/api/agent/v1"
+	"github.com/accuknox/spire/pkg/server/api/middleware"
+	"github.com/accuknox/spire/pkg/server/api/rpccontext"
+	"github.com/accuknox/spire/pkg/server/datastore"
+	"github.com/accuknox/spire/proto/spire/common"
+	"github.com/accuknox/spire/test/clock"
+	"github.com/accuknox/spire/test/fakes/fakedatastore"
+	"github.com/accuknox/spire/test/fakes/fakeserverca"
+	"github.com/accuknox/spire/test/fakes/fakeservercatalog"
+	"github.com/accuknox/spire/test/fakes/fakeservernodeattestor"
+	"github.com/accuknox/spire/test/spiretest"
+	"github.com/accuknox/spire/test/testkey"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	agentv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/agent/v1"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/common/idutil"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/common/x509util"
-	"github.com/spiffe/spire/pkg/server/api"
-	agent "github.com/spiffe/spire/pkg/server/api/agent/v1"
-	"github.com/spiffe/spire/pkg/server/api/middleware"
-	"github.com/spiffe/spire/pkg/server/api/rpccontext"
-	"github.com/spiffe/spire/pkg/server/datastore"
-	"github.com/spiffe/spire/proto/spire/common"
-	"github.com/spiffe/spire/test/clock"
-	"github.com/spiffe/spire/test/fakes/fakedatastore"
-	"github.com/spiffe/spire/test/fakes/fakeserverca"
-	"github.com/spiffe/spire/test/fakes/fakeservercatalog"
-	"github.com/spiffe/spire/test/fakes/fakeservernodeattestor"
-	"github.com/spiffe/spire/test/spiretest"
-	"github.com/spiffe/spire/test/testkey"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
@@ -1626,7 +1626,7 @@ func TestRenewAgent(t *testing.T) {
 
 		dsError        []error
 		createNode     *common.AttestedNode
-		agentSVIDTTL   time.Duration
+		agentTTL       time.Duration
 		expectLogs     []spiretest.LogEntry
 		failCallerID   bool
 		failSigning    bool
@@ -1636,9 +1636,9 @@ func TestRenewAgent(t *testing.T) {
 		rateLimiterErr error
 	}{
 		{
-			name:         "success",
-			createNode:   cloneAttestedNode(defaultNode),
-			agentSVIDTTL: 42 * time.Minute,
+			name:       "success",
+			createNode: cloneAttestedNode(defaultNode),
+			agentTTL:   42 * time.Minute,
 			expectLogs: []spiretest.LogEntry{
 				renewingMessage,
 				{
@@ -1892,7 +1892,7 @@ func TestRenewAgent(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			// Setup test
-			test := setupServiceTest(t, tt.agentSVIDTTL)
+			test := setupServiceTest(t, tt.agentTTL)
 			defer test.Cleanup()
 
 			if tt.createNode != nil {
@@ -1913,8 +1913,8 @@ func TestRenewAgent(t *testing.T) {
 			expiredAt := now.Add(test.ca.X509SVIDTTL())
 
 			// Verify non-default agent TTL if set
-			if tt.agentSVIDTTL != 0 {
-				expiredAt = now.Add(tt.agentSVIDTTL)
+			if tt.agentTTL != 0 {
+				expiredAt = now.Add(tt.agentTTL)
 			}
 
 			// Send param message
@@ -3084,10 +3084,8 @@ func (s *serviceTest) Cleanup() {
 	}
 }
 
-func setupServiceTest(t *testing.T, agentSVIDTTL time.Duration) *serviceTest {
-	ca := fakeserverca.New(t, td, &fakeserverca.Options{
-		AgentSVIDTTL: agentSVIDTTL,
-	})
+func setupServiceTest(t *testing.T, agentTTL time.Duration) *serviceTest {
+	ca := fakeserverca.New(t, td, &fakeserverca.Options{})
 	ds := fakedatastore.New(t)
 	cat := fakeservercatalog.New()
 	clk := clock.NewMock(t)
@@ -3098,6 +3096,7 @@ func setupServiceTest(t *testing.T, agentSVIDTTL time.Duration) *serviceTest {
 		TrustDomain: td,
 		Clock:       clk,
 		Catalog:     cat,
+		AgentTTL:    agentTTL,
 	})
 
 	log, logHook := test.NewNullLogger()

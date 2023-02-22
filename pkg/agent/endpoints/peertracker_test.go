@@ -6,9 +6,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/spiffe/spire/pkg/common/peertracker"
-	"github.com/spiffe/spire/proto/spire/common"
-	"github.com/spiffe/spire/test/spiretest"
+	"github.com/accuknox/spire/pkg/common/peertracker"
+	"github.com/accuknox/spire/proto/spire/common"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/peer"
@@ -37,7 +37,7 @@ func TestPeerTrackerAttestor(t *testing.T) {
 
 type FakeAttestor struct{}
 
-func (a FakeAttestor) Attest(ctx context.Context, pid int) []*common.Selector {
+func (a FakeAttestor) Attest(ctx context.Context, pid int, meta map[string]string) []*common.Selector {
 	if pid == os.Getpid() {
 		return []*common.Selector{{Type: "Type", Value: "Value"}}
 	}

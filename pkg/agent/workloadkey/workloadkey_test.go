@@ -3,7 +3,7 @@ package workloadkey_test
 import (
 	"testing"
 
-	"github.com/spiffe/spire/pkg/agent/workloadkey"
+	"github.com/accuknox/spire/pkg/agent/workloadkey"
 	"github.com/stretchr/testify/require"
 )
 

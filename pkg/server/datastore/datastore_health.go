@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/spiffe/spire/pkg/common/health"
+	"github.com/accuknox/spire/pkg/common/health"
 )
 
 type Health struct {

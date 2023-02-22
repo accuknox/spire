@@ -6,8 +6,8 @@ package k8spsat
 import (
 	"testing"
 
-	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor"
-	"github.com/spiffe/spire/test/plugintest"
+	"github.com/accuknox/spire/pkg/agent/plugin/nodeattestor"
+	"github.com/accuknox/spire/test/plugintest"
 	"github.com/stretchr/testify/require"
 )
 

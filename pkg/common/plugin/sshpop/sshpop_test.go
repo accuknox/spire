@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/spiffe/spire/test/spiretest"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/ssh"
 )

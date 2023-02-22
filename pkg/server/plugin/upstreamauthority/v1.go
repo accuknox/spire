@@ -7,12 +7,12 @@ import (
 	"io"
 	"time"
 
-	upstreamauthorityv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/server/upstreamauthority/v1"
-	"github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/types"
-	"github.com/spiffe/spire/pkg/common/coretypes/jwtkey"
-	"github.com/spiffe/spire/pkg/common/coretypes/x509certificate"
-	"github.com/spiffe/spire/pkg/common/plugin"
-	"github.com/spiffe/spire/proto/spire/common"
+	upstreamauthorityv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/server/upstreamauthority/v1"
+	"github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/types"
+	"github.com/accuknox/spire/pkg/common/coretypes/jwtkey"
+	"github.com/accuknox/spire/pkg/common/coretypes/x509certificate"
+	"github.com/accuknox/spire/pkg/common/plugin"
+	"github.com/accuknox/spire/proto/spire/common"
 	"google.golang.org/grpc/codes"
 )
 

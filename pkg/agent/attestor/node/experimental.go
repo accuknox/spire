@@ -6,13 +6,13 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/accuknox/spire/pkg/agent/plugin/nodeattestor"
+	"github.com/accuknox/spire/pkg/common/bundleutil"
+	"github.com/accuknox/spire/pkg/common/x509util"
 	"github.com/sirupsen/logrus"
 	agentv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/agent/v1"
 	bundlev1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/bundle/v1"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor"
-	"github.com/spiffe/spire/pkg/common/bundleutil"
-	"github.com/spiffe/spire/pkg/common/x509util"
 	"google.golang.org/grpc"
 )
 

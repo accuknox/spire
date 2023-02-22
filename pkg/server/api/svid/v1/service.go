@@ -6,17 +6,17 @@ import (
 	"strings"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/jwtsvid"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/x509util"
+	"github.com/accuknox/spire/pkg/server/api"
+	"github.com/accuknox/spire/pkg/server/api/rpccontext"
+	"github.com/accuknox/spire/pkg/server/ca"
+	"github.com/accuknox/spire/pkg/server/datastore"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	svidv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/svid/v1"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/common/jwtsvid"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/common/x509util"
-	"github.com/spiffe/spire/pkg/server/api"
-	"github.com/spiffe/spire/pkg/server/api/rpccontext"
-	"github.com/spiffe/spire/pkg/server/ca"
-	"github.com/spiffe/spire/pkg/server/datastore"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -97,11 +97,11 @@ func (s *Service) MintX509SVID(ctx context.Context, req *svidv1.MintX509SVIDRequ
 		}
 	}
 
-	x509SVID, err := s.ca.SignWorkloadX509SVID(ctx, ca.WorkloadX509SVIDParams{
-		SPIFFEID:  id,
+	x509SVID, err := s.ca.SignX509SVID(ctx, ca.X509SVIDParams{
+		SpiffeID:  id,
 		PublicKey: csr.PublicKey,
 		TTL:       time.Duration(req.Ttl) * time.Second,
-		DNSNames:  csr.DNSNames,
+		DNSList:   csr.DNSNames,
 		Subject:   csr.Subject,
 	})
 	if err != nil {
@@ -251,10 +251,10 @@ func (s *Service) newX509SVID(ctx context.Context, param *svidv1.NewX509SVIDPara
 	}
 	log = log.WithField(telemetry.SPIFFEID, spiffeID.String())
 
-	x509Svid, err := s.ca.SignWorkloadX509SVID(ctx, ca.WorkloadX509SVIDParams{
-		SPIFFEID:  spiffeID,
+	x509Svid, err := s.ca.SignX509SVID(ctx, ca.X509SVIDParams{
+		SpiffeID:  spiffeID,
 		PublicKey: csr.PublicKey,
-		DNSNames:  entry.DnsNames,
+		DNSList:   entry.DnsNames,
 		TTL:       time.Duration(entry.X509SvidTtl) * time.Second,
 	})
 	if err != nil {
@@ -292,8 +292,8 @@ func (s *Service) mintJWTSVID(ctx context.Context, protoID *types.SPIFFEID, audi
 		return nil, api.MakeErr(log, codes.InvalidArgument, "at least one audience is required", nil)
 	}
 
-	token, err := s.ca.SignWorkloadJWTSVID(ctx, ca.WorkloadJWTSVIDParams{
-		SPIFFEID: id,
+	token, err := s.ca.SignJWTSVID(ctx, ca.JWTSVIDParams{
+		SpiffeID: id,
 		TTL:      time.Duration(ttl) * time.Second,
 		Audience: audience,
 	})
@@ -377,7 +377,8 @@ func (s *Service) NewDownstreamX509CA(ctx context.Context, req *svidv1.NewDownst
 		return nil, err
 	}
 
-	x509CASvid, err := s.ca.SignDownstreamX509CA(ctx, ca.DownstreamX509CAParams{
+	x509CASvid, err := s.ca.SignX509CASVID(ctx, ca.X509CASVIDParams{
+		SpiffeID:  s.td.ID(),
 		PublicKey: csr.PublicKey,
 		TTL:       time.Duration(entry.X509SvidTtl) * time.Second,
 	})

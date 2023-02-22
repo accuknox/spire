@@ -6,11 +6,11 @@ import (
 	"strings"
 	"sync"
 
+	keymanagerv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/server/keymanager/v1"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
 	"github.com/hashicorp/go-hclog"
-	keymanagerv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/server/keymanager/v1"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

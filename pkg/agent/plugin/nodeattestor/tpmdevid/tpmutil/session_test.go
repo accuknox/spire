@@ -11,12 +11,12 @@ import (
 	"runtime"
 	"testing"
 
+	"github.com/accuknox/spire/pkg/agent/plugin/nodeattestor/tpmdevid/tpmutil"
+	server_devid "github.com/accuknox/spire/pkg/server/plugin/nodeattestor/tpmdevid"
+	"github.com/accuknox/spire/test/tpmsimulator"
 	"github.com/google/go-tpm-tools/client"
 	"github.com/google/go-tpm/tpm2"
 	"github.com/hashicorp/go-hclog"
-	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor/tpmdevid/tpmutil"
-	server_devid "github.com/spiffe/spire/pkg/server/plugin/nodeattestor/tpmdevid"
-	"github.com/spiffe/spire/test/tpmsimulator"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

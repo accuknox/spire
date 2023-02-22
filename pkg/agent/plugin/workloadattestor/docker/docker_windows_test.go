@@ -7,8 +7,8 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/accuknox/spire/test/spiretest"
 	hclog "github.com/hashicorp/go-hclog"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 )

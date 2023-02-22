@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"syscall"
 
+	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/shirou/gopsutil/v3/process"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/telemetry"
 	"golang.org/x/sys/windows"
 )
 

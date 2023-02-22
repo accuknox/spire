@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/andres-erbsen/clock"
-	"github.com/spiffe/spire/pkg/common/telemetry"
 )
 
 // Report every 10 seconds.

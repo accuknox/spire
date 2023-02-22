@@ -3,7 +3,7 @@ package ca
 import (
 	"errors"
 
-	"github.com/spiffe/spire/pkg/common/health"
+	"github.com/accuknox/spire/pkg/common/health"
 )
 
 // TODO: What would be a good threshold number?

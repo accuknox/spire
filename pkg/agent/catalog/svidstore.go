@@ -1,10 +1,10 @@
 package catalog
 
 import (
-	"github.com/spiffe/spire/pkg/agent/plugin/svidstore"
-	"github.com/spiffe/spire/pkg/agent/plugin/svidstore/awssecretsmanager"
-	"github.com/spiffe/spire/pkg/agent/plugin/svidstore/gcpsecretmanager"
-	"github.com/spiffe/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/agent/plugin/svidstore"
+	"github.com/accuknox/spire/pkg/agent/plugin/svidstore/awssecretsmanager"
+	"github.com/accuknox/spire/pkg/agent/plugin/svidstore/gcpsecretmanager"
+	"github.com/accuknox/spire/pkg/common/catalog"
 )
 
 type svidStoreRepository struct {

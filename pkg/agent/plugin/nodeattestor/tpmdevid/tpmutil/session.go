@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/accuknox/spire/pkg/common/plugin/tpmdevid"
 	"github.com/google/go-tpm-tools/client"
 	"github.com/google/go-tpm/tpm2"
 	"github.com/google/go-tpm/tpmutil"
 	"github.com/hashicorp/go-hclog"
-	"github.com/spiffe/spire/pkg/common/plugin/tpmdevid"
 )
 
 // ekRSACertificateHandle is the default handle for RSA endorsement key according

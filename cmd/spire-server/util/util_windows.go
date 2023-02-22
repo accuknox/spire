@@ -9,7 +9,7 @@ import (
 	"net"
 
 	"github.com/Microsoft/go-winio"
-	"github.com/spiffe/spire/pkg/common/namedpipe"
+	"github.com/accuknox/spire/pkg/common/namedpipe"
 )
 
 type adapterOS struct {

@@ -8,7 +8,7 @@ import (
 	"net"
 
 	"github.com/Microsoft/go-winio"
-	"github.com/spiffe/spire/pkg/common/sddl"
+	"github.com/accuknox/spire/pkg/common/sddl"
 )
 
 func (e *Endpoints) createListener() (net.Listener, error) {

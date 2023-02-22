@@ -1,7 +1,7 @@
 package telemetry
 
 import (
-	"github.com/spiffe/spire/pkg/common/version"
+	"github.com/accuknox/spire/pkg/common/version"
 )
 
 func EmitVersion(m Metrics) {

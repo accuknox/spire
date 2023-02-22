@@ -10,8 +10,8 @@ import (
 	"sync"
 	"syscall"
 
+	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/telemetry"
 )
 
 const (
@@ -44,6 +44,7 @@ type linuxWatcher struct {
 	starttime string
 	uid       uint32
 	log       logrus.FieldLogger
+	meta      map[string]string
 }
 
 func newLinuxWatcher(info CallerInfo, log logrus.FieldLogger) (*linuxWatcher, error) {
@@ -82,6 +83,7 @@ func newLinuxWatcher(info CallerInfo, log logrus.FieldLogger) (*linuxWatcher, er
 		starttime: starttime,
 		uid:       info.UID,
 		log:       log,
+		meta:      info.Meta,
 	}, nil
 }
 

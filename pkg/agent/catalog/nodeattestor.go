@@ -1,17 +1,17 @@
 package catalog
 
 import (
-	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor"
-	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor/awsiid"
-	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor/azuremsi"
-	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor/gcpiit"
-	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor/jointoken"
-	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor/k8spsat"
-	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor/k8ssat"
-	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor/sshpop"
-	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor/tpmdevid"
-	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor/x509pop"
-	"github.com/spiffe/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/agent/plugin/nodeattestor"
+	"github.com/accuknox/spire/pkg/agent/plugin/nodeattestor/awsiid"
+	"github.com/accuknox/spire/pkg/agent/plugin/nodeattestor/azuremsi"
+	"github.com/accuknox/spire/pkg/agent/plugin/nodeattestor/gcpiit"
+	"github.com/accuknox/spire/pkg/agent/plugin/nodeattestor/jointoken"
+	"github.com/accuknox/spire/pkg/agent/plugin/nodeattestor/k8spsat"
+	"github.com/accuknox/spire/pkg/agent/plugin/nodeattestor/k8ssat"
+	"github.com/accuknox/spire/pkg/agent/plugin/nodeattestor/sshpop"
+	"github.com/accuknox/spire/pkg/agent/plugin/nodeattestor/tpmdevid"
+	"github.com/accuknox/spire/pkg/agent/plugin/nodeattestor/x509pop"
+	"github.com/accuknox/spire/pkg/common/catalog"
 )
 
 type nodeAttestorRepository struct {

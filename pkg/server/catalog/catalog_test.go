@@ -6,10 +6,10 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/accuknox/spire/pkg/common/health"
+	"github.com/accuknox/spire/pkg/server/catalog"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/spire/pkg/common/health"
-	"github.com/spiffe/spire/pkg/server/catalog"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
 )
 

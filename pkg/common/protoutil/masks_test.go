@@ -3,10 +3,10 @@ package protoutil_test
 import (
 	"testing"
 
+	"github.com/accuknox/spire/pkg/common/protoutil"
+	"github.com/accuknox/spire/proto/spire/common"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/common/protoutil"
-	"github.com/spiffe/spire/proto/spire/common"
-	"github.com/spiffe/spire/test/spiretest"
 )
 
 func TestAllTrueMasks(t *testing.T) {

@@ -3,7 +3,7 @@ package rpccontext
 import (
 	"context"
 
-	"github.com/spiffe/spire/pkg/common/api"
+	"github.com/accuknox/spire/pkg/common/api"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

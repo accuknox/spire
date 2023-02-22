@@ -11,14 +11,14 @@ import (
 	"path"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/bundle/x509bundle"
+	"github.com/accuknox/go-spiffe/v2/proto/spiffe/workload"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/go-spiffe/v2/svid/x509svid"
+	commoncli "github.com/accuknox/spire/pkg/common/cli"
+	"github.com/accuknox/spire/pkg/common/cliprinter"
+	"github.com/accuknox/spire/pkg/common/diskutil"
 	"github.com/mitchellh/cli"
-	"github.com/spiffe/go-spiffe/v2/bundle/x509bundle"
-	"github.com/spiffe/go-spiffe/v2/proto/spiffe/workload"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/go-spiffe/v2/svid/x509svid"
-	commoncli "github.com/spiffe/spire/pkg/common/cli"
-	"github.com/spiffe/spire/pkg/common/cliprinter"
-	"github.com/spiffe/spire/pkg/common/diskutil"
 )
 
 func NewFetchX509Command() cli.Command {

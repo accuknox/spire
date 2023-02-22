@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/spiffe/spire/test/spiretest"
+	"github.com/accuknox/spire/test/spiretest"
 )
 
 func getTestAddr(t *testing.T) net.Addr {

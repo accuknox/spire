@@ -14,14 +14,14 @@ import (
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/pkg/common/pemutil"
-	"github.com/spiffe/spire/pkg/server/plugin/upstreamauthority"
-	"github.com/spiffe/spire/proto/spire/common"
-	"github.com/spiffe/spire/test/plugintest"
-	"github.com/spiffe/spire/test/spiretest"
-	"github.com/spiffe/spire/test/testkey"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/pemutil"
+	"github.com/accuknox/spire/pkg/server/plugin/upstreamauthority"
+	"github.com/accuknox/spire/proto/spire/common"
+	"github.com/accuknox/spire/test/plugintest"
+	"github.com/accuknox/spire/test/spiretest"
+	"github.com/accuknox/spire/test/testkey"
 )
 
 func TestConfigure(t *testing.T) {

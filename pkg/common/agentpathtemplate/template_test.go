@@ -3,7 +3,7 @@ package agentpathtemplate_test
 import (
 	"testing"
 
-	"github.com/spiffe/spire/pkg/common/agentpathtemplate"
+	"github.com/accuknox/spire/pkg/common/agentpathtemplate"
 	"github.com/stretchr/testify/require"
 )
 

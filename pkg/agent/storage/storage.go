@@ -12,8 +12,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/spiffe/spire/pkg/common/diskutil"
-	"github.com/spiffe/spire/pkg/common/pemutil"
+	"github.com/accuknox/spire/pkg/common/diskutil"
+	"github.com/accuknox/spire/pkg/common/pemutil"
 )
 
 var (

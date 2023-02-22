@@ -1,15 +1,15 @@
 package catalog
 
 import (
-	"github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/pkg/server/plugin/upstreamauthority"
-	"github.com/spiffe/spire/pkg/server/plugin/upstreamauthority/awspca"
-	"github.com/spiffe/spire/pkg/server/plugin/upstreamauthority/awssecret"
-	"github.com/spiffe/spire/pkg/server/plugin/upstreamauthority/certmanager"
-	"github.com/spiffe/spire/pkg/server/plugin/upstreamauthority/disk"
-	"github.com/spiffe/spire/pkg/server/plugin/upstreamauthority/gcpcas"
-	spireplugin "github.com/spiffe/spire/pkg/server/plugin/upstreamauthority/spire"
-	"github.com/spiffe/spire/pkg/server/plugin/upstreamauthority/vault"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/server/plugin/upstreamauthority"
+	"github.com/accuknox/spire/pkg/server/plugin/upstreamauthority/awspca"
+	"github.com/accuknox/spire/pkg/server/plugin/upstreamauthority/awssecret"
+	"github.com/accuknox/spire/pkg/server/plugin/upstreamauthority/certmanager"
+	"github.com/accuknox/spire/pkg/server/plugin/upstreamauthority/disk"
+	"github.com/accuknox/spire/pkg/server/plugin/upstreamauthority/gcpcas"
+	spireplugin "github.com/accuknox/spire/pkg/server/plugin/upstreamauthority/spire"
+	"github.com/accuknox/spire/pkg/server/plugin/upstreamauthority/vault"
 )
 
 type upstreamAuthorityRepository struct {

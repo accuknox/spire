@@ -12,11 +12,11 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor"
+	"github.com/accuknox/spire/test/plugintest"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/spire/pkg/agent/plugin/workloadattestor"
-	"github.com/spiffe/spire/test/plugintest"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 )
@@ -238,7 +238,7 @@ func (s *Suite) TestAttest() {
 			defer s.logHook.Reset()
 
 			p := s.loadPlugin(t, testCase.config)
-			selectors, err := p.Attest(ctx, testCase.pid)
+			selectors, err := p.Attest(ctx, testCase.pid, map[string]string{})
 			spiretest.RequireGRPCStatus(t, err, testCase.expectCode, testCase.expectMsg)
 			if testCase.expectCode != codes.OK {
 				require.Nil(t, selectors)

@@ -8,8 +8,8 @@ import (
 	"flag"
 	"net"
 
-	util_cmd "github.com/spiffe/spire/cmd/spire-server/util"
-	"github.com/spiffe/spire/pkg/common/namedpipe"
+	util_cmd "github.com/accuknox/spire/cmd/spire-server/util"
+	"github.com/accuknox/spire/pkg/common/namedpipe"
 )
 
 func (c *serverConfig) addOSFlags(flags *flag.FlagSet) {

@@ -7,8 +7,8 @@ import (
 	"context"
 	"path/filepath"
 
+	"github.com/accuknox/spire/pkg/common/container/process"
 	"github.com/hashicorp/go-hclog"
-	"github.com/spiffe/spire/pkg/common/container/process"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	corev1 "k8s.io/api/core/v1"

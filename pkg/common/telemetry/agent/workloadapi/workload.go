@@ -1,7 +1,7 @@
 package workloadapi
 
 import (
-	"github.com/spiffe/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/telemetry"
 )
 
 // Call Counters (timing and success metrics)

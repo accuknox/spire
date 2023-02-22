@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/accuknox/spire-plugin-sdk/pluginsdk"
+	"github.com/accuknox/spire-plugin-sdk/private"
+	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire-plugin-sdk/pluginsdk"
-	"github.com/spiffe/spire-plugin-sdk/private"
-	"github.com/spiffe/spire/pkg/common/telemetry"
 	"google.golang.org/grpc"
 )
 

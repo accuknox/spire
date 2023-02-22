@@ -6,9 +6,9 @@ package windows
 import (
 	"testing"
 
-	"github.com/spiffe/spire/pkg/agent/plugin/workloadattestor"
-	"github.com/spiffe/spire/test/plugintest"
-	"github.com/spiffe/spire/test/spiretest"
+	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor"
+	"github.com/accuknox/spire/test/plugintest"
+	"github.com/accuknox/spire/test/spiretest"
 	"google.golang.org/grpc/codes"
 )
 

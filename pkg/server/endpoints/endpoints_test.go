@@ -11,32 +11,32 @@ import (
 	"testing"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/go-spiffe/v2/spiffetls/tlsconfig"
+	"github.com/accuknox/go-spiffe/v2/svid/x509svid"
+	"github.com/accuknox/spire/pkg/common/util"
+	"github.com/accuknox/spire/pkg/server/authpolicy"
+	"github.com/accuknox/spire/pkg/server/ca"
+	"github.com/accuknox/spire/pkg/server/cache/entrycache"
+	"github.com/accuknox/spire/pkg/server/datastore"
+	"github.com/accuknox/spire/pkg/server/endpoints/bundle"
+	"github.com/accuknox/spire/pkg/server/svid"
+	"github.com/accuknox/spire/proto/spire/common"
+	"github.com/accuknox/spire/test/clock"
+	"github.com/accuknox/spire/test/fakes/fakedatastore"
+	"github.com/accuknox/spire/test/fakes/fakehealthchecker"
+	"github.com/accuknox/spire/test/fakes/fakemetrics"
+	"github.com/accuknox/spire/test/fakes/fakeserverca"
+	"github.com/accuknox/spire/test/fakes/fakeservercatalog"
+	"github.com/accuknox/spire/test/spiretest"
+	"github.com/accuknox/spire/test/testca"
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/go-spiffe/v2/spiffetls/tlsconfig"
-	"github.com/spiffe/go-spiffe/v2/svid/x509svid"
 	agentv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/agent/v1"
 	bundlev1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/bundle/v1"
 	debugv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/debug/v1"
 	entryv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/entry/v1"
 	svidv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/svid/v1"
 	trustdomainv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/trustdomain/v1"
-	"github.com/spiffe/spire/pkg/common/util"
-	"github.com/spiffe/spire/pkg/server/authpolicy"
-	"github.com/spiffe/spire/pkg/server/ca"
-	"github.com/spiffe/spire/pkg/server/cache/entrycache"
-	"github.com/spiffe/spire/pkg/server/datastore"
-	"github.com/spiffe/spire/pkg/server/endpoints/bundle"
-	"github.com/spiffe/spire/pkg/server/svid"
-	"github.com/spiffe/spire/proto/spire/common"
-	"github.com/spiffe/spire/test/clock"
-	"github.com/spiffe/spire/test/fakes/fakedatastore"
-	"github.com/spiffe/spire/test/fakes/fakehealthchecker"
-	"github.com/spiffe/spire/test/fakes/fakemetrics"
-	"github.com/spiffe/spire/test/fakes/fakeserverca"
-	"github.com/spiffe/spire/test/fakes/fakeservercatalog"
-	"github.com/spiffe/spire/test/spiretest"
-	"github.com/spiffe/spire/test/testca"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
@@ -89,8 +89,6 @@ func TestNew(t *testing.T) {
 		CA:            serverCA,
 		Catalog:       cat,
 		TrustDomain:   testTD,
-		CredBuilder:   serverCA.CredBuilder(),
-		CredValidator: serverCA.CredValidator(),
 		Dir:           spiretest.TempDir(t),
 		Log:           log,
 		Metrics:       metrics,
@@ -156,8 +154,6 @@ func TestNewErrorCreatingAuthorizedEntryFetcher(t *testing.T) {
 		CA:            serverCA,
 		Catalog:       cat,
 		TrustDomain:   testTD,
-		CredBuilder:   serverCA.CredBuilder(),
-		CredValidator: serverCA.CredValidator(),
 		Dir:           spiretest.TempDir(t),
 		Log:           log,
 		Metrics:       metrics,

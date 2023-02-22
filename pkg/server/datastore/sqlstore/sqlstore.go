@@ -17,13 +17,13 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/sirupsen/logrus"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/bundleutil"
+	"github.com/accuknox/spire/pkg/common/protoutil"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/server/datastore"
+	"github.com/accuknox/spire/proto/spire/common"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/common/bundleutil"
-	"github.com/spiffe/spire/pkg/common/protoutil"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/server/datastore"
-	"github.com/spiffe/spire/proto/spire/common"
 	"github.com/zeebo/errs"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -313,7 +313,7 @@ func (ds *Plugin) CreateOrReturnRegistrationEntry(ctx context.Context,
 
 func (ds *Plugin) createOrReturnRegistrationEntry(ctx context.Context,
 	entry *common.RegistrationEntry) (registrationEntry *common.RegistrationEntry, existing bool, err error) {
-	// TODO: Validations should be done in the ProtoBuf level [https://github.com/spiffe/spire/issues/44]
+	// TODO: Validations should be done in the ProtoBuf level [https://github.com/accuknox/spire/issues/44]
 	if err = validateRegistrationEntry(entry); err != nil {
 		return nil, false, err
 	}

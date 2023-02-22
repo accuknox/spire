@@ -10,8 +10,8 @@ import (
 	"testing"
 
 	"github.com/Microsoft/go-winio"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
 )
 

@@ -6,13 +6,13 @@ import (
 	"fmt"
 	"sync"
 
+	nodeattestorv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/server/nodeattestor/v1"
+	configv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/service/common/config/v1"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/plugin/k8s"
+	"github.com/accuknox/spire/pkg/common/plugin/k8s/apiserver"
 	hclog "github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/hcl"
-	nodeattestorv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/server/nodeattestor/v1"
-	configv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/service/common/config/v1"
-	"github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/pkg/common/plugin/k8s"
-	"github.com/spiffe/spire/pkg/common/plugin/k8s/apiserver"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 

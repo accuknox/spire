@@ -7,11 +7,11 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/proto/spire/common"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/proto/spire/common"
 )
 
 func BundleToProto(b *common.Bundle) (*types.Bundle, error) {

@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/bundleutil"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/bundleutil"
 	"github.com/zeebo/errs"
 )
 

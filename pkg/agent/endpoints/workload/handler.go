@@ -10,17 +10,17 @@ import (
 	"os"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/proto/spiffe/workload"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/agent/api/rpccontext"
+	"github.com/accuknox/spire/pkg/agent/client"
+	"github.com/accuknox/spire/pkg/agent/manager/cache"
+	"github.com/accuknox/spire/pkg/common/bundleutil"
+	"github.com/accuknox/spire/pkg/common/jwtsvid"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/x509util"
+	"github.com/accuknox/spire/proto/spire/common"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/proto/spiffe/workload"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/pkg/agent/api/rpccontext"
-	"github.com/spiffe/spire/pkg/agent/client"
-	"github.com/spiffe/spire/pkg/agent/manager/cache"
-	"github.com/spiffe/spire/pkg/common/bundleutil"
-	"github.com/spiffe/spire/pkg/common/jwtsvid"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/common/x509util"
-	"github.com/spiffe/spire/proto/spire/common"
 	"github.com/zeebo/errs"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -212,11 +212,13 @@ func (h *Handler) ValidateJWTSVID(ctx context.Context, req *workload.ValidateJWT
 }
 
 // FetchX509SVID processes request for an x509 SVID
-func (h *Handler) FetchX509SVID(_ *workload.X509SVIDRequest, stream workload.SpiffeWorkloadAPI_FetchX509SVIDServer) error {
+func (h *Handler) FetchX509SVID(req *workload.X509SVIDRequest, stream workload.SpiffeWorkloadAPI_FetchX509SVIDServer) error {
 	ctx := stream.Context()
 	log := rpccontext.Logger(ctx)
 
-	selectors, err := h.c.Attestor.Attest(ctx)
+	withMetaCtx := context.WithValue(ctx, "meta", req.Meta)
+
+	selectors, err := h.c.Attestor.Attest(withMetaCtx)
 	if err != nil {
 		log.WithError(err).Error("Workload attestation failed")
 		return err

@@ -5,11 +5,11 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/protoutil"
+	"github.com/accuknox/spire/pkg/common/x509util"
+	"github.com/accuknox/spire/proto/spire/common"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/common/protoutil"
-	"github.com/spiffe/spire/pkg/common/x509util"
-	"github.com/spiffe/spire/proto/spire/common"
 )
 
 // RegistrationEntriesToProto converts RegistrationEntry's into Entry's

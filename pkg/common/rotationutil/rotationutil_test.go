@@ -4,9 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/spiffe/spire/pkg/agent/client"
-	"github.com/spiffe/spire/test/clock"
-	"github.com/spiffe/spire/test/util"
+	"github.com/accuknox/spire/pkg/agent/client"
+	"github.com/accuknox/spire/test/clock"
+	"github.com/accuknox/spire/test/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

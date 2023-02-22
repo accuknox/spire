@@ -5,8 +5,8 @@ import (
 	"crypto/x509"
 	"time"
 
-	"github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/proto/spire/common"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/proto/spire/common"
 )
 
 type UpstreamAuthority interface {

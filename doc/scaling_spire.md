@@ -14,7 +14,7 @@ To support larger numbers of Agents and Workloads within a given deployment (ten
 
 To scale the SPIRE Server horizontally, be it for high availability or load distribution purposes, configure all servers in same trust domain to read and write to the same shared datastore.
 
-The datastore is where SPIRE Server persists dynamic configuration information such as registration entries and identity mapping policies. SQLite is bundled with SPIRE Server and it is the default datastore. A number of compatible SQL databases are supported, as well as one plugin for Kubernetes using Kubernetes CRDs. When scaling SPIRE servers horizontally, choose a datastore that fits your requirements and configure all SPIRE servers to use the selected datastore. For details please refer to the [datastore plugin configuration reference](https://github.com/spiffe/spire/blob/main/doc/plugin_server_datastore_sql.md).
+The datastore is where SPIRE Server persists dynamic configuration information such as registration entries and identity mapping policies. SQLite is bundled with SPIRE Server and it is the default datastore. A number of compatible SQL databases are supported, as well as one plugin for Kubernetes using Kubernetes CRDs. When scaling SPIRE servers horizontally, choose a datastore that fits your requirements and configure all SPIRE servers to use the selected datastore. For details please refer to the [datastore plugin configuration reference](https://github.com/accuknox/spire/blob/main/doc/plugin_server_datastore_sql.md).
 
 In High Availability mode, each server maintains its own Certificate Authority, which may be either self-signed certificates or an intermediate certificate off of a shared root authority (i.e. when configured with an UpstreamAuthority).
 
@@ -85,7 +85,7 @@ SPIRE has a feature to programmatically authenticate on behalf of identified wor
 The SPIRE OIDC Discovery Provider retrieves a WebPKI certificate using the ACME protocol, which it uses to secure an endpoint that serves an OIDC compatible JWKS bundle and a standard OIDC discovery document. The remote OIDC authenticated service needs then to be configured to locate the endpoint and qualify the WebPKI service.   Once this configuration is in place, the remote system’s IAM policies and roles can be set to map to specific SPIFFE IDs.  The workload, in turn, will talk to the OIDC-authenticated system by sending a JWT-SVID.  The target system then fetches a JWKS from the pre-defined URI which is served by the OIDC Discovery Provider.  The target system uses the JWKS file to validate the  JWT-SVID, and if the SPIFFE ID contained within the JWT-SVID is authorized to access the requested resource, it serves the request.  The workload is then able to access the foreign remote service without possessing any credentials provided by it.
 
 For a configuration reference on the OIDC Discovery Provider, see:
-<https://github.com/spiffe/spire/tree/main/support/oidc-discovery-provider>
+<https://github.com/accuknox/spire/tree/main/support/oidc-discovery-provider>
 
 For a detailed tutorial on configuring OIDC Federation to Amazon Web Services, refer to: <https://spiffe.io/spire/try/oidc-federation-aws/>
 

@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/suite"
 )
 

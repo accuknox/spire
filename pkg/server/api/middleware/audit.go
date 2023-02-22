@@ -3,12 +3,12 @@ package middleware
 import (
 	"context"
 
+	"github.com/accuknox/spire/pkg/common/peertracker"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/server/api/audit"
+	"github.com/accuknox/spire/pkg/server/api/rpccontext"
 	"github.com/shirou/gopsutil/v3/process"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/peertracker"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/server/api/audit"
-	"github.com/spiffe/spire/pkg/server/api/rpccontext"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

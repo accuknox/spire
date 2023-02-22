@@ -6,17 +6,17 @@ import (
 	"crypto/x509"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/agent/manager/cache"
+	"github.com/accuknox/spire/pkg/agent/workloadkey"
+	"github.com/accuknox/spire/pkg/common/bundleutil"
+	"github.com/accuknox/spire/pkg/common/rotationutil"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	telemetry_agent "github.com/accuknox/spire/pkg/common/telemetry/agent"
+	"github.com/accuknox/spire/pkg/common/util"
+	"github.com/accuknox/spire/pkg/server/api/limits"
+	"github.com/accuknox/spire/proto/spire/common"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/pkg/agent/manager/cache"
-	"github.com/spiffe/spire/pkg/agent/workloadkey"
-	"github.com/spiffe/spire/pkg/common/bundleutil"
-	"github.com/spiffe/spire/pkg/common/rotationutil"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	telemetry_agent "github.com/spiffe/spire/pkg/common/telemetry/agent"
-	"github.com/spiffe/spire/pkg/common/util"
-	"github.com/spiffe/spire/pkg/server/api/limits"
-	"github.com/spiffe/spire/proto/spire/common"
 )
 
 type csrRequest struct {

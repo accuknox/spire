@@ -12,15 +12,15 @@ import (
 	"testing"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/server/api"
+	"github.com/accuknox/spire/pkg/server/datastore"
+	sqlds "github.com/accuknox/spire/pkg/server/datastore/sqlstore"
+	"github.com/accuknox/spire/proto/spire/common"
+	"github.com/accuknox/spire/test/fakes/fakedatastore"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/server/api"
-	"github.com/spiffe/spire/pkg/server/datastore"
-	sqlds "github.com/spiffe/spire/pkg/server/datastore/sqlstore"
-	"github.com/spiffe/spire/proto/spire/common"
-	"github.com/spiffe/spire/test/fakes/fakedatastore"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -288,7 +288,7 @@ func TestFullCacheExcludesNodeSelectorMappedEntriesForExpiredAgents(t *testing.T
 	// The main point of this test is to demonstrate that the cache is capable of filtering out data that will never be
 	// used by clients in order to minimize the memory footprint.
 	// This is a mitigation for performance problems that arise when hydrating the cache today
-	// due to stale expired Agent data remaining in the datastore: https://github.com/spiffe/spire/issues/1836
+	// due to stale expired Agent data remaining in the datastore: https://github.com/accuknox/spire/issues/1836
 
 	ds := fakedatastore.New(t)
 	ctx := context.Background()
@@ -510,7 +510,7 @@ func BenchmarkGetAuthorizedEntriesInMemory(b *testing.B) {
 
 // To run this benchmark against a real MySQL or Postgres database, set the following flags in your test run,
 // substituting in the required connection string parameters for each of the ldflags:
-// -bench 'BenchmarkBuildSQL' -benchtime <some-reasonable-time-limit> -ldflags "-X github.com/spiffe/spire/pkg/server/cache/entrycache.TestDialect=<mysql|postgres> -X github.com/spiffe/spire/pkg/server/cache/entrycache.TestConnString=<CONNECTION_STRING_HERE> -X github.com/spiffe/spire/pkg/server/cache/entrycache.TestROConnString=<CONNECTION_STRING_HERE>"
+// -bench 'BenchmarkBuildSQL' -benchtime <some-reasonable-time-limit> -ldflags "-X github.com/accuknox/spire/pkg/server/cache/entrycache.TestDialect=<mysql|postgres> -X github.com/accuknox/spire/pkg/server/cache/entrycache.TestConnString=<CONNECTION_STRING_HERE> -X github.com/accuknox/spire/pkg/server/cache/entrycache.TestROConnString=<CONNECTION_STRING_HERE>"
 func BenchmarkBuildSQL(b *testing.B) {
 	allEntries, agents := buildBenchmarkData()
 	ctx := context.Background()

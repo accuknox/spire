@@ -9,11 +9,11 @@ import (
 	"os"
 	"testing"
 
-	commoncli "github.com/spiffe/spire/pkg/common/cli"
-	"github.com/spiffe/spire/pkg/common/fflag"
-	"github.com/spiffe/spire/pkg/common/log"
-	"github.com/spiffe/spire/pkg/common/namedpipe"
-	"github.com/spiffe/spire/pkg/server"
+	commoncli "github.com/accuknox/spire/pkg/common/cli"
+	"github.com/accuknox/spire/pkg/common/fflag"
+	"github.com/accuknox/spire/pkg/common/log"
+	"github.com/accuknox/spire/pkg/common/namedpipe"
+	"github.com/accuknox/spire/pkg/server"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

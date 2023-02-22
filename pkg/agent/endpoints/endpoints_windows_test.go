@@ -11,8 +11,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/spiffe/spire/pkg/common/util"
-	"github.com/spiffe/spire/test/spiretest"
+	"github.com/accuknox/spire/pkg/common/util"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/sys/windows"
 	"google.golang.org/grpc"

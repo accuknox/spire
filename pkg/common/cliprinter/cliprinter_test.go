@@ -6,8 +6,8 @@ import (
 	"io"
 	"testing"
 
+	commoncli "github.com/accuknox/spire/pkg/common/cli"
 	agentapi "github.com/spiffe/spire-api-sdk/proto/spire/api/server/agent/v1"
-	commoncli "github.com/spiffe/spire/pkg/common/cli"
 )
 
 func TestPrintError(t *testing.T) {

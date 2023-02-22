@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/spiffe/spire/test/spiretest"
+	"github.com/accuknox/spire/test/spiretest"
 	"golang.org/x/net/context"
 )
 

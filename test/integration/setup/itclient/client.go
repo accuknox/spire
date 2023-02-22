@@ -8,9 +8,9 @@ import (
 	"flag"
 	"log"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/go-spiffe/v2/spiffetls/tlsconfig"
-	"github.com/spiffe/go-spiffe/v2/workloadapi"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/go-spiffe/v2/spiffetls/tlsconfig"
+	"github.com/accuknox/go-spiffe/v2/workloadapi"
 	agent "github.com/spiffe/spire-api-sdk/proto/spire/api/server/agent/v1"
 	bundle "github.com/spiffe/spire-api-sdk/proto/spire/api/server/bundle/v1"
 	debug "github.com/spiffe/spire-api-sdk/proto/spire/api/server/debug/v1"
@@ -44,7 +44,7 @@ func New(ctx context.Context) *Client {
 	td := spiffeid.RequireTrustDomainFromString(*tdFlag)
 
 	// Create X509Source
-	source, err := workloadapi.NewX509Source(ctx, workloadapi.WithClientOptions(workloadapi.WithAddr(*socketPathFlag), workloadapi.WithLogger(&logger{})))
+	source, err := workloadapi.NewX509Source(ctx, nil, workloadapi.WithClientOptions(workloadapi.WithAddr(*socketPathFlag), workloadapi.WithLogger(&logger{})))
 	if err != nil {
 		log.Fatalf("Unable to create X509Source: %v", err)
 	}

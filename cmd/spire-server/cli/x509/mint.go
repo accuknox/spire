@@ -15,14 +15,14 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/cmd/spire-server/util"
+	commoncli "github.com/accuknox/spire/pkg/common/cli"
+	"github.com/accuknox/spire/pkg/common/cliprinter"
+	"github.com/accuknox/spire/pkg/common/diskutil"
 	"github.com/mitchellh/cli"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	bundlev1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/bundle/v1"
 	svidv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/svid/v1"
-	"github.com/spiffe/spire/cmd/spire-server/util"
-	commoncli "github.com/spiffe/spire/pkg/common/cli"
-	"github.com/spiffe/spire/pkg/common/cliprinter"
-	"github.com/spiffe/spire/pkg/common/diskutil"
 )
 
 type generateKeyFunc func() (crypto.Signer, error)

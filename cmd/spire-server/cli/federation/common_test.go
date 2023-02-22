@@ -7,15 +7,15 @@ import (
 	"path"
 	"testing"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/cmd/spire-server/cli/common"
+	common_cli "github.com/accuknox/spire/pkg/common/cli"
+	"github.com/accuknox/spire/pkg/common/pemutil"
+	"github.com/accuknox/spire/test/fakes/fakeserverca"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/mitchellh/cli"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	trustdomainv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/trustdomain/v1"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/cmd/spire-server/cli/common"
-	common_cli "github.com/spiffe/spire/pkg/common/cli"
-	"github.com/spiffe/spire/pkg/common/pemutil"
-	"github.com/spiffe/spire/test/fakes/fakeserverca"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -246,7 +246,7 @@ func createBundle(t *testing.T, trustDomain string) (*types.Bundle, string) {
 	return &types.Bundle{
 		TrustDomain: td.String(),
 		X509Authorities: []*types.X509Certificate{
-			{Asn1: ca.Bundle()[0].Raw},
+			{Asn1: ca.X509CA().Certificate.Raw},
 		},
 	}, bundlePath
 }

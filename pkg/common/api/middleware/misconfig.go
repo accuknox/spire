@@ -5,8 +5,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/api/rpccontext"
 	"github.com/andres-erbsen/clock"
-	"github.com/spiffe/spire/pkg/common/api/rpccontext"
 )
 
 var (

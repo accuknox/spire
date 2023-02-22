@@ -7,10 +7,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/proto/spire/common"
+	"github.com/accuknox/spire/test/fakes/fakedatastore"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/proto/spire/common"
-	"github.com/spiffe/spire/test/fakes/fakedatastore"
 	"github.com/stretchr/testify/suite"
 )
 

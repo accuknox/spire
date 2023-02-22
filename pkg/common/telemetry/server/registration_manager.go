@@ -1,6 +1,6 @@
 package server
 
-import "github.com/spiffe/spire/pkg/common/telemetry"
+import "github.com/accuknox/spire/pkg/common/telemetry"
 
 // Call Counters (timing and success metrics)
 // Allows adding labels in-code

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	commoncli "github.com/spiffe/spire/pkg/common/cli"
+	commoncli "github.com/accuknox/spire/pkg/common/cli"
 )
 
 func printX509SVIDResponse(env *commoncli.Env, svids []*X509SVID, respTime time.Duration) {

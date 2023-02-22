@@ -15,11 +15,11 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/accuknox/spire/pkg/agent/plugin/nodeattestor/tpmdevid/tpmutil"
+	"github.com/accuknox/spire/pkg/common/pemutil"
 	"github.com/google/go-tpm-tools/client"
 	"github.com/google/go-tpm-tools/simulator"
 	"github.com/google/go-tpm/tpm2"
-	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor/tpmdevid/tpmutil"
-	"github.com/spiffe/spire/pkg/common/pemutil"
 )
 
 var (

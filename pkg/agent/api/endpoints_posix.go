@@ -8,7 +8,7 @@ import (
 	"net"
 	"os"
 
-	"github.com/spiffe/spire/pkg/common/util"
+	"github.com/accuknox/spire/pkg/common/util"
 )
 
 func (e *Endpoints) createListener() (net.Listener, error) {

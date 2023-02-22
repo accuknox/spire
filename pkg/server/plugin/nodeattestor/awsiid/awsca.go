@@ -4,7 +4,7 @@ import (
 	"crypto/rsa"
 	"fmt"
 
-	"github.com/spiffe/spire/pkg/common/pemutil"
+	"github.com/accuknox/spire/pkg/common/pemutil"
 )
 
 const (

@@ -1,10 +1,13 @@
 # syntax = docker/dockerfile:1.4.2@sha256:443aab4ca21183e069e7d8b2dc68006594f40bddf1b15bbd83f5137bd93e80e2
 
 # Build stage
-ARG goversion
+ARG goversion=1.20.1
 FROM --platform=${BUILDPLATFORM} golang:${goversion}-alpine as base
-WORKDIR /spire
+WORKDIR /tmp
 RUN apk --no-cache --update add file bash clang lld pkgconfig git make
+RUN git clone https://github.com/accuknox/spire-k8ssat-plugin.git
+RUN cd spire-k8ssat-plugin && go build -o k8swsat ./cmd/...
+WORKDIR /spire
 COPY go.* ./
 # https://go.dev/ref/mod#module-cache
 RUN --mount=type=cache,target=/go/pkg/mod go mod download
@@ -53,6 +56,8 @@ RUN install -d -o ${spireuid} -g ${spiregid} -m 755 /spireagentroot/etc/spire/ag
 RUN install -d -o ${spireuid} -g ${spiregid} -m 755 /spireagentroot/run/spire/agent/public
 RUN install -d -o ${spireuid} -g ${spiregid} -m 755 /spireagentroot/var/lib/spire/agent
 
+COPY --from=base /tmp/spire-k8ssat-plugin/k8swsat /k8swsat
+
 RUN xx-go --wrap
 RUN set -e ; xx-apk --no-cache --update add build-base musl-dev libseccomp-dev
 ENV CGO_ENABLED=1
@@ -67,22 +72,10 @@ WORKDIR /opt/spire
 CMD []
 COPY --link --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
-# SPIRE Server
-FROM spire-base AS spire-server
-USER ${spireuid}:${spiregid}
-ENTRYPOINT ["/opt/spire/bin/spire-server", "run"]
-COPY --link --from=builder /spireserverroot /
-COPY --link --from=builder /spire/bin/static/spire-server bin/
-
 # SPIRE Agent
 FROM spire-base AS spire-agent
 USER ${spireuid}:${spiregid}
 ENTRYPOINT ["/opt/spire/bin/spire-agent", "run"]
 COPY --link --from=builder /spireagentroot /
 COPY --link --from=builder /spire/bin/static/spire-agent bin/
-
-# OIDC Discovery Provider
-FROM spire-base AS oidc-discovery-provider
-USER ${spireuid}:${spiregid}
-ENTRYPOINT ["/opt/spire/bin/oidc-discovery-provider"]
-COPY --link --from=builder /spire/bin/static/oidc-discovery-provider bin/
+COPY --link --from=builder /k8swsat /plugin/k8swsat

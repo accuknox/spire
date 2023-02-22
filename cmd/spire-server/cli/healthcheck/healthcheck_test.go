@@ -5,10 +5,10 @@ import (
 	"context"
 	"testing"
 
+	"github.com/accuknox/spire/cmd/spire-server/cli/common"
+	common_cli "github.com/accuknox/spire/pkg/common/cli"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/mitchellh/cli"
-	"github.com/spiffe/spire/cmd/spire-server/cli/common"
-	common_cli "github.com/spiffe/spire/pkg/common/cli"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/suite"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"

@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
 	"github.com/zeebo/errs"
 	"gopkg.in/square/go-jose.v2"
 	"gopkg.in/square/go-jose.v2/jwt"

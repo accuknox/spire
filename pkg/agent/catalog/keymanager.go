@@ -1,11 +1,11 @@
 package catalog
 
 import (
-	"github.com/spiffe/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/catalog"
 
-	"github.com/spiffe/spire/pkg/agent/plugin/keymanager"
-	"github.com/spiffe/spire/pkg/agent/plugin/keymanager/disk"
-	"github.com/spiffe/spire/pkg/agent/plugin/keymanager/memory"
+	"github.com/accuknox/spire/pkg/agent/plugin/keymanager"
+	"github.com/accuknox/spire/pkg/agent/plugin/keymanager/disk"
+	"github.com/accuknox/spire/pkg/agent/plugin/keymanager/memory"
 )
 
 type keyManagerRepository struct {

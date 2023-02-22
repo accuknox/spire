@@ -9,11 +9,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/pemutil"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/hashicorp/go-hclog"
 	vapi "github.com/hashicorp/vault/api"
 	"github.com/hashicorp/vault/sdk/helper/consts"
-	"github.com/spiffe/spire/pkg/common/pemutil"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 )

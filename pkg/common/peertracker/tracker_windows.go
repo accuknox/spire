@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/telemetry"
 	"golang.org/x/sys/windows"
 )
 

@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/proto/spire/common"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/proto/spire/common"
 	"github.com/stretchr/testify/require"
 )
 

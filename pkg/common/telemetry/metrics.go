@@ -5,8 +5,8 @@ import (
 	"errors"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/util"
 	"github.com/armon/go-metrics"
-	"github.com/spiffe/spire/pkg/common/util"
 )
 
 const timerGranularity = time.Millisecond

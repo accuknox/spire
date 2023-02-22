@@ -1,12 +1,12 @@
 package fakeservercatalog
 
 import (
-	"github.com/spiffe/spire/pkg/server/datastore"
-	"github.com/spiffe/spire/pkg/server/plugin/credentialcomposer"
-	"github.com/spiffe/spire/pkg/server/plugin/keymanager"
-	"github.com/spiffe/spire/pkg/server/plugin/nodeattestor"
-	"github.com/spiffe/spire/pkg/server/plugin/notifier"
-	"github.com/spiffe/spire/pkg/server/plugin/upstreamauthority"
+	"github.com/accuknox/spire/pkg/server/datastore"
+	"github.com/accuknox/spire/pkg/server/plugin/credentialcomposer"
+	"github.com/accuknox/spire/pkg/server/plugin/keymanager"
+	"github.com/accuknox/spire/pkg/server/plugin/nodeattestor"
+	"github.com/accuknox/spire/pkg/server/plugin/notifier"
+	"github.com/accuknox/spire/pkg/server/plugin/upstreamauthority"
 )
 
 func New() *Catalog {

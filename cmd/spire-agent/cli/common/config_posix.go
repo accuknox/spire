@@ -7,7 +7,7 @@ import (
 	"flag"
 	"net"
 
-	"github.com/spiffe/spire/pkg/common/util"
+	"github.com/accuknox/spire/pkg/common/util"
 )
 
 type ConfigOS struct {

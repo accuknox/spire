@@ -3,8 +3,8 @@ package nodeattestor
 import (
 	"context"
 
+	"github.com/accuknox/spire/pkg/common/plugin"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/plugin"
 	"google.golang.org/grpc/codes"
 )
 

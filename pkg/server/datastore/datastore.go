@@ -5,9 +5,9 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/proto/spire/common"
 	types "github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/proto/spire/common"
 )
 
 // DataStore defines the data storage interface.

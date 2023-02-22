@@ -6,11 +6,11 @@ import (
 	"math"
 	"strconv"
 
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/version"
 	"github.com/blang/semver/v4"
 	"github.com/jinzhu/gorm"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/common/version"
 )
 
 // Each time the database requires a migration, the "schema" version is

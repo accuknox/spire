@@ -5,16 +5,16 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/stretchr/testify/require"
 
-	"github.com/spiffe/spire/pkg/server/api/health/v1"
-	"github.com/spiffe/spire/pkg/server/api/rpccontext"
-	"github.com/spiffe/spire/proto/spire/common"
-	"github.com/spiffe/spire/test/fakes/fakedatastore"
-	"github.com/spiffe/spire/test/spiretest"
+	"github.com/accuknox/spire/pkg/server/api/health/v1"
+	"github.com/accuknox/spire/pkg/server/api/rpccontext"
+	"github.com/accuknox/spire/proto/spire/common"
+	"github.com/accuknox/spire/test/fakes/fakedatastore"
+	"github.com/accuknox/spire/test/spiretest"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"

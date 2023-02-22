@@ -7,11 +7,11 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/spiffe/spire/pkg/agent/plugin/keymanager"
-	"github.com/spiffe/spire/pkg/agent/plugin/keymanager/disk"
-	keymanagertest "github.com/spiffe/spire/pkg/agent/plugin/keymanager/test"
-	"github.com/spiffe/spire/test/plugintest"
-	"github.com/spiffe/spire/test/spiretest"
+	"github.com/accuknox/spire/pkg/agent/plugin/keymanager"
+	"github.com/accuknox/spire/pkg/agent/plugin/keymanager/disk"
+	keymanagertest "github.com/accuknox/spire/pkg/agent/plugin/keymanager/test"
+	"github.com/accuknox/spire/test/plugintest"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 )

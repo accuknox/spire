@@ -9,11 +9,11 @@ import (
 	"path/filepath"
 	"sync"
 
+	"github.com/accuknox/spire-plugin-sdk/pluginsdk"
+	"github.com/accuknox/spire-plugin-sdk/private"
+	"github.com/accuknox/spire/pkg/common/log"
 	goplugin "github.com/hashicorp/go-plugin"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire-plugin-sdk/pluginsdk"
-	"github.com/spiffe/spire-plugin-sdk/private"
-	"github.com/spiffe/spire/pkg/common/log"
 	"github.com/zeebo/errs"
 	"google.golang.org/grpc"
 )

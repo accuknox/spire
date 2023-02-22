@@ -10,8 +10,8 @@ import (
 	"syscall"
 	"unsafe"
 
+	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/hashicorp/go-hclog"
-	"github.com/spiffe/spire/pkg/common/telemetry"
 	"golang.org/x/sys/windows"
 )
 

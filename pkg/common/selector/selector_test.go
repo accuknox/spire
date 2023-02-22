@@ -3,7 +3,7 @@ package selector
 import (
 	"testing"
 
-	"github.com/spiffe/spire/proto/spire/common"
+	"github.com/accuknox/spire/proto/spire/common"
 	"github.com/stretchr/testify/assert"
 )
 

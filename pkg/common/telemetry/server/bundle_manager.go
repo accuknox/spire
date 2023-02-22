@@ -1,7 +1,7 @@
 package server
 
 import (
-	"github.com/spiffe/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/telemetry"
 )
 
 // Counters (literal increments, not call counters)

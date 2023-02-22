@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"regexp"
 
+	"github.com/accuknox/spire/pkg/agent/common/cgroups"
+	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor/docker/cgroup"
 	"github.com/hashicorp/go-hclog"
-	"github.com/spiffe/spire/pkg/agent/common/cgroups"
-	"github.com/spiffe/spire/pkg/agent/plugin/workloadattestor/docker/cgroup"
 )
 
 type OSConfig struct {

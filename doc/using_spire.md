@@ -16,7 +16,7 @@ This page describes some options to get started with SPIRE.
 
 ## Linux
 
-* The SPIRE GitHub [releases](https://github.com/spiffe/spire/releases) page has download links and changelogs for each SPIRE release
+* The SPIRE GitHub [releases](https://github.com/accuknox/spire/releases) page has download links and changelogs for each SPIRE release
 
 * The spiffe.io [Get SPIRE](https://spiffe.io/downloads/) page has additional download options and instructions for building SPIRE yourself
 

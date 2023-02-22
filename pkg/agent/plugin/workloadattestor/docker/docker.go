@@ -6,14 +6,14 @@ import (
 	"strings"
 	"sync"
 
+	workloadattestorv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/agent/workloadattestor/v1"
+	configv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/service/common/config/v1"
+	"github.com/accuknox/spire/pkg/common/catalog"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	dockerclient "github.com/docker/docker/client"
 	hclog "github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/hcl"
-	workloadattestorv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/agent/workloadattestor/v1"
-	configv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/service/common/config/v1"
-	"github.com/spiffe/spire/pkg/common/catalog"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

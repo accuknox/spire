@@ -7,14 +7,14 @@ import (
 	"strings"
 	"sync"
 
+	nodeattestorv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/agent/nodeattestor/v1"
+	configv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/service/common/config/v1"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	caws "github.com/accuknox/spire/pkg/common/plugin/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/feature/ec2/imds"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/hcl"
-	nodeattestorv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/agent/nodeattestor/v1"
-	configv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/service/common/config/v1"
-	"github.com/spiffe/spire/pkg/common/catalog"
-	caws "github.com/spiffe/spire/pkg/common/plugin/aws"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

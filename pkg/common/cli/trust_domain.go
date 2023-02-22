@@ -3,8 +3,8 @@ package cli
 import (
 	"fmt"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 )
 
 // maxTrustDomainLength is the maximum length of a trust domain according

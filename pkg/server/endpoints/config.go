@@ -7,26 +7,26 @@ import (
 	"net"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/bundleutil"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/server/api"
+	agentv1 "github.com/accuknox/spire/pkg/server/api/agent/v1"
+	bundlev1 "github.com/accuknox/spire/pkg/server/api/bundle/v1"
+	debugv1 "github.com/accuknox/spire/pkg/server/api/debug/v1"
+	entryv1 "github.com/accuknox/spire/pkg/server/api/entry/v1"
+	healthv1 "github.com/accuknox/spire/pkg/server/api/health/v1"
+	svidv1 "github.com/accuknox/spire/pkg/server/api/svid/v1"
+	trustdomainv1 "github.com/accuknox/spire/pkg/server/api/trustdomain/v1"
+	"github.com/accuknox/spire/pkg/server/authpolicy"
+	bundle_client "github.com/accuknox/spire/pkg/server/bundle/client"
+	"github.com/accuknox/spire/pkg/server/ca"
+	"github.com/accuknox/spire/pkg/server/cache/dscache"
+	"github.com/accuknox/spire/pkg/server/catalog"
+	"github.com/accuknox/spire/pkg/server/endpoints/bundle"
+	"github.com/accuknox/spire/pkg/server/svid"
 	"github.com/andres-erbsen/clock"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/pkg/common/bundleutil"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/server/api"
-	agentv1 "github.com/spiffe/spire/pkg/server/api/agent/v1"
-	bundlev1 "github.com/spiffe/spire/pkg/server/api/bundle/v1"
-	debugv1 "github.com/spiffe/spire/pkg/server/api/debug/v1"
-	entryv1 "github.com/spiffe/spire/pkg/server/api/entry/v1"
-	healthv1 "github.com/spiffe/spire/pkg/server/api/health/v1"
-	svidv1 "github.com/spiffe/spire/pkg/server/api/svid/v1"
-	trustdomainv1 "github.com/spiffe/spire/pkg/server/api/trustdomain/v1"
-	"github.com/spiffe/spire/pkg/server/authpolicy"
-	bundle_client "github.com/spiffe/spire/pkg/server/bundle/client"
-	"github.com/spiffe/spire/pkg/server/ca"
-	"github.com/spiffe/spire/pkg/server/cache/dscache"
-	"github.com/spiffe/spire/pkg/server/catalog"
-	"github.com/spiffe/spire/pkg/server/endpoints/bundle"
-	"github.com/spiffe/spire/pkg/server/svid"
 	"golang.org/x/net/context"
 )
 
@@ -49,6 +49,9 @@ type Config struct {
 
 	// Server CA for signing SVIDs
 	ServerCA ca.ServerCA
+
+	// TTL to use when signing agent SVIDs
+	AgentTTL time.Duration
 
 	// Bundle endpoint configuration
 	BundleEndpoint bundle.EndpointConfig
@@ -123,6 +126,7 @@ func (c *Config) makeAPIServers(entryFetcher api.AuthorizedEntryFetcher) APIServ
 		AgentServer: agentv1.New(agentv1.Config{
 			DataStore:   ds,
 			ServerCA:    c.ServerCA,
+			AgentTTL:    c.AgentTTL,
 			TrustDomain: c.TrustDomain,
 			Catalog:     c.Catalog,
 			Clock:       c.Clock,

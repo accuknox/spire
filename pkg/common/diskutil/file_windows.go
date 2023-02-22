@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/spiffe/spire/pkg/common/sddl"
+	"github.com/accuknox/spire/pkg/common/sddl"
 	"golang.org/x/sys/windows"
 )
 

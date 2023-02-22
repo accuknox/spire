@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 
 	"github.com/Microsoft/go-winio"
-	"github.com/spiffe/spire/pkg/common/namedpipe"
-	"github.com/spiffe/spire/pkg/common/sddl"
+	"github.com/accuknox/spire/pkg/common/namedpipe"
+	"github.com/accuknox/spire/pkg/common/sddl"
 	"github.com/zeebo/errs"
 )
 

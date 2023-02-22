@@ -12,26 +12,26 @@ import (
 	"testing"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 
+	"github.com/accuknox/spire/pkg/common/idutil"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/x509svid"
+	"github.com/accuknox/spire/pkg/common/x509util"
+	"github.com/accuknox/spire/pkg/server/api"
+	"github.com/accuknox/spire/pkg/server/api/middleware"
+	"github.com/accuknox/spire/pkg/server/api/rpccontext"
+	svid "github.com/accuknox/spire/pkg/server/api/svid/v1"
+	"github.com/accuknox/spire/pkg/server/datastore"
+	"github.com/accuknox/spire/proto/spire/common"
+	"github.com/accuknox/spire/test/fakes/fakedatastore"
+	"github.com/accuknox/spire/test/fakes/fakeserverca"
+	"github.com/accuknox/spire/test/spiretest"
+	"github.com/accuknox/spire/test/testkey"
 	svidv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/svid/v1"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/common/idutil"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/common/x509svid"
-	"github.com/spiffe/spire/pkg/common/x509util"
-	"github.com/spiffe/spire/pkg/server/api"
-	"github.com/spiffe/spire/pkg/server/api/middleware"
-	"github.com/spiffe/spire/pkg/server/api/rpccontext"
-	svid "github.com/spiffe/spire/pkg/server/api/svid/v1"
-	"github.com/spiffe/spire/pkg/server/datastore"
-	"github.com/spiffe/spire/proto/spire/common"
-	"github.com/spiffe/spire/test/fakes/fakedatastore"
-	"github.com/spiffe/spire/test/fakes/fakeserverca"
-	"github.com/spiffe/spire/test/spiretest"
-	"github.com/spiffe/spire/test/testkey"
 	"github.com/stretchr/testify/require"
 
 	"google.golang.org/grpc"
@@ -51,6 +51,7 @@ func TestServiceMintX509SVID(t *testing.T) {
 	test := setupServiceTest(t)
 	defer test.Cleanup()
 
+	x509CA := test.ca.X509CA()
 	now := test.ca.Clock().Now().UTC()
 	expiredAt := now.Add(test.ca.X509SVIDTTL())
 	expiresAtStr := expiredAt.Format(time.RFC3339)
@@ -500,7 +501,7 @@ func TestServiceMintX509SVID(t *testing.T) {
 				URIs: []*url.URL{workloadID.URL()},
 			},
 			code:        codes.Internal,
-			err:         "failed to sign X509-SVID: oh no",
+			err:         "failed to sign X509-SVID: X509 CA is not available for signing",
 			failMinting: true,
 			expectLogs: func(csr []byte) []spiretest.LogEntry {
 				return []spiretest.LogEntry{
@@ -508,7 +509,7 @@ func TestServiceMintX509SVID(t *testing.T) {
 						Level:   logrus.ErrorLevel,
 						Message: "Failed to sign X509-SVID",
 						Data: logrus.Fields{
-							logrus.ErrorKey: "oh no",
+							logrus.ErrorKey: "X509 CA is not available for signing",
 						},
 					},
 					{
@@ -518,7 +519,7 @@ func TestServiceMintX509SVID(t *testing.T) {
 							telemetry.Status:        "error",
 							telemetry.Type:          "audit",
 							telemetry.StatusCode:    "Internal",
-							telemetry.StatusMessage: "failed to sign X509-SVID: oh no",
+							telemetry.StatusMessage: "failed to sign X509-SVID: X509 CA is not available for signing",
 							telemetry.Csr:           api.HashByte(csr),
 							telemetry.TTL:           "0",
 						},
@@ -530,9 +531,10 @@ func TestServiceMintX509SVID(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			test.logHook.Reset()
-
+			// Set x509CA used when signing SVID
+			test.ca.SetX509CA(x509CA)
 			if tt.failMinting {
-				test.ca.SetError(errors.New("oh no"))
+				test.ca.SetX509CA(nil)
 			}
 
 			// Create CSR
@@ -587,6 +589,7 @@ func TestServiceMintJWTSVID(t *testing.T) {
 	test := setupServiceTest(t)
 	defer test.Cleanup()
 
+	jwtKey := test.ca.JWTKey()
 	now := test.ca.Clock().Now().UTC()
 	issuedAt := now
 	expiresAt := now.Add(test.ca.JWTSVIDTTL())
@@ -758,7 +761,7 @@ func TestServiceMintJWTSVID(t *testing.T) {
 			name:        "fails minting",
 			code:        codes.Internal,
 			audience:    []string{"AUDIENCE"},
-			err:         "failed to sign JWT-SVID: oh no",
+			err:         "failed to sign JWT-SVID: JWT key is not available for signing",
 			failMinting: true,
 			expiresAt:   expiresAt,
 			id:          workloadID,
@@ -767,7 +770,7 @@ func TestServiceMintJWTSVID(t *testing.T) {
 					Level:   logrus.ErrorLevel,
 					Message: "Failed to sign JWT-SVID",
 					Data: logrus.Fields{
-						logrus.ErrorKey:    "oh no",
+						logrus.ErrorKey:    "JWT key is not available for signing",
 						telemetry.SPIFFEID: "spiffe://example.org/workload1",
 					},
 				},
@@ -778,7 +781,7 @@ func TestServiceMintJWTSVID(t *testing.T) {
 						telemetry.Status:        "error",
 						telemetry.Type:          "audit",
 						telemetry.StatusCode:    "Internal",
-						telemetry.StatusMessage: "failed to sign JWT-SVID: oh no",
+						telemetry.StatusMessage: "failed to sign JWT-SVID: JWT key is not available for signing",
 						telemetry.Audience:      "AUDIENCE",
 						telemetry.SPIFFEID:      "spiffe://example.org/workload1",
 						telemetry.TTL:           "0",
@@ -790,9 +793,9 @@ func TestServiceMintJWTSVID(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			test.logHook.Reset()
-
+			test.ca.SetJWTKey(jwtKey)
 			if tt.failMinting {
-				test.ca.SetError(errors.New("oh no"))
+				test.ca.SetJWTKey(nil)
 			}
 
 			resp, err := test.client.MintJWTSVID(context.Background(), &svidv1.MintJWTSVIDRequest{
@@ -847,6 +850,7 @@ func TestServiceNewJWTSVID(t *testing.T) {
 	}
 
 	test.ef.entries = []*types.Entry{entry, entryWithTTL, entryWithJWTTTL, invalidEntry}
+	jwtKey := test.ca.JWTKey()
 	now := test.ca.Clock().Now().UTC()
 
 	issuedAt := now
@@ -1062,14 +1066,14 @@ func TestServiceNewJWTSVID(t *testing.T) {
 			code:        codes.Internal,
 			audience:    []string{"AUDIENCE"},
 			entry:       entry,
-			err:         "failed to sign JWT-SVID: oh no",
+			err:         "failed to sign JWT-SVID: JWT key is not available for signing",
 			failMinting: true,
 			expectLogs: []spiretest.LogEntry{
 				{
 					Level:   logrus.ErrorLevel,
 					Message: "Failed to sign JWT-SVID",
 					Data: logrus.Fields{
-						logrus.ErrorKey:    "oh no",
+						logrus.ErrorKey:    "JWT key is not available for signing",
 						telemetry.SPIFFEID: "spiffe://example.org/agent",
 					},
 				},
@@ -1080,7 +1084,7 @@ func TestServiceNewJWTSVID(t *testing.T) {
 						telemetry.Status:         "error",
 						telemetry.Type:           "audit",
 						telemetry.StatusCode:     "Internal",
-						telemetry.StatusMessage:  "failed to sign JWT-SVID: oh no",
+						telemetry.StatusMessage:  "failed to sign JWT-SVID: JWT key is not available for signing",
 						telemetry.Audience:       "AUDIENCE",
 						telemetry.RegistrationID: "agent-entry-id",
 					},
@@ -1091,9 +1095,9 @@ func TestServiceNewJWTSVID(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			test.logHook.Reset()
-
+			test.ca.SetJWTKey(jwtKey)
 			if tt.failMinting {
-				test.ca.SetError(errors.New("oh no"))
+				test.ca.SetJWTKey(nil)
 			}
 
 			test.rateLimiter.count = 1
@@ -1164,6 +1168,7 @@ func TestServiceBatchNewX509SVID(t *testing.T) {
 	}
 	test.ef.entries = []*types.Entry{workloadEntry, dnsEntry, ttlEntry, x509TtlEntry, invalidEntry}
 
+	x509CA := test.ca.X509CA()
 	now := test.ca.Clock().Now().UTC()
 
 	expiresAtFromTTLEntry := now.Add(time.Duration(ttlEntry.X509SvidTtl) * time.Second).Unix()
@@ -1670,7 +1675,7 @@ func TestServiceBatchNewX509SVID(t *testing.T) {
 				{
 					status: &types.Status{
 						Code:    int32(codes.Internal),
-						Message: "failed to sign X509-SVID: oh no",
+						Message: "failed to sign X509-SVID: X509 CA is not available for signing",
 					},
 				},
 			},
@@ -1682,7 +1687,7 @@ func TestServiceBatchNewX509SVID(t *testing.T) {
 						Message: "Failed to sign X509-SVID",
 						Data: logrus.Fields{
 							telemetry.RegistrationID: "workload",
-							logrus.ErrorKey:          "oh no",
+							logrus.ErrorKey:          "X509 CA is not available for signing",
 							telemetry.SPIFFEID:       workloadID.String(),
 						},
 					},
@@ -1695,7 +1700,7 @@ func TestServiceBatchNewX509SVID(t *testing.T) {
 							telemetry.RegistrationID: "workload",
 							telemetry.Csr:            api.HashByte(m["workload"]),
 							telemetry.StatusCode:     "Internal",
-							telemetry.StatusMessage:  "failed to sign X509-SVID: oh no",
+							telemetry.StatusMessage:  "failed to sign X509-SVID: X509 CA is not available for signing",
 						},
 					},
 				}
@@ -1706,10 +1711,11 @@ func TestServiceBatchNewX509SVID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			test.logHook.Reset()
 
+			// Set x509CA used when signing SVID
+			test.ca.SetX509CA(x509CA)
 			if tt.failSigning {
-				test.ca.SetError(errors.New("oh no"))
+				test.ca.SetX509CA(nil)
 			}
-
 			ctx := context.Background()
 
 			test.rateLimiter.count = len(tt.reqs)
@@ -1829,6 +1835,7 @@ func TestNewDownstreamX509CA(t *testing.T) {
 	test := setupServiceTest(t)
 	defer test.Cleanup()
 
+	x509CA := test.ca.X509CA()
 	_, csrErr := x509.ParseCertificateRequest([]byte{1, 2, 3})
 
 	now := test.ca.Clock().Now().UTC()
@@ -2013,8 +2020,9 @@ func TestNewDownstreamX509CA(t *testing.T) {
 			test.rateLimiter.count = 1
 			test.rateLimiter.err = tt.rateLimiterErr
 
+			test.ca.SetX509CA(x509CA)
 			if tt.failSigning {
-				test.ca.SetError(errors.New("oh no"))
+				test.ca.SetX509CA(nil)
 			}
 
 			csr := tt.csr

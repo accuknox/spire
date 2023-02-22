@@ -14,15 +14,15 @@ import (
 	"sync"
 	"time"
 
+	nodeattestorv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/server/nodeattestor/v1"
+	configv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/service/common/config/v1"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/plugin/k8s"
+	"github.com/accuknox/spire/pkg/common/plugin/k8s/apiserver"
+	nodeattestorbase "github.com/accuknox/spire/pkg/server/plugin/nodeattestor/base"
 	"github.com/gofrs/uuid"
 	hclog "github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/hcl"
-	nodeattestorv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/server/nodeattestor/v1"
-	configv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/service/common/config/v1"
-	"github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/pkg/common/plugin/k8s"
-	"github.com/spiffe/spire/pkg/common/plugin/k8s/apiserver"
-	nodeattestorbase "github.com/spiffe/spire/pkg/server/plugin/nodeattestor/base"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"gopkg.in/square/go-jose.v2/jwt"
@@ -195,7 +195,7 @@ func (p *AttestorPlugin) Attest(stream nodeattestorv1.NodeAttestor_AttestServer)
 		}
 		if !claims.Expiry.Time().IsZero() {
 			// This is an indication that this may be a projected service account token
-			p.log.Warn("The service account token has an expiration time, which is an indication that may be a projected service account token. If your cluster supports Service Account Token Volume Projection you should instead consider using the `k8s_psat` attestor. Please look at https://github.com/spiffe/spire/blob/main/doc/plugin_server_nodeattestor_k8s_sat.md#security-considerations for details about security considerations when using the `k8s_sat` attestor.")
+			p.log.Warn("The service account token has an expiration time, which is an indication that may be a projected service account token. If your cluster supports Service Account Token Volume Projection you should instead consider using the `k8s_psat` attestor. Please look at https://github.com/accuknox/spire/blob/main/doc/plugin_server_nodeattestor_k8s_sat.md#security-considerations for details about security considerations when using the `k8s_sat` attestor.")
 
 			// Validate the time with leeway
 			if err := claims.ValidateWithLeeway(jwt.Expected{

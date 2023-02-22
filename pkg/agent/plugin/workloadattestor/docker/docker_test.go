@@ -7,13 +7,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor"
+	"github.com/accuknox/spire/test/clock"
+	"github.com/accuknox/spire/test/plugintest"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	dockerclient "github.com/docker/docker/client"
-	"github.com/spiffe/spire/pkg/agent/plugin/workloadattestor"
-	"github.com/spiffe/spire/test/clock"
-	"github.com/spiffe/spire/test/plugintest"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 )
@@ -205,7 +205,7 @@ func doAttest(t *testing.T, p *Plugin) ([]string, error) {
 func doAttestWithContext(ctx context.Context, t *testing.T, p *Plugin) ([]string, error) {
 	wp := new(workloadattestor.V1)
 	plugintest.Load(t, builtin(p), wp)
-	selectors, err := wp.Attest(ctx, 123)
+	selectors, err := wp.Attest(ctx, 123, map[string]string{})
 	if err != nil {
 		return nil, err
 	}

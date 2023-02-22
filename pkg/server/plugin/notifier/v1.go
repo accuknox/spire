@@ -3,11 +3,11 @@ package notifier
 import (
 	"context"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	notifierv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/server/notifier/v1"
-	"github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/types"
-	"github.com/spiffe/spire/pkg/common/plugin"
-	"github.com/spiffe/spire/proto/spire/common"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	notifierv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/server/notifier/v1"
+	"github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/types"
+	"github.com/accuknox/spire/pkg/common/plugin"
+	"github.com/accuknox/spire/proto/spire/common"
 	"google.golang.org/grpc/codes"
 )
 

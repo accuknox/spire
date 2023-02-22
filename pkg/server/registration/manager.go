@@ -4,11 +4,11 @@ import (
 	"context"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	telemetry_server "github.com/accuknox/spire/pkg/common/telemetry/server"
+	"github.com/accuknox/spire/pkg/server/datastore"
 	"github.com/andres-erbsen/clock"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	telemetry_server "github.com/spiffe/spire/pkg/common/telemetry/server"
-	"github.com/spiffe/spire/pkg/server/datastore"
 )
 
 const (

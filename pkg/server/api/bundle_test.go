@@ -6,14 +6,14 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/server/api"
+	"github.com/accuknox/spire/proto/spire/common"
+	"github.com/accuknox/spire/test/spiretest"
+	"github.com/accuknox/spire/test/testca"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/server/api"
-	"github.com/spiffe/spire/proto/spire/common"
-	"github.com/spiffe/spire/test/spiretest"
-	"github.com/spiffe/spire/test/testca"
 	"github.com/stretchr/testify/require"
 )
 

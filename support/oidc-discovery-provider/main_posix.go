@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/spiffe/spire/pkg/common/util"
+	"github.com/accuknox/spire/pkg/common/util"
 	"github.com/zeebo/errs"
 )
 

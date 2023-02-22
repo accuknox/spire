@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"testing"
 
-	nodeattestorv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/agent/nodeattestor/v1"
-	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor"
-	nodeattestortest "github.com/spiffe/spire/pkg/agent/plugin/nodeattestor/test"
-	"github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/test/plugintest"
-	"github.com/spiffe/spire/test/spiretest"
+	nodeattestorv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/agent/nodeattestor/v1"
+	"github.com/accuknox/spire/pkg/agent/plugin/nodeattestor"
+	nodeattestortest "github.com/accuknox/spire/pkg/agent/plugin/nodeattestor/test"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/test/plugintest"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 )

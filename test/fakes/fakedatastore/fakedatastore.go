@@ -11,12 +11,12 @@ import (
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/require"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/util"
+	"github.com/accuknox/spire/pkg/server/datastore"
+	sql "github.com/accuknox/spire/pkg/server/datastore/sqlstore"
+	"github.com/accuknox/spire/proto/spire/common"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/common/util"
-	"github.com/spiffe/spire/pkg/server/datastore"
-	sql "github.com/spiffe/spire/pkg/server/datastore/sqlstore"
-	"github.com/spiffe/spire/proto/spire/common"
 )
 
 var (

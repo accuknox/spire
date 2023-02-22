@@ -9,10 +9,10 @@ import (
 	"os"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/log"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/version"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/log"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/common/version"
 	"github.com/zeebo/errs"
 	"golang.org/x/crypto/acme"
 	"golang.org/x/crypto/acme/autocert"

@@ -1,9 +1,9 @@
 package validate
 
 import (
+	"github.com/accuknox/spire/cmd/spire-server/cli/run"
+	commoncli "github.com/accuknox/spire/pkg/common/cli"
 	"github.com/mitchellh/cli"
-	"github.com/spiffe/spire/cmd/spire-server/cli/run"
-	commoncli "github.com/spiffe/spire/pkg/common/cli"
 )
 
 const commandName = "validate"

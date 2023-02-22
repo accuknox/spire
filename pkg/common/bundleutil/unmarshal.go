@@ -6,7 +6,7 @@ import (
 	"io"
 	"time"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
 	"github.com/zeebo/errs"
 )
 

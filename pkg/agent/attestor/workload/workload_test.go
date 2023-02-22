@@ -5,15 +5,15 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	telemetry_workload "github.com/accuknox/spire/pkg/common/telemetry/agent/workloadapi"
+	"github.com/accuknox/spire/pkg/common/util"
+	"github.com/accuknox/spire/proto/spire/common"
+	"github.com/accuknox/spire/test/fakes/fakeagentcatalog"
+	"github.com/accuknox/spire/test/fakes/fakemetrics"
+	"github.com/accuknox/spire/test/fakes/fakeworkloadattestor"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	telemetry_workload "github.com/spiffe/spire/pkg/common/telemetry/agent/workloadapi"
-	"github.com/spiffe/spire/pkg/common/util"
-	"github.com/spiffe/spire/proto/spire/common"
-	"github.com/spiffe/spire/test/fakes/fakeagentcatalog"
-	"github.com/spiffe/spire/test/fakes/fakemetrics"
-	"github.com/spiffe/spire/test/fakes/fakeworkloadattestor"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -66,19 +66,19 @@ func (s *WorkloadAttestorTestSuite) TestAttestWorkload() {
 	)
 
 	// both attestors succeed but with no selectors
-	selectors := s.attestor.Attest(ctx, 1)
+	selectors := s.attestor.Attest(ctx, 1, map[string]string{})
 	s.Empty(selectors)
 
 	// attestor1 has selectors, but not attestor2
-	selectors = s.attestor.Attest(ctx, 2)
+	selectors = s.attestor.Attest(ctx, 2, map[string]string{})
 	spiretest.AssertProtoListEqual(s.T(), selectors1, selectors)
 
 	// attestor2 has selectors, attestor1 fails
-	selectors = s.attestor.Attest(ctx, 3)
+	selectors = s.attestor.Attest(ctx, 3, map[string]string{})
 	spiretest.AssertProtoListEqual(s.T(), selectors2, selectors)
 
 	// both have selectors
-	selectors = s.attestor.Attest(ctx, 4)
+	selectors = s.attestor.Attest(ctx, 4, map[string]string{})
 	util.SortSelectors(selectors)
 	combined := make([]*common.Selector, 0, len(selectors1)+len(selectors2))
 	combined = append(combined, selectors1...)
@@ -97,7 +97,7 @@ func (s *WorkloadAttestorTestSuite) TestAttestWorkloadMetrics() {
 	metrics := fakemetrics.New()
 	s.attestor.c.Metrics = metrics
 
-	selectors := s.attestor.Attest(ctx, 2)
+	selectors := s.attestor.Attest(ctx, 2, map[string]string{})
 
 	// Create expected metrics
 	expected := fakemetrics.New()
@@ -114,7 +114,7 @@ func (s *WorkloadAttestorTestSuite) TestAttestWorkloadMetrics() {
 	s.attestor.c.Metrics = metrics
 
 	// No selectors expected
-	selectors = s.attestor.Attest(ctx, 3)
+	selectors = s.attestor.Attest(ctx, 3, map[string]string{})
 	s.Empty(selectors)
 
 	// Create expected metrics with error key

@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/spiffe/spire/pkg/common/diskutil"
+	"github.com/accuknox/spire/pkg/common/diskutil"
 )
 
 func loadLegacyBundle(dir string) ([]*x509.Certificate, time.Time, error) {

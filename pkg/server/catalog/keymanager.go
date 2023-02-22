@@ -1,13 +1,13 @@
 package catalog
 
 import (
-	"github.com/spiffe/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/catalog"
 
-	"github.com/spiffe/spire/pkg/server/plugin/keymanager"
-	"github.com/spiffe/spire/pkg/server/plugin/keymanager/awskms"
-	"github.com/spiffe/spire/pkg/server/plugin/keymanager/disk"
-	"github.com/spiffe/spire/pkg/server/plugin/keymanager/gcpkms"
-	"github.com/spiffe/spire/pkg/server/plugin/keymanager/memory"
+	"github.com/accuknox/spire/pkg/server/plugin/keymanager"
+	"github.com/accuknox/spire/pkg/server/plugin/keymanager/awskms"
+	"github.com/accuknox/spire/pkg/server/plugin/keymanager/disk"
+	"github.com/accuknox/spire/pkg/server/plugin/keymanager/gcpkms"
+	"github.com/accuknox/spire/pkg/server/plugin/keymanager/memory"
 )
 
 type keyManagerRepository struct {

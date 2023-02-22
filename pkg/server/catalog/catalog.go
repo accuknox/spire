@@ -6,30 +6,30 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire-plugin-sdk/pluginsdk"
+	metricsv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/hostservice/common/metrics/v1"
+	agentstorev1 "github.com/accuknox/spire-plugin-sdk/proto/spire/hostservice/server/agentstore/v1"
+	identityproviderv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/hostservice/server/identityprovider/v1"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/health"
+	"github.com/accuknox/spire/pkg/common/hostservice/metricsservice"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	ds_telemetry "github.com/accuknox/spire/pkg/common/telemetry/server/datastore"
+	km_telemetry "github.com/accuknox/spire/pkg/common/telemetry/server/keymanager"
+	"github.com/accuknox/spire/pkg/server/cache/dscache"
+	"github.com/accuknox/spire/pkg/server/datastore"
+	ds_sql "github.com/accuknox/spire/pkg/server/datastore/sqlstore"
+	"github.com/accuknox/spire/pkg/server/hostservice/agentstore"
+	"github.com/accuknox/spire/pkg/server/hostservice/identityprovider"
+	"github.com/accuknox/spire/pkg/server/plugin/credentialcomposer"
+	"github.com/accuknox/spire/pkg/server/plugin/keymanager"
+	"github.com/accuknox/spire/pkg/server/plugin/nodeattestor"
+	"github.com/accuknox/spire/pkg/server/plugin/nodeattestor/jointoken"
+	"github.com/accuknox/spire/pkg/server/plugin/notifier"
+	"github.com/accuknox/spire/pkg/server/plugin/upstreamauthority"
 	"github.com/andres-erbsen/clock"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire-plugin-sdk/pluginsdk"
-	metricsv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/hostservice/common/metrics/v1"
-	agentstorev1 "github.com/spiffe/spire-plugin-sdk/proto/spire/hostservice/server/agentstore/v1"
-	identityproviderv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/hostservice/server/identityprovider/v1"
-	"github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/pkg/common/health"
-	"github.com/spiffe/spire/pkg/common/hostservice/metricsservice"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	ds_telemetry "github.com/spiffe/spire/pkg/common/telemetry/server/datastore"
-	km_telemetry "github.com/spiffe/spire/pkg/common/telemetry/server/keymanager"
-	"github.com/spiffe/spire/pkg/server/cache/dscache"
-	"github.com/spiffe/spire/pkg/server/datastore"
-	ds_sql "github.com/spiffe/spire/pkg/server/datastore/sqlstore"
-	"github.com/spiffe/spire/pkg/server/hostservice/agentstore"
-	"github.com/spiffe/spire/pkg/server/hostservice/identityprovider"
-	"github.com/spiffe/spire/pkg/server/plugin/credentialcomposer"
-	"github.com/spiffe/spire/pkg/server/plugin/keymanager"
-	"github.com/spiffe/spire/pkg/server/plugin/nodeattestor"
-	"github.com/spiffe/spire/pkg/server/plugin/nodeattestor/jointoken"
-	"github.com/spiffe/spire/pkg/server/plugin/notifier"
-	"github.com/spiffe/spire/pkg/server/plugin/upstreamauthority"
 )
 
 const (
@@ -80,11 +80,12 @@ type Repository struct {
 
 func (repo *Repository) Plugins() map[string]catalog.PluginRepo {
 	return map[string]catalog.PluginRepo{
-		credentialComposerType: &repo.credentialComposerRepository,
-		keyManagerType:         &repo.keyManagerRepository,
-		nodeAttestorType:       &repo.nodeAttestorRepository,
-		notifierType:           &repo.notifierRepository,
-		upstreamAuthorityType:  &repo.upstreamAuthorityRepository,
+		// TODO: wire this up once we're ready to release the feature
+		//credentialComposerType: &repo.credentialComposerRepository,
+		keyManagerType:        &repo.keyManagerRepository,
+		nodeAttestorType:      &repo.nodeAttestorRepository,
+		notifierType:          &repo.notifierRepository,
+		upstreamAuthorityType: &repo.upstreamAuthorityRepository,
 	}
 }
 

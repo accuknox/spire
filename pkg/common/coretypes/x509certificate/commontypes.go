@@ -3,8 +3,8 @@ package x509certificate
 import (
 	"crypto/x509"
 
-	plugintypes "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/types"
-	"github.com/spiffe/spire/proto/spire/common"
+	plugintypes "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/types"
+	"github.com/accuknox/spire/proto/spire/common"
 )
 
 func FromCommonProto(pb *common.Certificate) (*x509.Certificate, error) {

@@ -16,13 +16,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/bundleutil"
+	"github.com/accuknox/spire/pkg/server/endpoints/bundle/internal/acmetest"
+	"github.com/accuknox/spire/test/fakes/fakeserverkeymanager"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/pkg/common/bundleutil"
-	"github.com/spiffe/spire/pkg/server/endpoints/bundle/internal/acmetest"
-	"github.com/spiffe/spire/test/fakes/fakeserverkeymanager"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

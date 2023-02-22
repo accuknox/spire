@@ -3,8 +3,8 @@ package middleware
 import (
 	"context"
 
-	"github.com/spiffe/spire/pkg/common/api/rpccontext"
-	"github.com/spiffe/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/api/rpccontext"
+	"github.com/accuknox/spire/pkg/common/telemetry"
 )
 
 // WithMetrics adds per-call metrics to each RPC call. It emits both a call

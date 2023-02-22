@@ -3,11 +3,11 @@ package server
 import (
 	"context"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	serverTelemetry "github.com/accuknox/spire/pkg/common/telemetry/server"
+	"github.com/accuknox/spire/pkg/server/datastore"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	serverTelemetry "github.com/spiffe/spire/pkg/common/telemetry/server"
-	"github.com/spiffe/spire/pkg/server/datastore"
 )
 
 var (

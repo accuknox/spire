@@ -7,10 +7,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/server/api"
+	"github.com/accuknox/spire/proto/spire/common"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/server/api"
-	"github.com/spiffe/spire/proto/spire/common"
 )
 
 func printEntry(e *types.Entry, printf func(string, ...interface{}) error) {

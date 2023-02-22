@@ -15,6 +15,7 @@ import (
 	"net/url"
 	"strconv"
 
+	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/google/go-containerregistry/pkg/name"
 	v1 "github.com/google/go-containerregistry/pkg/v1"
 	"github.com/google/go-containerregistry/pkg/v1/remote"
@@ -26,7 +27,6 @@ import (
 	sig "github.com/sigstore/cosign/pkg/signature"
 	rekor "github.com/sigstore/rekor/pkg/generated/client"
 	"github.com/sigstore/sigstore/pkg/signature/payload"
-	"github.com/spiffe/spire/pkg/common/telemetry"
 	corev1 "k8s.io/api/core/v1"
 )
 

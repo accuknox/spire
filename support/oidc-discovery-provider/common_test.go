@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/spiffe/spire/pkg/common/pemutil"
+	"github.com/accuknox/spire/pkg/common/pemutil"
 	"gopkg.in/square/go-jose.v2"
 )
 

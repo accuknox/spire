@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/spiffe/spire/proto/spire/common"
+	"github.com/accuknox/spire/proto/spire/common"
 )
 
 // Type and Value are delimited by a colon (:)

@@ -3,11 +3,11 @@ package fakeagentkeymanager
 import (
 	"testing"
 
-	"github.com/spiffe/spire/pkg/agent/plugin/keymanager"
-	"github.com/spiffe/spire/pkg/agent/plugin/keymanager/disk"
-	"github.com/spiffe/spire/pkg/agent/plugin/keymanager/memory"
-	"github.com/spiffe/spire/test/plugintest"
-	"github.com/spiffe/spire/test/testkey"
+	"github.com/accuknox/spire/pkg/agent/plugin/keymanager"
+	"github.com/accuknox/spire/pkg/agent/plugin/keymanager/disk"
+	"github.com/accuknox/spire/pkg/agent/plugin/keymanager/memory"
+	"github.com/accuknox/spire/test/plugintest"
+	"github.com/accuknox/spire/test/testkey"
 )
 
 // New returns a fake key manager

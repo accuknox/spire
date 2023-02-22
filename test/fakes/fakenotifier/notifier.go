@@ -4,12 +4,12 @@ import (
 	"context"
 	"testing"
 
-	notifierv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/server/notifier/v1"
-	"github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/pkg/common/coretypes/bundle"
-	"github.com/spiffe/spire/pkg/server/plugin/notifier"
-	"github.com/spiffe/spire/proto/spire/common"
-	"github.com/spiffe/spire/test/plugintest"
+	notifierv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/server/notifier/v1"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/coretypes/bundle"
+	"github.com/accuknox/spire/pkg/server/plugin/notifier"
+	"github.com/accuknox/spire/proto/spire/common"
+	"github.com/accuknox/spire/test/plugintest"
 )
 
 type Config struct {

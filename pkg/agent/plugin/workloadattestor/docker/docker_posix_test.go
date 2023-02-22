@@ -9,9 +9,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/accuknox/spire/pkg/agent/common/cgroups"
+	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor/docker/cgroup"
 	dockerclient "github.com/docker/docker/client"
-	"github.com/spiffe/spire/pkg/agent/common/cgroups"
-	"github.com/spiffe/spire/pkg/agent/plugin/workloadattestor/docker/cgroup"
 	"github.com/stretchr/testify/require"
 )
 

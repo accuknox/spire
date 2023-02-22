@@ -13,9 +13,9 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/pkg/common/agentpathtemplate"
-	"github.com/spiffe/spire/pkg/common/idutil"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/agentpathtemplate"
+	"github.com/accuknox/spire/pkg/common/idutil"
 )
 
 const (

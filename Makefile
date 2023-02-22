@@ -154,7 +154,7 @@ protoc_gen_go_grpc_base_dir := $(build_dir)/protoc-gen-go-grpc
 protoc_gen_go_grpc_dir := $(protoc_gen_go_grpc_base_dir)/$(protoc_gen_go_grpc_version)-go$(go_version)
 protoc_gen_go_grpc_bin := $(protoc_gen_go_grpc_dir)/protoc-gen-go-grpc
 
-protoc_gen_go_spire_version := $(shell grep github.com/spiffe/spire-plugin-sdk go.mod | awk '{print $$2}')
+protoc_gen_go_spire_version := $(shell grep github.com/accuknox/spire-plugin-sdk go.mod | awk '{print $$2}')
 protoc_gen_go_spire_base_dir := $(build_dir)/protoc-gen-go-spire
 protoc_gen_go_spire_dir := $(protoc_gen_go_spire_base_dir)/$(protoc_gen_go_spire_version)-go$(go_version)
 protoc_gen_go_spire_bin := $(protoc_gen_go_spire_dir)/protoc-gen-go-spire
@@ -228,10 +228,10 @@ ifeq ($(git_dirty),)
 		# Remove the "v" prefix from the git_tag for use as the version number.
 		# e.g. 0.9.3 instead of v0.9.3
 		git_version_tag := $(git_tag:v%=%)
-		go_ldflags += -X github.com/spiffe/spire/pkg/common/version.gittag=$(git_version_tag)
+		go_ldflags += -X github.com/accuknox/spire/pkg/common/version.gittag=$(git_version_tag)
 	endif
 	ifneq ($(git_hash),)
-		go_ldflags += -X github.com/spiffe/spire/pkg/common/version.githash=$(git_hash)
+		go_ldflags += -X github.com/accuknox/spire/pkg/common/version.githash=$(git_hash)
 	endif
 endif
 
@@ -421,7 +421,7 @@ generate: $(protos:.proto=.pb.go) \
 	$(E) PATH="$(protoc_gen_go_spire_dir):$(PATH)" $(protoc_bin) \
 		-I proto \
 		--go-spire_out=. \
-		--go-spire_opt=module=github.com/spiffe/spire \
+		--go-spire_opt=module=github.com/accuknox/spire \
 		--go-spire_opt=mode=plugin \
 		$<
 
@@ -430,7 +430,7 @@ generate: $(protos:.proto=.pb.go) \
 	$(E) PATH="$(protoc_gen_go_spire_dir):$(PATH)" $(protoc_bin) \
 		-I proto \
 		--go-spire_out=. \
-		--go-spire_opt=module=github.com/spiffe/spire \
+		--go-spire_opt=module=github.com/accuknox/spire \
 		--go-spire_opt=mode=service \
 		$<
 
@@ -438,14 +438,14 @@ generate: $(protos:.proto=.pb.go) \
 	@echo "generating $@..."
 	$(E) PATH="$(protoc_gen_go_grpc_dir):$(PATH)" $(protoc_bin) \
 		-I proto \
-		--go-grpc_out=. --go-grpc_opt=module=github.com/spiffe/spire \
+		--go-grpc_out=. --go-grpc_opt=module=github.com/accuknox/spire \
 		$<
 
 %.pb.go: %.proto $(protoc_bin) $(protoc_gen_go_bin) FORCE
 	@echo "generating $@..."
 	$(E) PATH="$(protoc_gen_go_dir):$(PATH)" $(protoc_bin) \
 		-I proto \
-		--go_out=. --go_opt=module=github.com/spiffe/spire \
+		--go_out=. --go_opt=module=github.com/accuknox/spire \
 		$<
 
 generate-check:
@@ -540,4 +540,4 @@ $(protoc_gen_go_spire_bin): | go-check
 	@echo "Installing protoc-gen-go-spire $(protoc_gen_go_spire_version)..."
 	$(E)rm -rf $(protoc_gen_go_spire_base_dir)
 	$(E)mkdir -p $(protoc_gen_go_spire_dir)
-	$(E)GOBIN=$(protoc_gen_go_spire_dir) $(go_path) go install github.com/spiffe/spire-plugin-sdk/cmd/protoc-gen-go-spire@$(protoc_gen_go_spire_version)
+	$(E)GOBIN=$(protoc_gen_go_spire_dir) $(go_path) go install github.com/accuknox/spire-plugin-sdk/cmd/protoc-gen-go-spire@$(protoc_gen_go_spire_version)

@@ -4,13 +4,13 @@ import (
 	"errors"
 	"flag"
 
+	"github.com/accuknox/spire/cmd/spire-server/util"
+	commoncli "github.com/accuknox/spire/pkg/common/cli"
+	"github.com/accuknox/spire/pkg/common/cliprinter"
+	"github.com/accuknox/spire/pkg/common/idutil"
 	"github.com/mitchellh/cli"
 	entryv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/entry/v1"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/cmd/spire-server/util"
-	commoncli "github.com/spiffe/spire/pkg/common/cli"
-	"github.com/spiffe/spire/pkg/common/cliprinter"
-	"github.com/spiffe/spire/pkg/common/idutil"
 	"google.golang.org/grpc/codes"
 
 	"golang.org/x/net/context"
@@ -200,7 +200,7 @@ func (c *createCommand) parseConfig() ([]*types.Entry, error) {
 	// validate(...) ensures that either the new fields or the deprecated field is
 	// used, but never a mixture.
 	//
-	// https://github.com/spiffe/spire/issues/2700
+	// https://github.com/accuknox/spire/issues/2700
 	if e.X509SvidTtl == 0 {
 		e.X509SvidTtl = int32(c.ttl)
 	}

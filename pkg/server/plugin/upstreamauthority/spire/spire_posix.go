@@ -7,7 +7,7 @@ import (
 	"errors"
 	"net"
 
-	"github.com/spiffe/spire/pkg/common/util"
+	"github.com/accuknox/spire/pkg/common/util"
 )
 
 func (p *Plugin) getWorkloadAPIAddr() (net.Addr, error) {

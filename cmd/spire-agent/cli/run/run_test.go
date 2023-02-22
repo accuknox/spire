@@ -10,14 +10,14 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/accuknox/spire/pkg/agent"
+	"github.com/accuknox/spire/pkg/agent/workloadkey"
+	"github.com/accuknox/spire/pkg/common/log"
+	"github.com/accuknox/spire/test/spiretest"
+	"github.com/accuknox/spire/test/util"
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/spire/pkg/agent"
-	"github.com/spiffe/spire/pkg/agent/workloadkey"
-	"github.com/spiffe/spire/pkg/common/log"
-	"github.com/spiffe/spire/test/spiretest"
-	"github.com/spiffe/spire/test/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -950,7 +950,7 @@ func TestWarnOnUnknownConfig(t *testing.T) {
 			},
 		},
 		// TODO: Re-enable unused key detection for telemetry. See
-		// https://github.com/spiffe/spire/issues/1101 for more information
+		// https://github.com/accuknox/spire/issues/1101 for more information
 		//
 		// {
 		// 	msg:            "in telemetry block",

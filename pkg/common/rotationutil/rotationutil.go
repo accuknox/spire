@@ -4,7 +4,7 @@ import (
 	"crypto/x509"
 	"time"
 
-	"github.com/spiffe/spire/pkg/agent/client"
+	"github.com/accuknox/spire/pkg/agent/client"
 )
 
 // ShouldRotateX509 determines if a given SVID should be rotated, based

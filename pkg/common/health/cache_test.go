@@ -6,11 +6,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/andres-erbsen/clock"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
 )
 

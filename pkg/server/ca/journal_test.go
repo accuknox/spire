@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/spiffe/spire/test/spiretest"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/stretchr/testify/suite"
 	"google.golang.org/protobuf/proto"
 )

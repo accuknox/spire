@@ -10,11 +10,11 @@ import (
 	"log"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/pemutil"
+	"github.com/accuknox/spire/test/integration/setup/itclient"
 	bundlev1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/bundle/v1"
 	svidv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/svid/v1"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/common/pemutil"
-	"github.com/spiffe/spire/test/integration/setup/itclient"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"

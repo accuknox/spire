@@ -8,8 +8,8 @@ import (
 	"net"
 	"testing"
 
-	addr_util "github.com/spiffe/spire/pkg/common/util"
-	"github.com/spiffe/spire/test/util"
+	addr_util "github.com/accuknox/spire/pkg/common/util"
+	"github.com/accuknox/spire/test/util"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 )

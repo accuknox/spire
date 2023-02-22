@@ -3,7 +3,7 @@ package cache
 import (
 	"sync"
 
-	"github.com/spiffe/spire/proto/spire/common"
+	"github.com/accuknox/spire/proto/spire/common"
 )
 
 type lruCacheSubscriber struct {

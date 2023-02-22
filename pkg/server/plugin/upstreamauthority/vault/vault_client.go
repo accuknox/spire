@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/spiffe/spire/pkg/common/pemutil"
+	"github.com/accuknox/spire/pkg/common/pemutil"
 )
 
 const (

@@ -1,8 +1,8 @@
 package bundle
 
 import (
-	plugintypes "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/types"
-	"github.com/spiffe/spire/proto/spire/common"
+	plugintypes "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/types"
+	"github.com/accuknox/spire/proto/spire/common"
 )
 
 func RequireToCommonFromPluginProto(pb *plugintypes.Bundle) *common.Bundle {

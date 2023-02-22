@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	svidstorev1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/agent/svidstore/v1"
-	"github.com/spiffe/spire/pkg/common/pemutil"
-	"github.com/spiffe/spire/pkg/common/x509util"
+	svidstorev1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/agent/svidstore/v1"
+	"github.com/accuknox/spire/pkg/common/pemutil"
+	"github.com/accuknox/spire/pkg/common/x509util"
 )
 
 type Data struct {

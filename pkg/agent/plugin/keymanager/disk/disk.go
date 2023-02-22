@@ -8,13 +8,13 @@ import (
 	"path/filepath"
 	"sync"
 
+	keymanagerv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/agent/keymanager/v1"
+	configv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/service/common/config/v1"
+	keymanagerbase "github.com/accuknox/spire/pkg/agent/plugin/keymanager/base"
+	catalog "github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/diskutil"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/hcl"
-	keymanagerv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/agent/keymanager/v1"
-	configv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/service/common/config/v1"
-	keymanagerbase "github.com/spiffe/spire/pkg/agent/plugin/keymanager/base"
-	catalog "github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/pkg/common/diskutil"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

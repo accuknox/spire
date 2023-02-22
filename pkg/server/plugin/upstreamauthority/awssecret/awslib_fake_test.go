@@ -11,12 +11,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/pemutil"
+	"github.com/accuknox/spire/test/clock"
+	"github.com/accuknox/spire/test/testca"
+	"github.com/accuknox/spire/test/testkey"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/secretsmanager"
-	"github.com/spiffe/spire/pkg/common/pemutil"
-	"github.com/spiffe/spire/test/clock"
-	"github.com/spiffe/spire/test/testca"
-	"github.com/spiffe/spire/test/testkey"
 	"github.com/stretchr/testify/require"
 )
 

@@ -10,10 +10,10 @@ import (
 	"strings"
 	"unicode"
 
+	"github.com/accuknox/spire/pkg/agent/common/cgroups"
+	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor/k8s/sigstore"
+	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/hashicorp/go-hclog"
-	"github.com/spiffe/spire/pkg/agent/common/cgroups"
-	"github.com/spiffe/spire/pkg/agent/plugin/workloadattestor/k8s/sigstore"
-	"github.com/spiffe/spire/pkg/common/telemetry"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	corev1 "k8s.io/api/core/v1"

@@ -3,7 +3,7 @@ package nodeattestor
 import (
 	"context"
 
-	"github.com/spiffe/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/catalog"
 )
 
 // NodeAttestor attests the agent with the server

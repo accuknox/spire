@@ -4,9 +4,9 @@
 package middleware
 
 import (
+	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/shirou/gopsutil/v3/process"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/telemetry"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
