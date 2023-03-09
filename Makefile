@@ -247,6 +247,8 @@ go_build := $(go_path) go build $(go_flags) -ldflags '$(go_ldflags)' -o
 bin/%: cmd/% FORCE | go-check
 	@echo Building $@…
 	$(E)$(go_build) $@$(exe) ./$<
+	@echo Building spire-k8s-sat-plugin/…
+	$(E)$(go_build) bin/k8s-sat ./spire-k8s-sat-plugin/cmd/...
 
 bin/%: support/% FORCE | go-check
 	@echo Building $@…
@@ -266,9 +268,16 @@ bin/%: support/k8s/% FORCE | go-check
 # https://7thzero.com/blog/golang-w-sqlite3-docker-scratch-image
 build-static: tidy $(addprefix bin/static/,$(binaries))
 
+
 go_build_static := $(go_path) go build $(go_flags) -ldflags '$(go_ldflags) -linkmode external -extldflags "-static"' -o
 
 bin/static/%: cmd/% FORCE | go-check
+	@echo Building $@…
+	$(E)$(go_build_static) $@$(exe) ./$<
+	@echo Building spire-k8s-sat-plugin/…
+	$(E)$(go_build_static) bin/static/k8s-sat ./spire-k8s-sat-plugin/cmd/...
+
+bin/static/%: spire-k8s-sat-plugin/% FORCE
 	@echo Building $@…
 	$(E)$(go_build_static) $@$(exe) ./$<
 
@@ -347,6 +356,7 @@ images: $(addsuffix -image,$(binaries))
 $(eval $(call image_rule,spire-server-image,spire-server,Dockerfile))
 $(eval $(call image_rule,spire-agent-image,spire-agent,Dockerfile))
 $(eval $(call image_rule,oidc-discovery-provider-image,oidc-discovery-provider,Dockerfile))
+$(eval $(call image_rule,spire-k8s-plugin-image,k8s-sat,Dockerfile))
 
 load-images:
 	.github/workflows/scripts/load-oci-archives.sh

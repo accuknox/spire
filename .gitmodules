@@ -1,0 +1,3 @@
+[submodule "spire-k8s-sat-plugin"]
+	path = spire-k8s-sat-plugin
+	url = https://github.com/accuknox/spire-k8s-sat-plugin.git
