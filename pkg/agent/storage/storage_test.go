@@ -263,7 +263,7 @@ func TestSVID(t *testing.T) {
 }
 
 func openStorage(t *testing.T, dir string) Storage {
-	sto, err := Open(dir)
+	sto, err := Open(dir, "", "")
 	require.NoError(t, err)
 	return sto
 }
