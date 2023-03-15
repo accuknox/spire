@@ -27,6 +27,7 @@ import (
 	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/accuknox/spire/pkg/common/uptime"
 	"github.com/accuknox/spire/pkg/common/util"
+	"github.com/hashicorp/hcl"
 	_ "golang.org/x/net/trace" // registers handlers on the DefaultServeMux
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -37,16 +38,37 @@ type Agent struct {
 	c *Config
 }
 
+// Config defines the configuration for the plugin.
+type pluginConfig struct {
+	Namespace  string `hcl:"namespace"`
+	SecretName string `hcl:"secretname"`
+}
+
 // Run the agent
 // This method initializes the agent, including its plugins,
 // and then blocks on the main event loop.
 func (a *Agent) Run(ctx context.Context) error {
-	a.c.Log.Infof("Starting agent with data directory: %q", a.c.DataDir)
-	if err := diskutil.CreateDataDirectory(a.c.DataDir); err != nil {
-		return err
-	}
 
-	sto, err := storage.Open(a.c.DataDir)
+	var sto storage.Storage
+	var err error
+
+	keyManager, ok := a.c.PluginConfigs.Find("KeyManager", "keymanager-k8s")
+	newConfig := new(pluginConfig)
+	if ok {
+		if err := hcl.Decode(newConfig, keyManager.Data); err != nil {
+			return fmt.Errorf("failed to decode configuration: %v", err)
+		}
+	}
+	if newConfig.Namespace != "" && newConfig.SecretName != "" {
+		a.c.Log.Infof("Starting agent with kubernetes secret store")
+		sto, err = storage.Open("", newConfig.Namespace, newConfig.SecretName)
+	} else {
+		a.c.Log.Infof("Starting agent with data directory: %q", a.c.DataDir)
+		if err := diskutil.CreateDataDirectory(a.c.DataDir); err != nil {
+			return err
+		}
+		sto, err = storage.Open(a.c.DataDir, "", "")
+	}
 	if err != nil {
 		return fmt.Errorf("failed to open storage: %w", err)
 	}

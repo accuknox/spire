@@ -1700,7 +1700,7 @@ func svidsEqual(as, bs []*x509.Certificate) bool {
 }
 
 func openStorage(t *testing.T, dir string) storage.Storage {
-	sto, err := storage.Open(dir)
+	sto, err := storage.Open(dir, "", "")
 	require.NoError(t, err)
 	return sto
 }
