@@ -1,0 +1,160 @@
+# Default values for spire-server-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+imageMain:
+  name: spire-server
+  repository: ghcr.io/spiffe/spire-server
+  pullPolicy: Always
+  tag: 1.5.1
+imageSidecar:
+  name: spire-sidecar
+  repository: knoxuser/spire-sidecar
+  pullPolicy: Always
+  tag: v0
+
+imagePullSecrets: []
+
+serviceAccount:
+  create: true
+  name: spire-server
+
+
+# lables
+labels:
+  app: spire-server
+
+#Role
+Role:
+  create: true
+  name: spire-server-configmap-role
+  rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list", "watch", "patch"]
+
+#roleBinding
+roleBinding:
+  create: true
+  name: spire-server-configmap-role-binding
+  roleref:
+    apiGroup: rbac.authorization.k8s.io
+    kind: Role
+    name: spire-server-configmap-role
+  subjects:
+  - kind: ServiceAccount
+    name: spire-server
+
+#clusterRole
+clusterRole:
+  create: true
+  name: spire-server-trust-role
+  rules:
+  - apiGroups: ["authentication.k8s.io"]
+    resources: ["tokenreviews"]
+    verbs: ["create"]
+
+#clusterRoleBinding
+clusterRoleBinding:
+  create: true
+  name: spire-server-trust-role-binding
+  subjects:
+  - kind: ServiceAccount
+    name: spire-server
+    namespace: spire
+  roleref:
+    kind: ClusterRole
+    name: spire-server-trust-role
+    apiGroup: rbac.authorization.k8s.io
+
+#service
+service:
+  enabled: true
+  type: LoadBalancer
+  port: 8081
+  targetPort: 8081
+  protocol: TCP
+  name: api
+
+#Health Check
+healthService:
+  enabled: true
+  port: 8080
+  targetPort: 8080
+  protocol: TCP
+  name: health
+
+#ingress Layer 7 certificate Loadbalancer
+ingress:
+  enabled: false
+
+#configmapServer
+configmapServer:
+  name:  spire-server
+  enabled: true
+  file: configmaps/server.conf
+
+configmapEntry:
+  name: spire-default-entry
+  enabled: true
+  file: configmaps/entry.sh
+
+#Volumes
+volumes:
+- name: spire-config
+  configMap:
+    name: spire-server
+- name: spire-default-entry
+  configMap:
+    name: spire-default-entry
+- name: spire-server
+  hostPath:
+    path: /run/spire-server
+    type: DirectoryOrCreate
+
+#Volume-Mounts
+volumeMainMounts:
+- name: spire-config
+  mountPath: /run/spire/config
+  readOnly: true
+- name: spire-server
+  mountPath: /run/spire-server/data
+  readOnly: false
+- name: spire-server
+  mountPath: /run/spire-server/private
+  readOnly: false
+
+#Volume-Mounts
+volumeSidecarMounts:
+- name: spire-server
+  mountPath: /run/spire-server/private
+  readOnly: false
+- name: spire-default-entry
+  mountPath: /run/spire/config
+  readOnly: true
+
+#Resources 
+resources:
+  limits:
+    memory: 1000Mi
+    cpu: 500m
+  requests:
+    memory: 100Mi
+    cpu: 100m
+    
+
+#HPA
+autoscaling:
+  enabled: false
+  targetCPUUtilizationPercentage: 75
+  targetMemoryUtilizationPercentage: 75
+  minReplicas: 2
+  maxReplicas: 5
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
