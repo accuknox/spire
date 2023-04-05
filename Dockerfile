@@ -83,6 +83,7 @@ ENTRYPOINT ["/opt/spire/bin/spire-agent", "run"]
 COPY --link --from=builder /spireagentroot /
 COPY --link --from=builder /spire/bin/static/spire-agent bin/
 COPY --link --from=builder /spire/bin/static/k8s-sat /config/plugin/
+COPY --link --from=builder /spire/bin/static/keymanager-k8s /config/plugin/
 
 # OIDC Discovery Provider
 FROM spire-base AS oidc-discovery-provider
