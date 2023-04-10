@@ -11,9 +11,9 @@ imageMain:
   tag: 1.5.1
 imageSidecar:
   name: spire-sidecar
-  repository: knoxuser/spire-sidecar
+  repository: 956994857092.dkr.ecr.us-east-2.amazonaws.com/spire-sidecar
   pullPolicy: Always
-  tag: v0
+  tag: latest
 
 imagePullSecrets: []
 

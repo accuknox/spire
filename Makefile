@@ -369,6 +369,13 @@ $(eval $(call image_rule,spire-k8s-plugin-image,k8s-sat,Dockerfile))
 load-images:
 	.github/workflows/scripts/load-oci-archives.sh
 
+server-sidecar:
+
+	docker build \
+	-t spire-sidecar:latest \
+	-f Dockerfile.sidecar .
+
+
 #############################################################################
 # Windows Docker Images
 #############################################################################
@@ -384,6 +391,8 @@ $1: $3
 		.
 
 endef
+
+
 
 .PHONY: images-windows
 images-windows: $(addsuffix -windows-image,$(binaries))
