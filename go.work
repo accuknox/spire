@@ -3,4 +3,5 @@ go 1.19
 use (
 	.
 	./spire-k8s-sat-plugin
+	./spire-k8s-secret-plugin
 )

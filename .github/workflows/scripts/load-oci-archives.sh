@@ -47,6 +47,7 @@ OCI_IMAGES=(
     spire-server spire-agent oidc-discovery-provider
 )
 
+
 echo "Importing ${OCI_IMAGES[*]} into docker".
 for img in "${OCI_IMAGES[@]}"; do
     oci_dir="ocidir://${ROOTDIR}oci/${img}"
@@ -59,6 +60,6 @@ for img in "${OCI_IMAGES[@]}"; do
     regctl image export "$oci_dir@${dig}" "${platform_tar}"
     
     docker load < "${platform_tar}"
-    docker image tag "localhost/oci/${img}:latest" "${img}:latest-local"
+    docker image tag "localhost/oci/${img}:latest" "${img}:latest"
     docker image rm "localhost/oci/${img}:latest"
 done

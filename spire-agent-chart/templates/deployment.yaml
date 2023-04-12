@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.labels.app }}
+  labels:
+  {{ toYaml .Values.labels | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+    {{ toYaml .Values.labels | indent 4 }}
+  template:
+    metadata:
+      labels:
+      {{ toYaml .Values.labels | indent 4 }}
+    spec:
+      hostPID: true
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      initContainers:
+        - name: {{ .Values.imageInit.name }}
+          # This is a small image with wait-for-it, choose whatever image
+          # you prefer that waits for a service to be up. This image is built
+          # from https://github.com/lqhl/wait-for-it
+          image: "{{ .Values.imageInit.repository }}:{{ .Values.imageInit.tag | default .Chart.AppVersion }}"
+          args: 
+            {{  range .Values.imageInit.args }}
+              - {{ . | quote }}
+            {{ end }}
+      containers:
+        - name: {{ .Values.imageMain.name }}
+          image: "{{ .Values.imageMain.repository }}:{{ .Values.imageMain.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          args: ["-config", "/run/spire/config/agent.conf"]
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          volumeMounts:
+          {{- toYaml .Values.volumeMounts | nindent 12 }}  
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: {{ .Values.healthService.targetPort }}
+            failureThreshold: 2
+            initialDelaySeconds: 15
+            periodSeconds: 60
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: {{ .Values.healthService.targetPort }}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+      {{- toYaml .Values.volumes | nindent 12 }}
+        
