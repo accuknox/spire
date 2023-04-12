@@ -7,8 +7,8 @@ if [[ -S "$SOCKET_FILE" ]]; then
    /bin/spire-server entry create                                       \
         -parentID spiffe://accuknox.com/saas/agent                      \
         -spiffeID spiffe://accuknox.com/saas/cluster-onboarding         \
-        -selector k8s_sat:sa:cluster-onboarding                         \
-        -selector k8s_sat:pod-label:app:cluster-onboarding              \
+        -selector k8s_sat:sa:cluster-onboard                            \
+        -selector k8s_sat:pod-label:app:cluster-onboarding-service      \
         -socketPath $SOCKET_FILE                                    &&  \
    /bin/spire-server entry create                                       \
         -parentID spiffe://accuknox.com/saas/agent                      \

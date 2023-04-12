@@ -39,21 +39,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # ratchet:actions/checkout@v3.3.0
+        with:
+          token: ${{ secrets.V_GIT_KEY }}
+          submodules: true
       - name: Setup go
         uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # ratchet:actions/setup-go@v3.5.0
         with:
           go-version: ${{ env.GO_VERSION }}
       - name: Set git token
-        run: git remote set-url origin https://${{ secrets.V_GIT_KEY }}@github.com/accuknox/spire.git
-      - name: Update submodules
-        run: git submodule update --init --recursive 
+        run: git config --global url."https://${{ secrets.V_GIT_KEY }}@github.com/".insteadOf "https://github.com/"
       - name: Setup dep cache
         uses: actions/cache@6998d139ddd3e68c71e9e398d8e40b71a2f39812 # ratchet:actions/cache@v3.2.4
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
       - name: Pull go deps
-        run: go mod download
+        run: make update-dep
 
   artifacts:
     name: artifacts (linux)
@@ -127,7 +128,7 @@ jobs:
   
   docker-image-scan:
     runs-on: ubuntu-latest
-    needs: [tag-validate]
+    needs: [tag-validate,cache-deps,images]
     if: always() && !contains(needs.tag-validate.result, 'failure')
     steps:
     - name: Run Trivy vulnerability scanner
