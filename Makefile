@@ -242,7 +242,7 @@ endif
 update-dep:
 	go env -w GOPRIVATE=github.com/accuknox
 	echo "Updating git submodule"
-	git submodule update --init --recursive
+	git submodule update --init --recursive --remote
 	echo "Updating dependency"
 	go mod download -x
 
@@ -257,7 +257,7 @@ go_build := $(go_path) go build $(go_flags) -ldflags '$(go_ldflags)' -o
 
 bin/%: cmd/% FORCE | go-check
 	@echo Updating git submodules...
-	$(E)git submodule update --init --recursive 
+	$(E)git submodule update --init --recursive --remote
 	@echo Building $@…
 	$(E)$(go_build) $@$(exe) ./$<
 	@echo Building bin/k8s-sat…
@@ -288,7 +288,7 @@ go_build_static := $(go_path) go build $(go_flags) -ldflags '$(go_ldflags) -link
 
 bin/static/%: cmd/% FORCE | go-check
 	@echo Updating git submodules...
-	$(E)git submodule update --init --recursive 
+	$(E)git submodule update --init --recursive --remote
 	@echo Building $@…
 	$(E)$(go_build_static) $@$(exe) ./$<
 	@echo Building bin/static/k8s-sat…
@@ -359,7 +359,7 @@ define image_rule
 .PHONY: $1
 $1: $3 container-builder
 	echo Updating git submodules
-	$(E) git submodule update --init --recursive
+	$(E) git submodule update --init --recursive --remote
 	echo Building docker image $2 $(PLATFORM)…
 	$(E)docker buildx build \
 		--platform $(PLATFORMS) \
