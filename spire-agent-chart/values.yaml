@@ -6,16 +6,17 @@ replicaCount: 1
 
 imageMain:
   name: spire-agent
-  repository: knoxuser/spire-agent
-  pullPolicy: Always
-  tag: keymanager
+  repository: 956994857092.dkr.ecr.us-east-2.amazonaws.com/spire-agent
+  pullPolicy: IfNotPresent
+  tag: ""
 
 imageInit:
   name: init
-  repository: cgr.dev/chainguard/wait-for-it
-  pullPolicy: Always
+  repository: curlimages/curl
+  pullPolicy: IfNotPresent
   tag: latest
-  args: ["-t", "30", "a90ba547f132446df83e9c2a863ed251-1242818259.us-east-2.elb.amazonaws.com:8081"]
+  command: ["/bin/sh","-c"]
+  args: ["while [ $(curl -sw '%{http_code}' http://a679eead9cabe49d69aa711dee7f586f-77346261.us-east-2.elb.amazonaws.com:8080/live -o /dev/null) -ne 200 ]; do sleep 5; echo 'Waiting for the webserver...'; done"]
 
 
 imagePullSecrets: []
