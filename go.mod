@@ -58,8 +58,8 @@ require (
 	github.com/open-policy-agent/opa v0.49.2
 	github.com/prometheus/client_golang v1.14.0
 	github.com/shirou/gopsutil/v3 v3.23.1
-	github.com/sigstore/cosign v1.13.1
-	github.com/sigstore/rekor v0.12.1-0.20220915152154-4bb6f441c1b2
+	github.com/sigstore/cosign v1.3.1
+	github.com/sigstore/rekor v0.3.0
 	github.com/sigstore/sigstore v1.5.2
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spiffe/spire-api-sdk v1.5.5
@@ -276,7 +276,7 @@ require (
 	github.com/segmentio/ksuid v1.0.4 // indirect
 	github.com/shibumi/go-pathspec v1.3.0 // indirect
 	github.com/shopspring/decimal v1.2.0 // indirect
-	github.com/sigstore/fulcio v0.6.0 // indirect
+	github.com/sigstore/fulcio v0.1.2-0.20210831152525-42f7422734bb // indirect
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966 // indirect
 	github.com/soheilhy/cmux v0.1.5 // indirect
 	github.com/spf13/afero v1.9.2 // indirect

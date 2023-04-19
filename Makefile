@@ -236,6 +236,17 @@ ifeq ($(git_dirty),)
 endif
 
 #############################################################################
+# Update dependencies 
+#############################################################################
+
+update-dep:
+	go env -w GOPRIVATE=github.com/accuknox
+	echo "Updating git submodule"
+	git submodule update --init --recursive
+	echo "Updating dependency"
+	go mod download -x
+
+#############################################################################
 # Build Targets
 #############################################################################
 
@@ -347,6 +358,8 @@ container-builder:
 define image_rule
 .PHONY: $1
 $1: $3 container-builder
+	echo Updating git submodules
+	$(E) git submodule update --init --recursive
 	echo Building docker image $2 $(PLATFORM)…
 	$(E)docker buildx build \
 		--platform $(PLATFORMS) \
@@ -370,7 +383,7 @@ load-images:
 	.github/workflows/scripts/load-oci-archives.sh
 
 server-sidecar:
-
+	echo "BUilding server sidecar image"
 	docker build \
 	-t spire-sidecar:latest \
 	-f Dockerfile.sidecar .

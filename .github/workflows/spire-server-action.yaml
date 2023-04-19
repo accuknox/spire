@@ -45,8 +45,6 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
       - name: Set git token
         run: git remote set-url origin https://${{ secrets.V_GIT_KEY }}@github.com/accuknox/spire.git
-      - name: Update submodules
-        run: git submodule update --init --recursive 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@e81a89b1732b9c48d79cd809d8d81d79c4647a18 # ratchet:docker/setup-qemu-action@v2.1.0
       - name: Set up Docker Buildx
@@ -67,7 +65,7 @@ jobs:
   
   docker-image-scan:
     runs-on: ubuntu-latest
-    needs: [tag-validate]
+    needs: [tag-validate,cache-deps,images]
     if: always() && !contains(needs.tag-validate.result, 'failure')
     steps:
     - name: Run Trivy vulnerability scanner
