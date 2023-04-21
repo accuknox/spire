@@ -115,6 +115,12 @@ jobs:
         run: make load-images
       - name: Tag docker images
         run: docker image tag ${{ env.IMAGE_NAME }}:latest ${{ env.REPO }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
+      - name: AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_DEV_ACCESS_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_DEV_SECRET_ID }}
+          aws-region: us-east-2
       - name: docker push to ECR
         run: |
           aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 956994857092.dkr.ecr.us-east-2.amazonaws.com
