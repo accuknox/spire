@@ -124,7 +124,7 @@ jobs:
       - name: docker push to ECR
         run: |
           aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 956994857092.dkr.ecr.us-east-2.amazonaws.com
-          docker push ${{ env.IMAGE_NAME }}:latest ${{ env.REPO }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
+          docker push ${{ env.REPO }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
       - name: Helm push to ECR
         run: |
           aws ecr get-login-password --region us-east-2 | helm registry login --username AWS --password-stdin 956994857092.dkr.ecr.us-east-2.amazonaws.com
