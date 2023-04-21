@@ -129,7 +129,7 @@ jobs:
         run: |
           aws ecr get-login-password --region us-east-2 | helm registry login --username AWS --password-stdin ${{ env.REPO }}
           helm package ${{ env.CHART_PATH }}
-          helm push ${{ env.CHART_NAME }}-*.tgz oci://${{ env.REPO }}/${{ env.CHART_NAME}}
+          helm push ${{ env.CHART_NAME }}-*.tgz oci://${{ env.REPO }}
   success:
     runs-on: ubuntu-20.04
     needs: [artifacts]
