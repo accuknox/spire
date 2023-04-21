@@ -120,19 +120,16 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_DEV_ACCESS_ID }}
           aws-secret-access-key: ${{ secrets.AWS_DEV_SECRET_ID }}
-          aws-region: us-east-2
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1  
+          aws-region: us-east-2 
       - name: docker push to ECR
         run: |
           aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin ${{ env.REPO }}
           docker push ${{ env.REPO }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
       - name: Helm push to ECR
         run: |
-          aws ecr get-login-password --region us-east-2 | helm registry login --username AWS --password-stdin 956994857092.dkr.ecr.us-east-2.amazonaws.com
+          aws ecr get-login-password --region us-east-2 | helm registry login --username AWS --password-stdin ${{ env.REPO }}
           helm package ${{ env.CHART_PATH }}
-          helm push ${{ env.CHART_NAME }}-*.tgz ${{ env.REPO }}
+          helm push ${{ env.CHART_NAME }}-*.tgz oci://${{ env.REPO }}/${{ env.CHART_NAME}}
   success:
     runs-on: ubuntu-20.04
     needs: [artifacts]
