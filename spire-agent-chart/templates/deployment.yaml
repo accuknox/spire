@@ -23,6 +23,10 @@ spec:
           # you prefer that waits for a service to be up. This image is built
           # from https://github.com/lqhl/wait-for-it
           image: "{{ .Values.imageInit.repository }}:{{ .Values.imageInit.tag | default .Chart.AppVersion }}"
+          command: 
+            {{  range .Values.imageInit.command }}
+              - {{ . | quote }}
+            {{ end }}
           args: 
             {{  range .Values.imageInit.args }}
               - {{ . | quote }}
