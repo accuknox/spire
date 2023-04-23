@@ -358,18 +358,24 @@ func (m *manager) runBundleObserver(ctx context.Context) error {
 }
 
 func (m *manager) storeSVID(svidChain []*x509.Certificate, reattestable bool) {
+	m.c.Log.Debugf("Updating expiring SVIDs in K8S Secrets")
 	if err := m.storage.StoreSVID(svidChain, reattestable); err != nil {
 		m.c.Log.WithError(err).Warn("Could not store SVID")
+	} else {
+		m.c.Log.Debugf("SVID updated in K8S Secrets")
 	}
 }
 
 func (m *manager) storeBundle(bundle *bundleutil.Bundle) {
+	m.c.Log.Debugf("Updating expiring Bundle in K8S Secrets")
 	var rootCAs []*x509.Certificate
 	if bundle != nil {
 		rootCAs = bundle.RootCAs()
 	}
 	if err := m.storage.StoreBundle(rootCAs); err != nil {
 		m.c.Log.WithError(err).Error("Could not store bundle")
+	} else {
+		m.c.Log.Debugf("Bundle updated in K8S Secrets")
 	}
 }
 

@@ -3,7 +3,6 @@ package storage
 import (
 	"crypto/x509"
 	"encoding/json"
-	"encoding/pem"
 	"errors"
 	"fmt"
 	"io"
@@ -17,6 +16,7 @@ import (
 	"github.com/accuknox/spire/pkg/common/diskutil"
 	"github.com/accuknox/spire/pkg/common/pemutil"
 	"github.com/accuknox/spire/pkg/common/util"
+	log "github.com/sirupsen/logrus"
 )
 
 var (
@@ -120,13 +120,6 @@ type storage struct {
 func (s *storage) LoadBundle() ([]*x509.Certificate, error) {
 	s.mtx.RLock()
 	defer s.mtx.RUnlock()
-
-	data, _, err := loadDataFromK8S(s.Namespace, s.SecretName)
-	if err != nil {
-		return nil, err
-	}
-	s.data.Bundle = data.Bundle
-
 	if len(s.data.Bundle) == 0 {
 		return nil, ErrNotCached
 	}
@@ -137,7 +130,7 @@ func (s *storage) StoreBundle(bundle []*x509.Certificate) error {
 	s.mtx.Lock()
 	defer s.mtx.Unlock()
 
-	if s.dir == "" {
+	if s.Namespace != "" && s.SecretName != "" {
 		if err := storeLegacyBundleToK8S(s.Namespace, s.SecretName, bundle); err != nil {
 			return err
 		}
@@ -151,7 +144,7 @@ func (s *storage) StoreBundle(bundle []*x509.Certificate) error {
 	data := s.data
 	data.Bundle = bundle
 
-	if s.Namespace != "" && s.SecretName != "" && s.dir == "" {
+	if s.Namespace != "" && s.SecretName != "" {
 		if err := storeDataToK8S(s.Namespace, s.SecretName, data); err != nil {
 			return err
 		}
@@ -168,14 +161,6 @@ func (s *storage) StoreBundle(bundle []*x509.Certificate) error {
 func (s *storage) LoadSVID() ([]*x509.Certificate, bool, error) {
 	s.mtx.RLock()
 	defer s.mtx.RUnlock()
-
-	data, _, err := loadDataFromK8S(s.Namespace, s.SecretName)
-	if err != nil {
-		return nil, false, err
-	}
-	s.data.SVID = data.SVID
-	s.data.Reattestable = data.Reattestable
-
 	if len(s.data.SVID) == 0 {
 		return nil, false, ErrNotCached
 	}
@@ -185,11 +170,10 @@ func (s *storage) LoadSVID() ([]*x509.Certificate, bool, error) {
 func (s *storage) StoreSVID(svid []*x509.Certificate, reattestable bool) error {
 	s.mtx.Lock()
 	defer s.mtx.Unlock()
-	if s.dir == "" {
+	if s.Namespace != "" && s.SecretName != "" {
 		if err := storeLegacySVIDToK8S(s.Namespace, s.SecretName, svid); err != nil {
 			return err
 		}
-
 	} else {
 
 		if err := storeLegacySVID(s.dir, svid); err != nil {
@@ -200,7 +184,7 @@ func (s *storage) StoreSVID(svid []*x509.Certificate, reattestable bool) error {
 	data.SVID = svid
 	data.Reattestable = reattestable
 
-	if s.Namespace != "" && s.SecretName != "" && s.dir == "" {
+	if s.Namespace != "" && s.SecretName != "" {
 		if err := storeDataToK8S(s.Namespace, s.SecretName, data); err != nil {
 			return err
 		}
@@ -217,15 +201,19 @@ func (s *storage) StoreSVID(svid []*x509.Certificate, reattestable bool) error {
 func (s *storage) DeleteSVID() error {
 	s.mtx.Lock()
 	defer s.mtx.Unlock()
-
-	if err := deleteLegacySVID(s.dir); err != nil {
-		return err
+	if s.Namespace != "" && s.SecretName != "" {
+		if err := util.DeleteK8sSecrets(s.Namespace, s.SecretName, "svid-legacy"); err != nil {
+			return err
+		}
+	} else {
+		if err := deleteLegacySVID(s.dir); err != nil {
+			return err
+		}
 	}
-
 	data := s.data
 	data.SVID = nil
 	data.Reattestable = false
-	if s.Namespace != "" && s.SecretName != "" && s.dir == "" {
+	if s.Namespace != "" && s.SecretName != "" {
 		if err := storeDataToK8S(s.Namespace, s.SecretName, data); err != nil {
 			return err
 		}
@@ -326,43 +314,23 @@ func storeData(dir string, data storageData) error {
 func storeDataToK8S(namespace, secret string, data storageData) error {
 
 	mapData := make(map[string][]byte)
-	if data.SVID != nil {
-		for i, cert := range data.SVID {
-			block := pem.Block{Type: "CERTIFICATE", Bytes: cert.Raw}
-			pemBytes := pem.EncodeToMemory(&block)
-			if isUnique(mapData, pemBytes) {
-				key := fmt.Sprintf("svid-%d", i)
-				mapData[key] = pemBytes
-			}
-		}
-		if data.Reattestable {
-			mapData["reattestable"] = []byte{1}
-		} else {
-			mapData["reattestable"] = []byte{0}
-		}
-	}
 
-	if data.Bundle != nil {
-		for i, cert := range data.Bundle {
-			block := pem.Block{Type: "CERTIFICATE", Bytes: cert.Raw}
-			pemBytes := pem.EncodeToMemory(&block)
-			if isUnique(mapData, pemBytes) {
-				key := fmt.Sprintf("bundle-%d", i)
-				mapData[key] = pemBytes
-			}
-		}
+	marshaled, err := json.Marshal(data)
+	if err != nil {
+		return fmt.Errorf("failed to marshal data: %w", err)
 	}
 
 	now := time.Now()
 
-	modifiedTime, err := now.MarshalBinary()
+	td, err := now.MarshalBinary()
 	if err != nil {
-		return err
+		log.WithError(err).Info("Could not marshal time.")
 	}
 
-	mapData["modified"] = modifiedTime
-	return util.CreateK8sSecrets(namespace, secret, mapData)
+	mapData["agent-data"] = marshaled
+	mapData["agent-data-time"] = td
 
+	return util.CreateK8sSecrets(namespace, secret, mapData)
 }
 
 func loadData(dir string) (storageData, time.Time, error) {
@@ -385,6 +353,8 @@ func loadDataFromK8S(namespace, secretname string) (storageData, time.Time, erro
 	var data storageData
 	secret, err := util.GetK8sSecrets(namespace, secretname)
 
+	var dataByte, timeByte []byte
+
 	if err != nil {
 		if strings.Contains(err.Error(), "not found") {
 			return storageData{}, time.Time{}, nil
@@ -392,69 +362,27 @@ func loadDataFromK8S(namespace, secretname string) (storageData, time.Time, erro
 		return storageData{}, time.Time{}, err
 	}
 
-	var bundle []*x509.Certificate
 	for key, value := range secret.Data {
-		if !strings.HasPrefix(key, "bundle-") {
-			continue
+		if key == "agent-data" {
+			dataByte = value
 		}
-
-		block, _ := pem.Decode(value)
-		if block == nil {
-			return storageData{}, time.Time{}, fmt.Errorf("failed to decode certificate data for key %q", key)
+		if key == "agent-data-time" {
+			timeByte = value
 		}
-		cert, err := x509.ParseCertificate(block.Bytes)
-		if err != nil {
-			return storageData{}, time.Time{}, fmt.Errorf("failed to parse certificate data for key %q: %w", key, err)
-		}
-		bundle = append(bundle, cert)
 	}
-	var svid []*x509.Certificate
-
-	for key, value := range secret.Data {
-		if !strings.HasPrefix(key, "svid-") {
-			continue
-		}
-
-		block, _ := pem.Decode(value)
-		if block == nil {
-			return storageData{}, time.Time{}, fmt.Errorf("failed to decode certificate data for key %q", key)
-		}
-		cert, err := x509.ParseCertificate(block.Bytes)
-		if err != nil {
-			return storageData{}, time.Time{}, fmt.Errorf("failed to parse certificate data for key %q: %w", key, err)
-		}
-		svid = append(svid, cert)
+	if err := json.Unmarshal(dataByte, &data); err != nil {
+		return storageData{}, time.Time{}, fmt.Errorf("failed to unmarshal data: %w", err)
 	}
 
-	value, ok := secret.Data["reattestable"]
-	if !ok {
-		return storageData{}, time.Time{}, fmt.Errorf("key not found in secret data")
-	}
-	if len(value) != 1 {
-		return storageData{}, time.Time{}, fmt.Errorf("value associated with key is not a valid boolean")
-	}
+	var td time.Time
 
-	reattestable := value[0] != 0
-
-	data = storageData{
-		SVID:         svid,
-		Bundle:       bundle,
-		Reattestable: reattestable,
-	}
-	timeByte, ok := secret.Data["modified"]
-	if !ok {
-		return storageData{}, time.Time{}, fmt.Errorf("key not found in secret data")
-	}
-
-	var modifiedTime time.Time
-
-	err = modifiedTime.UnmarshalBinary(timeByte)
+	err = td.UnmarshalBinary(timeByte)
 	if err != nil {
-		return storageData{}, time.Time{}, fmt.Errorf("key not found in secret data")
+		log.WithError(err).Info("Could not unmarshal time. Updating time as current time")
+		td = time.Now()
 	}
 
-	return data, modifiedTime, nil
-
+	return data, td, nil
 }
 
 func parseCertificates(certsPEM [][]byte) ([]*x509.Certificate, error) {
