@@ -2,11 +2,11 @@ package util
 
 import (
 	"context"
-	"flag"
 	"os"
 	"path/filepath"
+	"strings"
 
-	logr "github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 
 	"k8s.io/client-go/kubernetes"
 	rest "k8s.io/client-go/rest"
@@ -17,60 +17,60 @@ import (
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 )
 
-var parsed bool = false
-var kubeconfig *string
+var kubeconfig string
 
 func isInCluster() bool {
 	if _, ok := os.LookupEnv("KUBERNETES_PORT"); ok {
 		return true
 	}
-
 	return false
 }
 
 func ConnectK8sClient() *kubernetes.Clientset {
+	if kubeconfig == "" {
+		kubeconfig = setDefaultKubePath()
+	}
 	if isInCluster() {
 		return ConnectInClusterAPIClient()
 	}
 
-	return ConnectLocalAPIClient()
+	return ConnectLocalAPIClient(kubeconfig)
 }
 
-func ConnectLocalAPIClient() *kubernetes.Clientset {
-	if !parsed {
-		homeDir := ""
-		if h := os.Getenv("HOME"); h != "" {
-			homeDir = h
-		} else {
-			homeDir = os.Getenv("USERPROFILE") // windows
-		}
+func setDefaultKubePath() string {
 
-		envKubeConfig := os.Getenv("KUBECONFIG")
-		if envKubeConfig != "" {
-			kubeconfig = &envKubeConfig
-		} else {
-			if home := homeDir; home != "" {
-				kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
-			} else {
-				kubeconfig = flag.String("kubeconfig", "", "absolute path to the kubeconfig file")
-			}
-			flag.Parse()
-		}
-
-		parsed = true
+	homeDir := ""
+	if h := os.Getenv("HOME"); h != "" {
+		homeDir = h
+	} else {
+		homeDir = os.Getenv("USERPROFILE") // windows
 	}
 
+	envKubeConfig := os.Getenv("KUBECONFIG")
+	if envKubeConfig != "" {
+		kubeconfig = envKubeConfig
+	} else {
+		if home := homeDir; home != "" {
+			kubeconfig = filepath.Join(home, ".kube", "config")
+		}
+	}
+
+	return kubeconfig
+}
+
+func ConnectLocalAPIClient(kubeConfig string) *kubernetes.Clientset {
+
 	// use the current context in kubeconfig
-	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
+	config, err := clientcmd.BuildConfigFromFlags("", kubeConfig)
 	if err != nil {
-		logr.WithError(err).Error("Failed to create config")
+		log.WithError(err).Error("Failed to create config")
 		return nil
 	}
 
 	// creates the clientset
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
-		logr.WithError(err).Error("Failed to create clientset")
+		log.WithError(err).Error("Failed to create clientset")
 		return nil
 	}
 
@@ -78,45 +78,17 @@ func ConnectLocalAPIClient() *kubernetes.Clientset {
 }
 
 func ConnectInClusterAPIClient() *kubernetes.Clientset {
-	host := ""
-	port := ""
-	token := ""
-
-	if val, ok := os.LookupEnv("KUBERNETES_SERVICE_HOST"); ok {
-		host = val
-	} else {
-		host = "127.0.0.1"
-	}
-
-	if val, ok := os.LookupEnv("KUBERNETES_PORT_443_TCP_PORT"); ok {
-		port = val
-	} else {
-		port = "6443"
-	}
-
-	read, err := os.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/token")
+	config, err := rest.InClusterConfig()
 	if err != nil {
-		logr.WithError(err).Error("Failed to read token")
+		log.WithError(err).Error("Failed to create clientset")
 		return nil
 	}
 
-	token = string(read)
-
-	// create the configuration by token
-	kubeConfig := &rest.Config{
-		Host:        "https://" + host + ":" + port,
-		BearerToken: token,
-		TLSClientConfig: rest.TLSClientConfig{
-			Insecure: true,
-		},
-	}
-
-	if client, err := kubernetes.NewForConfig(kubeConfig); err != nil {
-		logr.WithError(err).Error("Failed to create client")
+	clientset, err := kubernetes.NewForConfig(config)
+	if err != nil {
 		return nil
-	} else {
-		return client
 	}
+	return clientset
 }
 
 func CreateK8sSecrets(namespace, secretname string, data map[string][]byte) error {
@@ -133,18 +105,16 @@ func CreateK8sSecrets(namespace, secretname string, data map[string][]byte) erro
 
 	oldSec, err := GetK8sSecrets(namespace, secretname)
 	if err == nil {
-
-		oldData := oldSec.Data
-
-		for k, v := range oldData {
-			data[k] = v
+		log.WithField("secret", oldSec.Name).Info("Found k8s secret with same name. Trying to update existing secret")
+		for k, value := range data {
+			oldSec.Data[k] = value
 		}
-		oldSec.Data = data
 		_, err := client.CoreV1().Secrets(namespace).Update(context.Background(), &oldSec, metav1.UpdateOptions{})
 		if err != nil {
 			return err
 		}
 	} else {
+		log.Info("No k8s secret found. Trying to create new secret")
 		_, err = client.CoreV1().Secrets(namespace).Create(context.Background(), secret, metav1.CreateOptions{})
 
 		if err != nil {
@@ -159,4 +129,32 @@ func GetK8sSecrets(namespace, secretname string) (v1.Secret, error) {
 	client := ConnectK8sClient()
 	secret, err := client.CoreV1().Secrets(namespace).Get(context.Background(), secretname, metav1.GetOptions{})
 	return *secret, err
+}
+
+func deleteSecret(namespace, secretname string) error {
+	client := ConnectK8sClient()
+	return client.CoreV1().Secrets(namespace).Delete(context.Background(), secretname, metav1.DeleteOptions{})
+}
+
+func DeleteK8sSecrets(namespace, secretname, typeString string) error {
+	secret, err := GetK8sSecrets(namespace, secretname)
+	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			return nil
+		}
+		return err
+	}
+	log.WithField("secret", secret.Name).Info("Secret found. Trying to delete now")
+	mapData := make(map[string][]byte)
+	for key, value := range secret.Data {
+		if !strings.Contains(key, typeString) {
+			mapData[key] = value
+		}
+	}
+	err = deleteSecret(namespace, secretname)
+	if err != nil {
+		return err
+	}
+	log.WithField("secret=%v", secret.Name).Info("Successfully deleted secret")
+	return CreateK8sSecrets(namespace, secretname, mapData)
 }
