@@ -31,7 +31,7 @@ spec:
         - name: {{ .Values.imageMain.name }}
           image: "{{ .Values.imageMain.repository }}:{{ .Values.imageMain.tag | default .Chart.AppVersion }}"
           imagePullPolicy: Always
-          args: ["-config", "/run/spire/config/agent.conf"]
+          args: ["-config", "/run/spire-agent/config/agent.conf"]
           ports:
             - containerPort: {{ .Values.service.targetPort }}
           volumeMounts:
@@ -40,7 +40,7 @@ spec:
             httpGet:
               path: /live
               port: {{ .Values.healthService.targetPort }}
-            failureThreshold: 2
+            failureThreshold: 10
             initialDelaySeconds: 15
             periodSeconds: 60
             timeoutSeconds: 3
@@ -50,6 +50,7 @@ spec:
               port: {{ .Values.healthService.targetPort }}
             initialDelaySeconds: 5
             periodSeconds: 5
+            failureThreshold: 10
       volumes:
       {{- toYaml .Values.volumes | nindent 12 }}
         
