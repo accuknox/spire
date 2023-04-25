@@ -21,7 +21,7 @@ spec:
           image: "{{ .Values.imageMain.repository }}:{{ .Values.imageMain.tag | default .Chart.AppVersion }}"
           args:
             - -config
-            - /run/spire/config/server.conf
+            - /run/spire-server/config/server.conf
           ports:
             - containerPort: {{ .Values.service.targetPort }}
           volumeMounts:
@@ -30,7 +30,7 @@ spec:
             httpGet:
               path: /live
               port: {{ .Values.healthService.targetPort }}
-            failureThreshold: 2
+            failureThreshold: 10
             initialDelaySeconds: 15
             periodSeconds: 60
             timeoutSeconds: 3
@@ -40,6 +40,7 @@ spec:
               port: {{ .Values.healthService.targetPort }}
             initialDelaySeconds: 5
             periodSeconds: 5
+            failureThreshold: 10
         - name: {{ .Values.imageSidecar.name }}
           image: "{{ .Values.imageSidecar.repository }}:{{ .Values.imageSidecar.tag | default .Chart.AppVersion }}"
           command: ["/bin/sh","-c","sleep infinity"]
@@ -50,6 +51,6 @@ spec:
               command: 
               - /bin/sh
               - -c
-              - cp /run/spire/config/entry.sh /tmp && chmod +x /tmp/entry.sh && /tmp/entry.sh
+              - cp /run/spire-server/config/entry.sh /tmp && chmod +x /tmp/entry.sh && /tmp/entry.sh
       volumes:
         {{- toYaml .Values.volumes | nindent 12 }}

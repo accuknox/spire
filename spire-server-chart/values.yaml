@@ -11,9 +11,9 @@ imageMain:
   tag: 1.5.1
 imageSidecar:
   name: spire-sidecar
-  repository: 956994857092.dkr.ecr.us-east-2.amazonaws.com/spire-sidecar
+  repository: accuknox/spire-sidecar
   pullPolicy: Always
-  tag: latest
+  tag: v0.1
 
 imagePullSecrets: []
 
@@ -95,11 +95,18 @@ configmapServer:
   name:  spire-server
   enabled: true
   file: configmaps/server.conf
-
+#configmap default entry
 configmapEntry:
   name: spire-default-entry
   enabled: true
   file: configmaps/entry.sh
+
+#configmap ca certificates
+configmapCAServer:
+  name:  spire-server-ca
+  enabled: true
+  crt: configmaps/upstream_ca.crt
+  key: configmaps/upstream_ca.key
 
 #Volumes
 volumes:
@@ -109,30 +116,30 @@ volumes:
 - name: spire-default-entry
   configMap:
     name: spire-default-entry
-- name: spire-server
-  hostPath:
-    path: /run/spire-server
-    type: DirectoryOrCreate
+- name: spire-server-ca
+  configMap:
+    name: spire-server-ca
+- name: spire-server-socket
+  emptyDir: {}
 
 #Volume-Mounts
 volumeMainMounts:
 - name: spire-config
-  mountPath: /run/spire/config
+  mountPath: /run/spire-server/config
   readOnly: true
-- name: spire-server
-  mountPath: /run/spire-server/data
-  readOnly: false
-- name: spire-server
-  mountPath: /run/spire-server/private
-  readOnly: false
+- name: spire-server-ca
+  mountPath: /run/spire-server/ca
+  readOnly: true
+- name: spire-server-socket
+  mountPath: /tmp/spire-server/private
 
 #Volume-Mounts
 volumeSidecarMounts:
-- name: spire-server
-  mountPath: /run/spire-server/private
+- name: spire-server-socket
+  mountPath: /tmp/spire-server/private
   readOnly: false
 - name: spire-default-entry
-  mountPath: /run/spire/config
+  mountPath: /run/spire-server/config
   readOnly: true
 
 #Resources 

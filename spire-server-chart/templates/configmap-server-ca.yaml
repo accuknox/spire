@@ -1,0 +1,9 @@
+{{- if .Values.configmapCAServer.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata: 
+  name: {{ .Values.configmapCAServer.name}} 
+data:
+  upstream_ca.crt: {{ tpl (.Files.Get  .Values.configmapCAServer.crt) . | quote }}
+  upstream_ca.key: {{ tpl (.Files.Get  .Values.configmapCAServer.key) . | quote }}
+{{- end }}

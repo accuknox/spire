@@ -236,6 +236,14 @@ ifeq ($(git_dirty),)
 endif
 
 #############################################################################
+# Update dependencies 
+#############################################################################
+
+update-dep:
+	echo "Updating dependency"
+	go mod download -x
+
+#############################################################################
 # Build Targets
 #############################################################################
 
@@ -245,8 +253,6 @@ build: tidy $(addprefix bin/,$(binaries))
 go_build := $(go_path) go build $(go_flags) -ldflags '$(go_ldflags)' -o
 
 bin/%: cmd/% FORCE | go-check
-	@echo Updating git submodules...
-	$(E)git submodule update --init --recursive 
 	@echo Building $@…
 	$(E)$(go_build) $@$(exe) ./$<
 	@echo Building bin/k8s-sat…
@@ -276,8 +282,6 @@ build-static: tidy $(addprefix bin/static/,$(binaries))
 go_build_static := $(go_path) go build $(go_flags) -ldflags '$(go_ldflags) -linkmode external -extldflags "-static"' -o
 
 bin/static/%: cmd/% FORCE | go-check
-	@echo Updating git submodules...
-	$(E)git submodule update --init --recursive 
 	@echo Building $@…
 	$(E)$(go_build_static) $@$(exe) ./$<
 	@echo Building bin/static/k8s-sat…
@@ -370,7 +374,7 @@ load-images:
 	.github/workflows/scripts/load-oci-archives.sh
 
 server-sidecar:
-
+	echo "BUilding server sidecar image"
 	docker build \
 	-t spire-sidecar:latest \
 	-f Dockerfile.sidecar .

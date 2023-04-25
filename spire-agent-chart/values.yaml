@@ -6,16 +6,16 @@ replicaCount: 1
 
 imageMain:
   name: spire-agent
-  repository: knoxuser/spire-agent
+  repository: accuknox/spire-agent
   pullPolicy: Always
-  tag: keymanager
+  tag: v0.1
 
 imageInit:
   name: init
   repository: cgr.dev/chainguard/wait-for-it
   pullPolicy: Always
   tag: latest
-  args: ["-t", "30", "a90ba547f132446df83e9c2a863ed251-1242818259.us-east-2.elb.amazonaws.com:8081"]
+  args: ["-t", "30", "a679eead9cabe49d69aa711dee7f586f-77346261.us-east-2.elb.amazonaws.com:8081"]
 
 
 imagePullSecrets: []
@@ -84,19 +84,16 @@ volumes:
 - name: spire-config
   configMap:
     name: spire-agent
-- name: spire-agent-socket
-  hostPath:
-    path: /run/spire/sockets
-    type: DirectoryOrCreate
+- name: spire-agent-data
+  emptyDir: {}
 
 #Volume-Mounts
 volumeMounts:
 - name: spire-config
-  mountPath: /run/spire/config
+  mountPath: /run/spire-agent/config
   readOnly: true
-- name: spire-agent-socket
-  mountPath: /run/spire/sockets
-  readOnly: false
+- name: spire-agent-data
+  mountPath: /run/spire-agent/data
 
 #Resources 
 resources:
