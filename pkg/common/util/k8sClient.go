@@ -106,6 +106,9 @@ func CreateK8sSecrets(namespace, secretname string, data map[string][]byte) erro
 	oldSec, err := GetK8sSecrets(namespace, secretname)
 	if err == nil {
 		log.WithField("secret", oldSec.Name).Info("Found k8s secret with same name. Trying to update existing secret")
+		if oldSec.Data == nil {
+			oldSec.Data = map[string][]byte{}
+		}
 		for k, value := range data {
 			oldSec.Data[k] = value
 		}
