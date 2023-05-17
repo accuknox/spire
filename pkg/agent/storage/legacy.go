@@ -34,8 +34,12 @@ func getLegacyDataFromK8SSecret(namespace, secretname, dataType string) ([]byte,
 
 	var timeByte, bundleByte []byte
 
+	if secret.Data == nil {
+		err = ErrNoData
+	}
+
 	if err != nil {
-		if strings.Contains(err.Error(), "not found") {
+		if errors.Is(err, ErrNotFound) || errors.Is(err, ErrNoData) {
 			return nil, nil, nil
 		}
 		return nil, nil, err

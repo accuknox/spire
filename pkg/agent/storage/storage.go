@@ -9,7 +9,6 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
-	"strings"
 	"sync"
 	"time"
 
@@ -21,6 +20,8 @@ import (
 
 var (
 	ErrNotCached = errors.New("not cached")
+	ErrNotFound  = errors.New("not found")
+	ErrNoData    = errors.New("no data found")
 )
 
 type Storage interface {
@@ -353,10 +354,14 @@ func loadDataFromK8S(namespace, secretname string) (storageData, time.Time, erro
 	var data storageData
 	secret, err := util.GetK8sSecrets(namespace, secretname)
 
+	if secret.Data == nil {
+		err = ErrNoData
+	}
+
 	var dataByte, timeByte []byte
 
 	if err != nil {
-		if strings.Contains(err.Error(), "not found") {
+		if errors.Is(err, ErrNotFound) || errors.Is(err, ErrNoData) {
 			return storageData{}, time.Time{}, nil
 		}
 		return storageData{}, time.Time{}, err
