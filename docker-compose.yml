@@ -1,0 +1,84 @@
+version: '3'
+services:
+
+  #spire-server:
+  #  container_name: spire-server
+  #  image: ghcr.io/spiffe/spire-server:1.8.0
+  #  command: ["-config", "/opt/spire/conf/server/server.conf"]
+  #  pid: "host"
+  #  volumes:
+  #    #- ./deployments/dev/spire-server:/opt/spire/conf/server
+  #    #- ./deployments/dev/spire-conf:/opt/spire/conf/
+  #    - ./conf/server:/opt/spire/conf/server
+  #  ports:
+  #    - "8081:8081"
+  #    - "8080:8080"
+  #  network_mode: "host"
+  #      #networks:
+  #      #  - spire-net
+
+  #wait-for-it:
+  #  image: cgr.dev/chainguard/wait-for-it
+  #    #depends_on:
+  #    #  - spire-server
+  #  command: ["-t", "30", "0.0.0.0:8080"]
+  #  network_mode: "host"
+  #    #networks:
+  #    #  - spire-net
+
+        #spire-bootstrap:
+        #  container_name: spire-bootstrap
+        #  image: ghcr.io/spiffe/spire-server:1.7.2
+        #  depends_on:
+        #    wait-for-it:
+        #      condition: service_completed_successfully
+        #  entrypoint:
+        #    - "/opt/spire/bin/spire-server"
+        #  command:
+        #    - "token"
+        #    - "generate"
+        #    - ">"
+        #    - "/opt/spire/agent/join-token.txt"
+        #  volumes:
+        #    - ./conf/server:/opt/spire/conf/server
+        #    - spire_dir:/opt/spire/agent
+        #  networks:
+        #    - spire-net
+
+  spire-agent:
+    container_name: spire-agent
+      #user: "${UID_GID}"
+      #userns_mode: "host"
+    pid: "host"
+    cap_add:
+      # for reading /proc/pid/exe
+      - SYS_PTRACE
+    image: spire-agent:latest
+      #image: ghcr.io/spiffe/spire-agent:1.8.0
+    command: ["-config", "/opt/spire/conf/agent/agent.conf", "-expandEnv"]
+    volumes:
+      #- ./deployments/dev/spire-agent:/opt/spire/conf/agent
+      #- ./deployments/dev/spire-conf:/opt/spire/conf/
+      - ./conf/agent:/opt/spire/conf/agent
+      - /var/run/:/var/run/
+      - /etc:/etc
+    environment:
+      - JOIN_TOKEN
+    ports:
+      - "9091:9091"
+    network_mode: "host"
+        #networks:
+        #  - spire-net
+      #depends_on:
+      #  wait-for-it:
+      #    condition: service_completed_successfully
+      #      #spire-bootstrap:
+      #      #  condition: service_completed_successfully
+      #image: spire-agent:latest
+
+# for storing token
+#volumes:
+#  spire_dir: {}
+
+networks:
+  spire-net: {}

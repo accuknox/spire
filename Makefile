@@ -245,8 +245,8 @@ build: tidy $(addprefix bin/,$(binaries))
 go_build := $(go_path) go build $(go_flags) -ldflags '$(go_ldflags)' -o
 
 bin/%: cmd/% FORCE | go-check
-	@echo Updating git submodules...
-	$(E)git submodule update --init --recursive --remote
+	#@echo Updating git submodules...
+	#$(E)git submodule update --init --recursive --remote
 	@echo Building $@…
 	$(E)$(go_build) $@$(exe) ./$<
 	@echo Building bin/k8s-sat…
@@ -276,8 +276,8 @@ build-static: tidy $(addprefix bin/static/,$(binaries))
 go_build_static := $(go_path) go build $(go_flags) -ldflags '$(go_ldflags) -linkmode external -extldflags "-static"' -o
 
 bin/static/%: cmd/% FORCE | go-check
-	@echo Updating git submodules...
-	$(E)git submodule update --init --recursive --remote
+	#@echo Updating git submodules...
+	#$(E)git submodule update --init --recursive --remote
 	@echo Building $@…
 	$(E)$(go_build_static) $@$(exe) ./$<
 	@echo Building bin/static/k8s-sat…
@@ -346,14 +346,14 @@ container-builder:
 
 define image_rule
 .PHONY: $1
-$1: $3 container-builder
+$1: $3
 	echo Building docker image $2 $(PLATFORM)…
 	$(E)docker buildx build \
-		--platform $(PLATFORMS) \
+		--platform linux/amd64 \
 		--build-arg goversion=$(go_version_full) \
 		--target $2 \
-		-o type=oci,dest=$2-image.tar \
 		-f $3 \
+		--load \
 		.
 
 endef

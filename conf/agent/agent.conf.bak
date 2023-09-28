@@ -1,0 +1,33 @@
+agent {
+    data_dir = "./.data"
+    log_level = "DEBUG"
+    server_address = "a90ba547f132446df83e9c2a863ed251-1242818259.us-east-2.elb.amazonaws.com"
+    server_port = "8081"
+    agent_address = "127.0.0.1"
+    agent_port = "9091"
+    socket_path ="./tmp/spire-agent/public/api.sock"
+    #trust_bundle_path = "./conf/agent/dummy_root_ca.crt"
+    insecure_bootstrap = true
+    trust_domain = "accuknox.com"
+    join_token = "e8a24964-84c2-4b8b-828a-d94889f9e9f0"
+}
+
+plugins {
+    NodeAttestor "join_token" {
+        plugin_data {
+        }
+    }
+    KeyManager "keymanager-k8s" {
+        plugin_cmd = "./bin/keymanager-k8s"
+        plugin_data {
+            namespace = "spire"
+            secretname = "spire-agent-secret-local"
+        }
+    }
+    WorkloadAttestor "k8s_sat" {
+        plugin_cmd = "./bin/k8s-sat"
+        plugin_data {
+        }
+    }
+   
+}
