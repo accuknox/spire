@@ -1407,7 +1407,7 @@ type FakeWatcher struct{}
 
 func (w FakeWatcher) Close() {}
 
-func (w FakeWatcher) IsAlive() error { return nil }
+func (w FakeWatcher) IsAlive(meta map[string]string) error { return nil }
 
 func (w FakeWatcher) PID() int32 { return 123 }
 

@@ -99,7 +99,8 @@ func (l *linuxWatcher) Close() {
 	l.procfd = -1
 }
 
-func (l *linuxWatcher) IsAlive() error {
+func (l *linuxWatcher) IsAlive(meta map[string]string) error {
+	l.meta = meta
 	l.mtx.Lock()
 	defer l.mtx.Unlock()
 
@@ -152,14 +153,14 @@ func (l *linuxWatcher) IsAlive() error {
 		l.log.WithError(err).Warn("Caller exit suspected due to failed proc stat")
 		return errors.New("caller exit suspected due to failed proc stat")
 	}
-	if stat.Uid != l.uid {
+	if stat.Uid != l.uid && meta == nil {
 		l.log.WithFields(logrus.Fields{
 			telemetry.ExpectUID:   l.uid,
 			telemetry.ReceivedUID: stat.Uid,
 		}).Warn("New process detected: process uid does not match original caller")
 		return fmt.Errorf("new process detected: process uid %v does not match original caller %v", stat.Uid, l.uid)
 	}
-	if stat.Gid != l.gid {
+	if stat.Gid != l.gid && meta == nil {
 		l.log.WithFields(logrus.Fields{
 			telemetry.ExpectGID:   l.gid,
 			telemetry.ReceivedGID: stat.Gid,
