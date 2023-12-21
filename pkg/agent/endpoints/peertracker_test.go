@@ -56,7 +56,7 @@ type FakeWatcher bool
 
 func (w FakeWatcher) Close() {}
 
-func (w FakeWatcher) IsAlive() error {
+func (w FakeWatcher) IsAlive(meta map[string]string) error {
 	if !w {
 		return errors.New("dead")
 	}
