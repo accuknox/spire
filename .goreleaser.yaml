@@ -14,7 +14,7 @@ archives:
   - id: "spire-agent"
     builds:
       - "spire-agent"
-    name_template: "{{.ProjectName}}_{{.Version}}_{{.Os}}-{{.Arch}}"
+    name_template: "{{.ProjectName}}_{{.Version}}_{{.Os}}_{{.Arch}}"
     files:
       - src: ./packaging/spire-agent.service
         dst: /usr/lib/systemd/system
