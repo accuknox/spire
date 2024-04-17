@@ -1,0 +1,24 @@
+project_name: spire-agent
+
+builds:
+  - binary: "opt/spire-agent/spire-agent"
+    main: ./cmd/spire-agent/
+    id: spire-agent
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+      
+archives:
+  - id: "spire-agent"
+    builds:
+      - "spire-agent"
+    name_template: "{{.ProjectName}}_{{.Version}}_{{.Os}}-{{.Arch}}"
+    files:
+      - src: ./packaging/spire-agent.service
+        dst: /usr/lib/systemd/system
+        strip_parent: true
+      - src: ./packaging/spire-agent.conf
+        dst: /opt/conf/agent/
+        strip_parent: true

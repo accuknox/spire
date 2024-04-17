@@ -1,0 +1,11 @@
+[Unit]
+Description=Shared-Informer
+
+[Service]
+User=root
+KillMode=process
+WorkingDirectory=/opt/spire-agent/
+ExecStart=/opt/spire-agent/spire-agent
+
+[Install]
+WantedBy=multi-user.target
