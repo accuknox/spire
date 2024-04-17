@@ -20,5 +20,5 @@ archives:
         dst: /usr/lib/systemd/system
         strip_parent: true
       - src: ./packaging/spire-agent.conf
-        dst: /opt/conf/agent/
+        dst: /opt/spire-agent/conf/
         strip_parent: true

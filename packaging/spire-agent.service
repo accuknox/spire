@@ -1,10 +1,11 @@
 [Unit]
-Description=Shared-Informer
+Description=Spire-Agent
 
 [Service]
 User=root
 KillMode=process
 WorkingDirectory=/opt/spire-agent/
+Environment=run -config /opt/spire-agent/conf/spire-agent.conf
 ExecStart=/opt/spire-agent/spire-agent
 
 [Install]
