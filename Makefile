@@ -110,7 +110,7 @@ binaries := spire-server spire-agent oidc-discovery-provider
 build_dir := $(DIR)/.build/$(os1)-$(arch1)
 
 go_version_full := $(shell cat .go-version)
-go_version := $(go_version_full:.0=)
+go_version := $(go_version_full)
 go_dir := $(build_dir)/go/$(go_version)
 
 ifeq ($(os1),windows)

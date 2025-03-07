@@ -267,11 +267,10 @@ func (h *Handler) FetchX509Bundles(_ *workload.X509BundlesRequest, stream worklo
 	// The agent health check currently exercises the Workload API.
 	// Only log if it is not the agent itself.
 	quietLogging := isAgent(ctx)
-	var previousResp *workload.X509BundlesResponse
 	for {
 		select {
 		case update := <-subscriber.Updates():
-			previousResp, err = sendX509BundlesResponse(update, stream, log, h.c.AllowUnauthenticatedVerifiers, previousResp, quietLogging)
+			err = sendX509BundlesResponse(update, stream, log, h.c.AllowUnauthenticatedVerifiers, quietLogging)
 			if err != nil {
 				return err
 			}
@@ -281,30 +280,26 @@ func (h *Handler) FetchX509Bundles(_ *workload.X509BundlesRequest, stream worklo
 	}
 }
 
-func sendX509BundlesResponse(update *cache.WorkloadUpdate, stream workload.SpiffeWorkloadAPI_FetchX509BundlesServer, log logrus.FieldLogger, allowUnauthenticatedVerifiers bool, previousResponse *workload.X509BundlesResponse, quietLogging bool) (*workload.X509BundlesResponse, error) {
+func sendX509BundlesResponse(update *cache.WorkloadUpdate, stream workload.SpiffeWorkloadAPI_FetchX509BundlesServer, log logrus.FieldLogger, allowUnauthenticatedVerifiers bool, quietLogging bool) error {
 	if !allowUnauthenticatedVerifiers && !update.HasIdentity() {
 		if !quietLogging {
 			log.WithField(telemetry.Registered, false).Error("No identity issued")
 		}
-		return nil, status.Error(codes.PermissionDenied, "no identity issued")
+		return status.Error(codes.PermissionDenied, "no identity issued")
 	}
 
 	resp, err := composeX509BundlesResponse(update)
 	if err != nil {
 		log.WithError(err).Error("Could not serialize X509 bundle response")
-		return nil, status.Errorf(codes.Unavailable, "could not serialize response: %v", err)
-	}
-
-	if proto.Equal(resp, previousResponse) {
-		return previousResponse, nil
+		return status.Errorf(codes.Unavailable, "could not serialize response: %v", err)
 	}
 
 	if err := stream.Send(resp); err != nil {
 		log.WithError(err).Error("Failed to send X509 bundle response")
-		return nil, err
+		return err
 	}
 
-	return resp, nil
+	return nil
 }
 
 func composeX509BundlesResponse(update *cache.WorkloadUpdate) (*workload.X509BundlesResponse, error) {

@@ -4,7 +4,7 @@
 ARG goversion
 FROM --platform=${BUILDPLATFORM} golang:${goversion}-alpine as base
 WORKDIR /spire
-RUN apk --no-cache --update add file bash clang lld pkgconfig git make
+RUN apk --no-cache --update add file bash clang lld pkgconfig git make curl
 COPY go.* ./
 COPY . .
 # https://go.dev/ref/mod#module-cache
