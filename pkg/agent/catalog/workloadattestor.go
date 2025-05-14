@@ -3,6 +3,7 @@ package catalog
 import (
 	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor"
 	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor/docker"
+	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor/systemd"
 
 	// "github.com/accuknox/spire/pkg/agent/plugin/workloadattestor/k8s"
 	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor/unix"
@@ -29,9 +30,11 @@ func (repo *workloadAttestorRepository) Versions() []catalog.Version {
 func (repo *workloadAttestorRepository) BuiltIns() []catalog.BuiltIn {
 	return []catalog.BuiltIn{
 		docker.BuiltIn(),
+		// Removed k8s.BuiltIn()
 		// k8s.BuiltIn(),
 		unix.BuiltIn(),
 		windows.BuiltIn(),
+		systemd.BuiltIn(),
 	}
 }
 

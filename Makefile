@@ -336,6 +336,11 @@ integration-windows:
 artifact: build
 	$(E)OUTDIR="$(OUTDIR)" TAG="$(TAG)" ./script/build-artifact.sh
 
+.PHONY: artifacts
+
+artifacts: images
+	$(E)OUTDIR="$(OUTDIR)" TAG="$(TAG)" ./script/build-linux-artifact.sh
+
 #############################################################################
 # Docker Images
 #############################################################################
@@ -568,3 +573,14 @@ $(protoc_gen_go_spire_bin): | go-check
 	$(E)rm -rf $(protoc_gen_go_spire_base_dir)
 	$(E)mkdir -p $(protoc_gen_go_spire_dir)
 	$(E)GOBIN=$(protoc_gen_go_spire_dir) $(go_path) go install github.com/accuknox/spire-plugin-sdk/cmd/protoc-gen-go-spire@$(protoc_gen_go_spire_version)
+
+
+.PHONY: local-release
+local-release:
+ifeq (, $(shell which goreleaser))
+	@{ \
+	set -e ;\
+	go install github.com/goreleaser/goreleaser@latest ;\
+	}
+endif
+	cd $(CURDIR); VERSION=$(shell git describe --tags --always) goreleaser release --clean --skip=publish --skip=sign --skip=validate 

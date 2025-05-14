@@ -1,8 +1,10 @@
 package run
 
 import (
+	"bytes"
 	"context"
 	"crypto/x509"
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
@@ -30,6 +32,7 @@ import (
 	"github.com/accuknox/spire/pkg/common/log"
 	"github.com/accuknox/spire/pkg/common/pemutil"
 	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/go-cmp/cmp"
 	"github.com/hashicorp/hcl"
 	"github.com/hashicorp/hcl/hcl/ast"
@@ -99,6 +102,18 @@ type agentConfig struct {
 	Experimental     experimentalConfig `hcl:"experimental"`
 
 	UnusedKeys []string `hcl:",unusedKeys"`
+
+	AccessKey accessKeyConfig `hcl:"access_key"`
+}
+
+type accessKeyConfig struct {
+	Mode        string `hcl:"mode"`
+	Key         string `hcl:"key"`
+	Url         string `hcl:"url"`
+	ClusterName string `hcl:"cluster_name"`
+	NodeName    string `hcl:"node_name"`
+	Endpoint    string `hcl:"endpoint"`
+	Insecure    bool   `hcl:"insecure"`
 }
 
 type sdsConfig struct {
@@ -563,6 +578,18 @@ func NewAgentConfig(c *Config, logOptions []log.Option, allowUnknownConfig bool)
 		logger.Warnf("Developer feature flag %q has been enabled", f)
 	}
 
+	if cmp.Diff(accessKeyConfig{}, c.Agent.AccessKey) != "" {
+		logger.Info("Access key has been enabled. Using access key to get join token.")
+		jt, err := c.Agent.AccessKey.processAccessKey()
+		if err != nil {
+			return nil, err
+		}
+		if jt != "" {
+			logger.Info("New join token has been generated.")
+			ac.JoinToken = jt
+		}
+	}
+
 	return ac, nil
 }
 
@@ -662,4 +689,135 @@ func loadTrustBundle(path string) ([]byte, error) {
 	}
 
 	return bundleBytes, nil
+}
+
+func (a *accessKeyConfig) processAccessKey() (string, error) {
+	if a.Key == "" || a.Url == "" {
+		return "", fmt.Errorf("invalid accessKey or url")
+	}
+
+	switch a.Mode {
+	case "vm", "VM", "vM", "Vm":
+		a.Mode = "vm"
+	case "Node", "NODE", "node":
+		a.Mode = "Node"
+	default:
+		a.Mode = "K8s"
+	}
+
+	if a.NodeName == "" && a.Mode == "Node" {
+		host, _ := os.Hostname()
+		a.NodeName = fmt.Sprintf("%v-%v", host, time.Now().Unix())
+		a.NodeName = strings.TrimSuffix(a.NodeName, "-")
+	}
+
+	if a.NodeName == "" && a.ClusterName == "" {
+		return "", fmt.Errorf("cluster_name or node_name is required")
+	}
+
+	if !strings.HasPrefix(a.Url, "https://") {
+		a.Url = "https://" + a.Url
+	}
+
+	a.Url = a.Url + a.Endpoint
+
+	payload, err := a.createPayload()
+	if err != nil {
+		return "", err
+	}
+	return a.getJoinToken(payload)
+}
+
+func (a *accessKeyConfig) createPayload() ([]byte, error) {
+	payload := map[string]interface{}{
+		"cluster_name": a.ClusterName,
+		"token":        a.Key,
+		"type":         a.Mode,
+		"node_name":    a.NodeName,
+	}
+
+	jsonPayload, err := json.Marshal(payload)
+	if err != nil {
+		return nil, err
+	}
+
+	return jsonPayload, nil
+}
+
+func (a *accessKeyConfig) getJoinToken(payload []byte) (string, error) {
+	// create a new request using http [method; POST]
+	req, err := http.NewRequest("POST", a.Url, bytes.NewBuffer(payload))
+	if err != nil {
+		fmt.Println("Error creating request:", err)
+		return "", err
+	}
+	tenantID, err := getTenantID(a.Key)
+	if err != nil {
+		fmt.Println("Error getting tenant ID:", err)
+		return "", err
+	}
+
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Authorization", "Bearer "+a.Key)
+	req.Header.Add("X-Tenant-Id", tenantID)
+
+	// TODO: custom CA
+
+	transportConfig := http.DefaultTransport.(*http.Transport).Clone()
+	transportConfig.TLSClientConfig.InsecureSkipVerify = a.Insecure
+
+	httpClient := http.Client{
+		Transport: transportConfig,
+	}
+
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		fmt.Println("Error sending request:", err)
+		return "", err
+	}
+	defer resp.Body.Close()
+	var response tokenResponse
+
+	err = json.NewDecoder(resp.Body).Decode(&response)
+	if err != nil {
+		fmt.Println("Error decoding response:", err)
+		return "", err
+	}
+
+	if resp.StatusCode != http.StatusOK || response.Message != "success" {
+		return "", fmt.Errorf("received error code: %s message: %s", response.ErrorCode, response.ErrorMessage)
+	}
+
+	return response.JoinToken, nil
+}
+
+func getTenantID(onboardingToken string) (string, error) {
+	parts := strings.Split(onboardingToken, ".")
+	if len(parts) != 3 {
+		return "", fmt.Errorf("invalid JWT format")
+	}
+
+	var claims jwt.MapClaims
+
+	decodedClaims, err := jwt.NewParser().DecodeSegment(parts[1])
+	if err != nil {
+		return "", err
+	}
+	err = json.Unmarshal(decodedClaims, &claims)
+	if err != nil {
+		return "", err
+	}
+
+	tid := fmt.Sprintf("%v", claims["tenant-id"])
+	return tid, nil
+}
+
+type tokenResponse struct {
+	// if success join_token and message will be populated
+	JoinToken string `json:"join_token"`
+	Message   string `json:"message"`
+
+	// if failure error_code and error_message will be populated
+	ErrorCode    string `json:"error_code"`
+	ErrorMessage string `json:"error_message"`
 }

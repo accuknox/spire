@@ -1,0 +1,11 @@
+[Unit]
+Description=Spire Agent
+
+[Service]
+User=root
+KillMode=process
+WorkingDirectory=/opt/spire-agent/
+ExecStart=/opt/spire-agent/spire-agent run
+
+[Install]
+WantedBy=multi-user.target

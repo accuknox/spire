@@ -51,7 +51,7 @@ OCI_IMAGES=(
 echo "Importing ${OCI_IMAGES[*]} into docker".
 for img in "${OCI_IMAGES[@]}"; do
     oci_dir="ocidir://${ROOTDIR}oci/${img}"
-    platform_tar="${img}-${PLATFORM}-image.tar"
+    platform_tar="${img}-image.tar"
     
     # regclient works with directories rather than tars, so import the OCI tar to a directory
     regctl image import "$oci_dir" "${img}-image.tar"
