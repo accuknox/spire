@@ -23,7 +23,7 @@ jobs:
         with:
           fetch-depth: 0 
           submodules: recursive
-          token: ${{ secrets.AK_PAT_REPO_SCOPE }}
+          token: ${{ secrets.SPIRE_SYSTEMD_TOKEN }}
         
       - name: Check out tag
         run: |
