@@ -13,9 +13,10 @@ builds:
       - CGO_ENABLED=0
 
 release:
-  replace_existing_artifacts: true
-  mode: replace
-  make_latest: false
+  disable: true
+  # replace_existing_artifacts: true
+  # mode: replace
+  # make_latest: false
 
 archives:
   - id: "spire-agent"
