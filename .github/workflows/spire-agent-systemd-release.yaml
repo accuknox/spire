@@ -23,7 +23,7 @@ jobs:
         with:
           fetch-depth: 0 
           submodules: recursive
-          token: ${{ secrets.GH_ORG_TOKEN }}
+          token: ${{ secrets.AK_PAT_REPO_SCOPE }}
         
       - name: Check out tag
         run: |
