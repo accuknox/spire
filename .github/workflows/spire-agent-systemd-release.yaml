@@ -37,8 +37,9 @@ jobs:
       - name: Extract tag for artifacts
         id: vars
         run: |
-          echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
-          echo "tag_no_v=${{ github.ref_name#v }}" >> $GITHUB_OUTPUT
+            TAG="${{ github.ref_name }}"
+            echo "tag=$TAG" >> $GITHUB_OUTPUT
+            echo "tag_no_v=${TAG#v}" >> $GITHUB_OUTPUT
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
