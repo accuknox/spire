@@ -36,11 +36,11 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
       with:
-        driver: docker-container
-    - name: Build agent image
+        driver: docker
+    - name: Build server image
       run: |
         GO_VERSION=$(cat .go-version)
-        docker buildx build -f ./Dockerfile .  --load --tag localhost/spire-server:latest --platform linux/amd64 --target spire-server --build-arg="goversion=$GO_VERSION"
+        docker buildx build -f ./Dockerfile . --load --tag localhost/spire-server:latest --platform linux/amd64 --target spire-server --build-arg="goversion=$GO_VERSION"
       shell: bash
     - name: Download Vulnerability Scanner
       run: |
@@ -48,7 +48,6 @@ jobs:
       env:
         url: https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh
       shell: bash
-
     - name: Run Vulnerability Scanner
       run: |
         $Scan image \
@@ -60,7 +59,11 @@ jobs:
       env:
         Scan: trivy
       shell: bash
-
     - name: Print Vulnerability Results
       run: cat results.json
       shell: bash
+    - name: Exit on Vulnerabilities
+      run: |
+        if grep -qE '"Severity":\s*"(CRITICAL|HIGH)"' results.json; then
+          exit 1
+        fi

@@ -37,7 +37,7 @@ jobs:
       uses: docker/setup-buildx-action@v3
       with:
         driver: docker
-    - name: Build server image
+    - name: Build agent image
       run: |
         GO_VERSION=$(cat .go-version)
         docker buildx build -f ./Dockerfile . --load --tag localhost/spire-agent:latest --platform linux/amd64 --target spire-agent --build-arg="goversion=$GO_VERSION"
@@ -63,3 +63,8 @@ jobs:
     - name: Print Vulnerability Results
       run: cat results.json
       shell: bash
+    - name: Exit on Vulnerabilities
+      run: |
+        if grep -qE '"Severity":\s*"(CRITICAL|HIGH)"' results.json; then
+          exit 1
+        fi
