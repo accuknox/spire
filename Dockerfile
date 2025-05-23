@@ -4,9 +4,10 @@
 ARG goversion
 FROM --platform=${BUILDPLATFORM} golang:${goversion}-alpine as base
 WORKDIR /spire
-RUN apk --no-cache --update add file bash clang lld pkgconfig git make curl
+RUN apk --no-cache --update add file bash clang lld pkgconfig git make curl ca-certificates
 COPY go.* ./
 COPY . .
+
 # https://go.dev/ref/mod#module-cache
 RUN --mount=type=cache,target=/go/pkg/mod go mod download
 
@@ -57,6 +58,8 @@ RUN install -d -o ${spireuid} -g ${spiregid} -m 755 /spireagentroot/var/lib/spir
 
 RUN xx-go --wrap
 RUN set -e ; xx-apk --no-cache --update add build-base musl-dev libseccomp-dev
+
+
 ENV CGO_ENABLED=1
 RUN --mount=type=cache,target=/root/.cache/go-build \
     --mount=type=cache,target=/go/pkg/mod \
@@ -84,6 +87,7 @@ COPY --link --from=builder /spireagentroot /
 COPY --link --from=builder /spire/bin/static/spire-agent bin/
 COPY --link --from=builder /spire/bin/static/k8s-sat /config/plugin/
 COPY --link --from=builder /spire/bin/static/keymanager-k8s /config/plugin/
+COPY --link --from=builder /etc/ssl/certs/ca-certificates.crt /config/ca-certificates.crt
 
 # OIDC Discovery Provider
 FROM spire-base AS oidc-discovery-provider

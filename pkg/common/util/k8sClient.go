@@ -149,11 +149,6 @@ func DeleteK8sSecrets(namespace, secretname, typeString string) error {
 	}
 	log.WithField("secret", secret.Name).Info("Secret found. Trying to delete now")
 	mapData := make(map[string][]byte)
-	for key, value := range secret.Data {
-		if !strings.Contains(key, typeString) {
-			mapData[key] = value
-		}
-	}
 	err = deleteSecret(namespace, secretname)
 	if err != nil {
 		return err
