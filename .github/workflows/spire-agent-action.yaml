@@ -53,7 +53,7 @@ jobs:
         $Scan image \
           --severity CRITICAL,HIGH \
           -f json localhost/spire-agent:latest \
-          -o results.json \
+          -o agent-results.json \
           --quiet \
           --skip-dirs /usr/local/bin,/usr/bin,/usr/local/lib/node_modules
       env:
@@ -61,10 +61,10 @@ jobs:
       shell: bash
 
     - name: Print Vulnerability Results
-      run: cat results.json
+      run: cat agent-results.json
       shell: bash
     - name: Exit on Vulnerabilities
       run: |
-        if grep -qE '"Severity":\s*"(CRITICAL|HIGH)"' results.json; then
+        if grep -qE '"Severity":\s*"(CRITICAL|HIGH)"' agent-results.json; then
           exit 1
         fi
