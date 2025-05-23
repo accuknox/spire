@@ -36,13 +36,11 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
       with:
-        driver: docker-container
-    - name: Start local registry
-      run: docker run -d -p 5000:5000 --name registry registry:2
+        driver: docker
     - name: Build server image
       run: |
         GO_VERSION=$(cat .go-version)
-        docker buildx build -f ./Dockerfile . --push --tag localhost:5000/spire-agent:latest --platform linux/amd64 --target spire-agent --build-arg="goversion=$GO_VERSION"
+        docker buildx build -f ./Dockerfile . --load --tag localhost/spire-agent:latest --platform linux/amd64 --target spire-agent --build-arg="goversion=$GO_VERSION"
       shell: bash
     - name: Download Vulnerability Scanner
       run: |
@@ -54,7 +52,7 @@ jobs:
       run: |
         $Scan image \
           --severity CRITICAL,HIGH \
-          -f json localhost:5000/spire-agent:latest \
+          -f json localhost/spire-agent:latest \
           -o results.json \
           --quiet \
           --skip-dirs /usr/local/bin,/usr/bin,/usr/local/lib/node_modules
@@ -64,7 +62,4 @@ jobs:
 
     - name: Print Vulnerability Results
       run: cat results.json
-      shell: bash
-    - name: Remove docker resgistry
-      run: docker rm -f $(docker ps -aq)
       shell: bash
