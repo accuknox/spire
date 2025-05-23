@@ -7,6 +7,7 @@ import (
 	"net/http"
 	_ "net/http/pprof" //nolint: gosec // import registers routes on DefaultServeMux
 	"runtime"
+	"strings"
 	"sync"
 	"time"
 
@@ -52,10 +53,16 @@ func (a *Agent) Run(ctx context.Context) error {
 	var sto storage.Storage
 	var err error
 
+	defer func() {
+		if err != nil && sto != nil && !strings.Contains(err.Error(), "connection refused") {
+			sto.DeleteSVID()
+		}
+	}()
+
 	keyManager, ok := a.c.PluginConfigs.Find("KeyManager", "keymanager-k8s")
 	newConfig := new(pluginConfig)
 	if ok {
-		if err := hcl.Decode(newConfig, keyManager.Data); err != nil {
+		if err = hcl.Decode(newConfig, keyManager.Data); err != nil {
 			return fmt.Errorf("failed to decode configuration: %v", err)
 		}
 	}
@@ -64,7 +71,7 @@ func (a *Agent) Run(ctx context.Context) error {
 		sto, err = storage.Open("", newConfig.Namespace, newConfig.SecretName)
 	} else {
 		a.c.Log.Infof("Starting agent with data directory: %q", a.c.DataDir)
-		if err := diskutil.CreateDataDirectory(a.c.DataDir); err != nil {
+		if err = diskutil.CreateDataDirectory(a.c.DataDir); err != nil {
 			return err
 		}
 		sto, err = storage.Open(a.c.DataDir, "", "")
@@ -81,7 +88,8 @@ func (a *Agent) Run(ctx context.Context) error {
 		defer stopProfiling()
 	}
 
-	metrics, err := telemetry.NewMetrics(&telemetry.MetricsConfig{
+	var metrics *telemetry.MetricsImpl
+	metrics, err = telemetry.NewMetrics(&telemetry.MetricsConfig{
 		FileConfig:  a.c.Telemetry,
 		Logger:      a.c.Log.WithField(telemetry.SubsystemName, telemetry.Telemetry),
 		ServiceName: telemetry.SpireAgent,
@@ -92,7 +100,8 @@ func (a *Agent) Run(ctx context.Context) error {
 	telemetry.EmitVersion(metrics)
 	uptime.ReportMetrics(ctx, metrics)
 
-	cat, err := catalog.Load(ctx, catalog.Config{
+	var cat *catalog.Repository
+	cat, err = catalog.Load(ctx, catalog.Config{
 		Log:           a.c.Log.WithField(telemetry.SubsystemName, telemetry.Catalog),
 		Metrics:       metrics,
 		TrustDomain:   a.c.TrustDomain,
@@ -109,14 +118,17 @@ func (a *Agent) Run(ctx context.Context) error {
 	if a.c.JoinToken == "" {
 		nodeAttestor = cat.GetNodeAttestor()
 	}
-	as, err := a.attest(ctx, sto, cat, metrics, nodeAttestor)
+
+	var as *node_attestor.AttestationResult
+	as, err = a.attest(ctx, sto, cat, metrics, nodeAttestor)
 	if err != nil {
 		return err
 	}
 
 	svidStoreCache := a.newSVIDStoreCache()
 
-	manager, err := a.newManager(ctx, sto, cat, metrics, as, svidStoreCache, nodeAttestor)
+	var manager manager.Manager
+	manager, err = a.newManager(ctx, sto, cat, metrics, as, svidStoreCache, nodeAttestor)
 	if err != nil {
 		return err
 	}
@@ -130,7 +142,7 @@ func (a *Agent) Run(ctx context.Context) error {
 
 	endpoints := a.newEndpoints(metrics, manager, workloadAttestor)
 
-	if err := healthChecker.AddCheck("agent", a); err != nil {
+	if err = healthChecker.AddCheck("agent", a); err != nil {
 		return fmt.Errorf("failed adding healthcheck: %w", err)
 	}
 

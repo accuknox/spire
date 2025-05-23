@@ -13,20 +13,12 @@ builds:
       - CGO_ENABLED=0
 
 release:
-  disable: true
-  # replace_existing_artifacts: true
-  # mode: replace
-  # make_latest: false
+  replace_existing_artifacts: true
+  mode: replace
+  make_latest: false
 
 archives:
   - id: "spire-agent"
     builds:
       - "spire-agent"
     name_template: "{{.ProjectName}}_{{.Version}}_{{.Os}}-{{.Arch}}"
-    files:
-      - src: ./packaging/spire-agent.service
-        dst: /usr/lib/systemd/system
-        strip_parent: true
-      - src: ./packaging/agent.conf
-        dst: /opt/spire-agent/conf/
-        strip_parent: true

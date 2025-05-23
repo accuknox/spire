@@ -186,7 +186,8 @@ func storeLegacySVIDToK8S(namespace, secret string, svidChain []*x509.Certificat
 }
 
 func deleteLegacySVID(dir string) error {
-	err := os.Remove(legacySVIDPath(dir))
+
+	err := os.RemoveAll(dir)
 	switch {
 	case err == nil, errors.Is(err, fs.ErrNotExist):
 		return nil
@@ -201,4 +202,7 @@ func legacyBundlePath(dir string) string {
 
 func legacySVIDPath(dir string) string {
 	return filepath.Join(dir, "agent_svid.der")
+}
+func legacySVIDDataPath(dir string) string {
+	return filepath.Join(dir, "agent-data.json")
 }

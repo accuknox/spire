@@ -3,6 +3,7 @@ package run
 import (
 	"bytes"
 	"context"
+	"crypto/tls"
 	"crypto/x509"
 	"encoding/json"
 	"errors"
@@ -476,8 +477,9 @@ func NewAgentConfig(c *Config, logOptions []log.Option, allowUnknownConfig bool)
 		log.WithFormat(c.Agent.LogFormat),
 	)
 	var reopenableFile *log.ReopenableFile
+	var err error
 	if c.Agent.LogFile != "" {
-		reopenableFile, err := log.NewReopenableFile(c.Agent.LogFile)
+		reopenableFile, err = log.NewReopenableFile(c.Agent.LogFile)
 		if err != nil {
 			return nil, err
 		}
@@ -748,12 +750,10 @@ func (a *accessKeyConfig) getJoinToken(payload []byte) (string, error) {
 	// create a new request using http [method; POST]
 	req, err := http.NewRequest("POST", a.Url, bytes.NewBuffer(payload))
 	if err != nil {
-		fmt.Println("Error creating request:", err)
 		return "", err
 	}
 	tenantID, err := getTenantID(a.Key)
 	if err != nil {
-		fmt.Println("Error getting tenant ID:", err)
 		return "", err
 	}
 
@@ -764,7 +764,7 @@ func (a *accessKeyConfig) getJoinToken(payload []byte) (string, error) {
 	// TODO: custom CA
 
 	transportConfig := http.DefaultTransport.(*http.Transport).Clone()
-	transportConfig.TLSClientConfig.InsecureSkipVerify = a.Insecure
+	transportConfig.TLSClientConfig = getTlsConfig(a.Insecure)
 
 	httpClient := http.Client{
 		Transport: transportConfig,
@@ -772,7 +772,6 @@ func (a *accessKeyConfig) getJoinToken(payload []byte) (string, error) {
 
 	resp, err := httpClient.Do(req)
 	if err != nil {
-		fmt.Println("Error sending request:", err)
 		return "", err
 	}
 	defer resp.Body.Close()
@@ -780,7 +779,6 @@ func (a *accessKeyConfig) getJoinToken(payload []byte) (string, error) {
 
 	err = json.NewDecoder(resp.Body).Decode(&response)
 	if err != nil {
-		fmt.Println("Error decoding response:", err)
 		return "", err
 	}
 
@@ -820,4 +818,20 @@ type tokenResponse struct {
 	// if failure error_code and error_message will be populated
 	ErrorCode    string `json:"error_code"`
 	ErrorMessage string `json:"error_message"`
+}
+
+func getTlsConfig(insecure bool) *tls.Config {
+
+	tlsConfig := &tls.Config{
+		InsecureSkipVerify: insecure,
+	}
+	caCert, err := os.ReadFile(filepath.Clean("/config/ca-certificates.crt"))
+	if err == nil {
+		caCertPool := x509.NewCertPool()
+		if ok := caCertPool.AppendCertsFromPEM(caCert); ok {
+			tlsConfig.RootCAs = caCertPool
+		}
+	}
+
+	return tlsConfig
 }
