@@ -2,7 +2,7 @@ module github.com/accuknox/spire
 
 // replace github.com/secure-systems-lab/go-securesystemslib => github.com/secure-systems-lab/go-securesystemslib v0.4.0
 
-go 1.23.9
+go 1.24.9
 
 require (
 	cloud.google.com/go/iam v1.2.2
@@ -303,7 +303,7 @@ require (
 	go.uber.org/zap v1.26.0 // indirect
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
 	golang.org/x/mod v0.18.0 // indirect
-	golang.org/x/oauth2 v0.26.0 // indirect
+	golang.org/x/oauth2 v0.27.0 // indirect
 	golang.org/x/term v0.30.0 // indirect
 	golang.org/x/text v0.23.0 // indirect
 	google.golang.org/genproto v0.0.0-20241118233622-e639e219e697 // indirect
