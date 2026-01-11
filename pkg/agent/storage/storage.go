@@ -5,17 +5,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"io/fs"
-	"os"
 	"path/filepath"
 	"sync"
-	"time"
 
-	"github.com/accuknox/spire/pkg/common/diskutil"
 	"github.com/accuknox/spire/pkg/common/pemutil"
 	"github.com/accuknox/spire/pkg/common/util"
-	log "github.com/sirupsen/logrus"
 )
 
 var (
@@ -43,36 +38,21 @@ type Storage interface {
 	StoreBundle(certs []*x509.Certificate) error
 }
 
-func Open(dir, ns, secret string) (Storage, error) {
+func Open(dir, ns, secret, backupDir string) (Storage, error) {
 	// TODO: stop updating and instead delete legacy files in 1.5.0
-	var data storageData
-	var dataTime, legacySVIDTime, legacyBundleTime time.Time
-	var err error
-	var legacySVID, legacyBundle []*x509.Certificate
 
-	if dir == "" {
-		legacySVID, legacySVIDTime, err = loadLegacySVIDFromK8S(ns, secret)
-	} else {
-		legacySVID, legacySVIDTime, err = loadLegacySVID(dir)
-	}
+	bFile := backupDataPath(backupDir)
+
+	legacySVID, legacySVIDTime, legacySvidVersion, err := loadLegacyDataWithBackoff(LegacyDataTypeSVID, dir, ns, secret, bFile)
 	if err != nil && !errors.Is(err, fs.ErrNotExist) {
 		return nil, err
 	}
-	if dir == "" {
-		legacyBundle, legacyBundleTime, err = loadLegacyBundleFromK8S(ns, secret)
-	} else {
-		legacyBundle, legacyBundleTime, err = loadLegacyBundle(dir)
-	}
+	legacyBundle, legacyBundleTime, legacyBundleVer, err := loadLegacyDataWithBackoff(LegacyDataTypeBundle, dir, ns, secret, bFile)
 	if err != nil && !errors.Is(err, fs.ErrNotExist) {
 		return nil, err
 	}
 
-	if ns != "" && secret != "" && dir == "" {
-		data, dataTime, err = loadDataFromK8S(ns, secret)
-	} else {
-		data, dataTime, err = loadData(dir)
-	}
-
+	data, dataTime, err := loadDataWithBackoff(dir, ns, secret, bFile)
 	if err != nil && !errors.Is(err, fs.ErrNotExist) {
 		return nil, err
 	}
@@ -82,22 +62,24 @@ func Open(dir, ns, secret string) (Storage, error) {
 	if !legacySVIDTime.IsZero() && (dataTime.IsZero() || dataTime.Before(legacySVIDTime)) {
 		storeNow = true
 		data.SVID = legacySVID
+		data.Version = legacySvidVersion
 	}
 
 	if !legacyBundleTime.IsZero() && (dataTime.IsZero() || dataTime.Before(legacyBundleTime)) {
 		storeNow = true
 		data.Bundle = legacyBundle
+		data.Version = legacyBundleVer
+	}
+
+	if data.Version == 0 {
+		data.Version = 1
+	} else {
+		data.Version++
 	}
 
 	if storeNow {
-		if ns != "" && secret != "" && dir == "" {
-			if err := storeDataToK8S(ns, secret, data); err != nil {
-				return nil, err
-			}
-		} else {
-			if err := storeData(dir, data); err != nil {
-				return nil, err
-			}
+		if err := storeData(dir, ns, secret, bFile, data); err != nil {
+			return nil, err
 		}
 	}
 
@@ -106,6 +88,7 @@ func Open(dir, ns, secret string) (Storage, error) {
 		data:       data,
 		Namespace:  ns,
 		SecretName: secret,
+		backupFile: bFile,
 	}, nil
 }
 
@@ -113,6 +96,7 @@ type storage struct {
 	dir        string
 	Namespace  string
 	SecretName string
+	backupFile string
 
 	mtx  sync.RWMutex
 	data storageData
@@ -132,7 +116,7 @@ func (s *storage) StoreBundle(bundle []*x509.Certificate) error {
 	defer s.mtx.Unlock()
 
 	if s.Namespace != "" && s.SecretName != "" {
-		if err := storeLegacyBundleToK8S(s.Namespace, s.SecretName, bundle); err != nil {
+		if err := storeLegacyBundleToK8S(s.Namespace, s.SecretName, s.backupFile, bundle); err != nil {
 			return err
 		}
 	} else {
@@ -145,14 +129,8 @@ func (s *storage) StoreBundle(bundle []*x509.Certificate) error {
 	data := s.data
 	data.Bundle = bundle
 
-	if s.Namespace != "" && s.SecretName != "" {
-		if err := storeDataToK8S(s.Namespace, s.SecretName, data); err != nil {
-			return err
-		}
-	} else {
-		if err := storeData(s.dir, data); err != nil {
-			return err
-		}
+	if err := storeData(s.dir, s.Namespace, s.SecretName, s.backupFile, data); err != nil {
+		return err
 	}
 
 	s.data = data
@@ -172,7 +150,7 @@ func (s *storage) StoreSVID(svid []*x509.Certificate, reattestable bool) error {
 	s.mtx.Lock()
 	defer s.mtx.Unlock()
 	if s.Namespace != "" && s.SecretName != "" {
-		if err := storeLegacySVIDToK8S(s.Namespace, s.SecretName, svid); err != nil {
+		if err := storeLegacySVIDToK8S(s.Namespace, s.SecretName, s.backupFile, svid); err != nil {
 			return err
 		}
 	} else {
@@ -185,14 +163,8 @@ func (s *storage) StoreSVID(svid []*x509.Certificate, reattestable bool) error {
 	data.SVID = svid
 	data.Reattestable = reattestable
 
-	if s.Namespace != "" && s.SecretName != "" {
-		if err := storeDataToK8S(s.Namespace, s.SecretName, data); err != nil {
-			return err
-		}
-	} else {
-		if err := storeData(s.dir, data); err != nil {
-			return err
-		}
+	if err := storeData(s.dir, s.Namespace, s.SecretName, s.backupFile, data); err != nil {
+		return err
 	}
 
 	s.data = data
@@ -214,52 +186,26 @@ func (s *storage) DeleteSVID() error {
 	data := s.data
 	data.SVID = nil
 	data.Reattestable = false
-	if s.Namespace != "" && s.SecretName != "" {
-		if err := storeDataToK8S(s.Namespace, s.SecretName, data); err != nil {
-			return err
-		}
-	} else {
-		if err := storeData(s.dir, data); err != nil {
-			return err
-		}
+	if err := storeData(s.dir, s.Namespace, s.SecretName, s.backupFile, data); err != nil {
+		return err
 	}
 
 	s.data = data
 	return nil
 }
 
-func readFile(path string) ([]byte, time.Time, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		return nil, time.Time{}, fmt.Errorf("failed to open file: %w", err)
-	}
-	defer func() {
-		_ = f.Close()
-	}()
-	fi, err := f.Stat()
-	if err != nil {
-		return nil, time.Time{}, fmt.Errorf("failed to stat file: %w", err)
-	}
-	data, err := io.ReadAll(f)
-	if err != nil {
-		return nil, time.Time{}, fmt.Errorf("failed to read file: %w", err)
-	}
-	if err := f.Close(); err != nil {
-		return nil, time.Time{}, fmt.Errorf("failed to close file: %w", err)
-	}
-	return data, fi.ModTime(), nil
-}
-
 type storageJSON struct {
 	SVID         [][]byte `json:"svid"`
 	Bundle       [][]byte `json:"bundle"`
 	Reattestable bool     `json:"reattestable"`
+	Version      int64    `json:"version"`
 }
 
 type storageData struct {
 	SVID         []*x509.Certificate
 	Bundle       []*x509.Certificate
 	Reattestable bool
+	Version      int64
 }
 
 func (d storageData) MarshalJSON() ([]byte, error) {
@@ -275,6 +221,7 @@ func (d storageData) MarshalJSON() ([]byte, error) {
 		SVID:         svid,
 		Bundle:       bundle,
 		Reattestable: d.Reattestable,
+		Version:      d.Version,
 	})
 }
 
@@ -295,99 +242,8 @@ func (d *storageData) UnmarshalJSON(b []byte) error {
 	d.SVID = svid
 	d.Bundle = bundle
 	d.Reattestable = j.Reattestable
+	d.Version = j.Version
 	return nil
-}
-
-func storeData(dir string, data storageData) error {
-	path := dataPath(dir)
-
-	marshaled, err := json.Marshal(data)
-	if err != nil {
-		return fmt.Errorf("failed to marshal data: %w", err)
-	}
-
-	if err := diskutil.AtomicWritePrivateFile(path, marshaled); err != nil {
-		return fmt.Errorf("failed to write data file: %w", err)
-	}
-
-	return nil
-}
-func storeDataToK8S(namespace, secret string, data storageData) error {
-
-	mapData := make(map[string][]byte)
-
-	marshaled, err := json.Marshal(data)
-	if err != nil {
-		return fmt.Errorf("failed to marshal data: %w", err)
-	}
-
-	now := time.Now()
-
-	td, err := now.MarshalBinary()
-	if err != nil {
-		log.WithError(err).Info("Could not marshal time.")
-	}
-
-	mapData["agent-data"] = marshaled
-	mapData["agent-data-time"] = td
-
-	return util.CreateK8sSecrets(namespace, secret, mapData)
-}
-
-func loadData(dir string) (storageData, time.Time, error) {
-	path := dataPath(dir)
-
-	marshaled, mtime, err := readFile(path)
-	if err != nil {
-		return storageData{}, time.Time{}, fmt.Errorf("failed to read data: %w", err)
-	}
-
-	var data storageData
-	if err := json.Unmarshal(marshaled, &data); err != nil {
-		return storageData{}, time.Time{}, fmt.Errorf("failed to unmarshal data: %w", err)
-	}
-
-	return data, mtime, nil
-}
-func loadDataFromK8S(namespace, secretname string) (storageData, time.Time, error) {
-
-	var data storageData
-	secret, err := util.GetK8sSecrets(namespace, secretname)
-
-	if secret.Data == nil {
-		err = ErrNoData
-	}
-
-	var dataByte, timeByte []byte
-
-	if err != nil {
-		if errors.Is(err, ErrNotFound) || errors.Is(err, ErrNoData) {
-			return storageData{}, time.Time{}, nil
-		}
-		return storageData{}, time.Time{}, err
-	}
-
-	for key, value := range secret.Data {
-		if key == "agent-data" {
-			dataByte = value
-		}
-		if key == "agent-data-time" {
-			timeByte = value
-		}
-	}
-	if err := json.Unmarshal(dataByte, &data); err != nil {
-		return storageData{}, time.Time{}, fmt.Errorf("failed to unmarshal data: %w", err)
-	}
-
-	var td time.Time
-
-	err = td.UnmarshalBinary(timeByte)
-	if err != nil {
-		log.WithError(err).Info("Could not unmarshal time. Updating time as current time")
-		td = time.Now()
-	}
-
-	return data, td, nil
 }
 
 func parseCertificates(certsPEM [][]byte) ([]*x509.Certificate, error) {
@@ -415,4 +271,8 @@ func encodeCertificates(certs []*x509.Certificate) ([][]byte, error) {
 
 func dataPath(dir string) string {
 	return filepath.Join(dir, "agent-data.json")
+}
+
+func backupDataPath(dir string) string {
+	return filepath.Join(dir, "agent-data.json.bak")
 }

@@ -65,7 +65,9 @@ func New(config *Config) Attestor {
 
 func (a *attestor) Attest(ctx context.Context) (res *AttestationResult, err error) {
 	log := a.c.Log
-
+	if a.c.JoinToken != "" {
+		log.WithField(telemetry.JoinToken, a.c.JoinToken).Info("using join token for attestation")
+	}
 	bundle, err := a.loadBundle()
 	if err != nil {
 		return nil, err

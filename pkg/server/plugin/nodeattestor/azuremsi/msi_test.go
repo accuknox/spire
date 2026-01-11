@@ -462,7 +462,7 @@ func (s *MSIAttestorSuite) TestConfigure() {
 		require.NoError(t, err)
 		require.ElementsMatch(t, nil, clients)
 		spiretest.AssertLogs(t, logEntries, []spiretest.LogEntry{
-			spiretest.LogEntry{
+			{
 				Level:   logrus.WarnLevel,
 				Message: "No client credentials available for tenant. Selectors will not be produced by the node attestor for this node. This will be an error in a future release.",
 				Data:    logrus.Fields{"tenant": "TENANTID"},
