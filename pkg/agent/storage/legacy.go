@@ -16,69 +16,64 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func loadLegacyBundle(dir string) ([]*x509.Certificate, time.Time, error) {
+func loadLegacyBundle(dir string) ([]*x509.Certificate, time.Time, int64, error) {
 	data, mtime, err := readFile(legacyBundlePath(dir))
 	if err != nil {
-		return nil, time.Time{}, fmt.Errorf("failed to read legacy bundle: %w", err)
+		return nil, time.Time{}, 0, fmt.Errorf("failed to read legacy bundle: %w", err)
 	}
 
 	bundle, err := x509.ParseCertificates(data)
 	if err != nil {
-		return nil, time.Time{}, fmt.Errorf("failed to parse legacy bundle: %w", err)
+		return nil, time.Time{}, 0, fmt.Errorf("failed to parse legacy bundle: %w", err)
 	}
-	return bundle, mtime, nil
+	return bundle, mtime, 0, nil
 }
 
-func getLegacyDataFromK8SSecret(namespace, secretname, dataType string) ([]byte, []byte, error) {
-	secret, err := util.GetK8sSecrets(namespace, secretname)
+func getLegacyData(namespace, secretname, dataType string, secretData map[string][]byte) ([]byte, []byte, []byte, error) {
+	var timeByte, dataByte, versionByte []byte
 
-	var timeByte, bundleByte []byte
+	if secretData == nil {
 
-	if secret.Data == nil {
-		err = ErrNoData
-	}
+		secret, err := util.GetK8sSecrets(namespace, secretname)
 
-	if err != nil {
-		if errors.Is(err, ErrNotFound) || errors.Is(err, ErrNoData) {
-			return nil, nil, nil
+		if secret.Data == nil {
+			err = ErrNoData
 		}
-		return nil, nil, err
+
+		if err != nil {
+			if errors.Is(err, ErrNotFound) || errors.Is(err, ErrNoData) {
+				return nil, nil, nil, nil
+			}
+			return nil, nil, nil, err
+		}
+		secretData = secret.Data
 	}
-	for key, value := range secret.Data {
+
+	for key, value := range secretData {
 		if key == dataType+"-legacy" {
-			bundleByte = value
+			dataByte = value
 		}
 		if key == dataType+"-legacy-time" {
 			timeByte = value
 		}
+		if key == dataType+"-version" {
+			versionByte = value
+		}
 	}
 
-	return bundleByte, timeByte, nil
+	return dataByte, timeByte, versionByte, nil
 }
-func loadLegacyBundleFromK8S(namespace, secretname string) ([]*x509.Certificate, time.Time, error) {
+func loadLegacyBundleFromK8S(namespace, secretname string) ([]*x509.Certificate, time.Time, int64, error) {
 
-	bundleByte, timeByte, err := getLegacyDataFromK8SSecret(namespace, secretname, "bundle")
+	bundleByte, timeByte, versionByte, err := getLegacyData(namespace, secretname, "bundle", nil)
 	if err != nil {
 		if strings.Contains(err.Error(), "not found") {
-			return nil, time.Time{}, nil
+			return nil, time.Time{}, 0, nil
 		}
-		return nil, time.Time{}, err
+		return nil, time.Time{}, 0, err
 	}
 
-	bundle, err := x509.ParseCertificates(bundleByte)
-	if err != nil {
-		return nil, time.Time{}, fmt.Errorf("failed to parse legacy bundle: %w", err)
-	}
-
-	var td time.Time
-
-	err = td.UnmarshalBinary(timeByte)
-	if err != nil {
-		log.WithError(err).Info("Could not unmarshal time. Updating time as current time")
-		td = time.Now()
-	}
-
-	return bundle, td, nil
+	return loadCertAndTime(bundleByte, timeByte, versionByte)
 }
 
 func storeLegacyBundle(dir string, bundle []*x509.Certificate) error {
@@ -91,7 +86,7 @@ func storeLegacyBundle(dir string, bundle []*x509.Certificate) error {
 	}
 	return nil
 }
-func storeLegacyBundleToK8S(namespace, secret string, bundle []*x509.Certificate) error {
+func storeLegacyBundleToK8S(namespace, secret string, backupFile string, bundle []*x509.Certificate) error {
 	mapData := make(map[string][]byte)
 	data := new(bytes.Buffer)
 	for _, cert := range bundle {
@@ -100,7 +95,7 @@ func storeLegacyBundleToK8S(namespace, secret string, bundle []*x509.Certificate
 
 	now := time.Now()
 
-	td, err := now.MarshalBinary()
+	td, err := now.MarshalText()
 	if err != nil {
 		log.WithError(err).Info("Could not marshal time.")
 	}
@@ -108,47 +103,38 @@ func storeLegacyBundleToK8S(namespace, secret string, bundle []*x509.Certificate
 	mapData["bundle-legacy"] = data.Bytes()
 	mapData["bundle-legacy-time"] = td
 
-	return util.CreateK8sSecrets(namespace, secret, mapData)
+	if fileErr := backupDataToFile(backupFile, mapData); fileErr != nil {
+		log.WithError(fileErr).Error("Failed to backup data")
+	}
+
+	return createSecretWithBackoff(namespace, secret, mapData)
 
 }
 
-func loadLegacySVID(dir string) ([]*x509.Certificate, time.Time, error) {
+func loadLegacySVID(dir string) ([]*x509.Certificate, time.Time, int64, error) {
 	data, mtime, err := readFile(legacySVIDPath(dir))
 	if err != nil {
-		return nil, time.Time{}, fmt.Errorf("failed to read legacy SVID: %w", err)
+		return nil, time.Time{}, 0, fmt.Errorf("failed to read legacy SVID: %w", err)
 	}
 
 	certChain, err := x509.ParseCertificates(data)
 	if err != nil {
-		return nil, time.Time{}, fmt.Errorf("failed to parse legacy SVID: %w", err)
+		return nil, time.Time{}, 0, fmt.Errorf("failed to parse legacy SVID: %w", err)
 	}
-	return certChain, mtime, nil
+	return certChain, mtime, 0, nil
 }
 
-func loadLegacySVIDFromK8S(namespace, secretname string) ([]*x509.Certificate, time.Time, error) {
+func loadLegacySVIDFromK8S(namespace, secretname string) ([]*x509.Certificate, time.Time, int64, error) {
 
-	svidByte, timeByte, err := getLegacyDataFromK8SSecret(namespace, secretname, "svid")
+	svidByte, timeByte, versionByte, err := getLegacyData(namespace, secretname, "svid", nil)
 	if err != nil {
 		if strings.Contains(err.Error(), "not found") {
-			return nil, time.Time{}, nil
+			return nil, time.Time{}, 0, nil
 		}
-		return nil, time.Time{}, err
+		return nil, time.Time{}, 0, err
 	}
 
-	svids, err := x509.ParseCertificates(svidByte)
-	if err != nil {
-		return nil, time.Time{}, fmt.Errorf("failed to parse legacy SVIDs: %w", err)
-	}
-
-	var td time.Time
-
-	err = td.UnmarshalBinary(timeByte)
-	if err != nil {
-		log.WithError(err).Info("Could not unmarshal time. Updating time as current time")
-		td = time.Now()
-	}
-
-	return svids, td, nil
+	return loadCertAndTime(svidByte, timeByte, versionByte)
 }
 
 func storeLegacySVID(dir string, svidChain []*x509.Certificate) error {
@@ -162,7 +148,7 @@ func storeLegacySVID(dir string, svidChain []*x509.Certificate) error {
 	return nil
 }
 
-func storeLegacySVIDToK8S(namespace, secret string, svidChain []*x509.Certificate) error {
+func storeLegacySVIDToK8S(namespace, secret, backupFile string, svidChain []*x509.Certificate) error {
 	mapData := make(map[string][]byte)
 	data := new(bytes.Buffer)
 
@@ -172,7 +158,7 @@ func storeLegacySVIDToK8S(namespace, secret string, svidChain []*x509.Certificat
 
 	now := time.Now()
 
-	td, err := now.MarshalBinary()
+	td, err := now.MarshalText()
 	if err != nil {
 		log.WithError(err).Info("Could not marshal time. ")
 
@@ -181,7 +167,11 @@ func storeLegacySVIDToK8S(namespace, secret string, svidChain []*x509.Certificat
 
 	mapData["svid-legacy"] = data.Bytes()
 
-	return util.CreateK8sSecrets(namespace, secret, mapData)
+	if fileErr := backupDataToFile(backupFile, mapData); fileErr != nil {
+		log.WithError(fileErr).Error("Failed to backup data")
+	}
+
+	return createSecretWithBackoff(namespace, secret, mapData)
 
 }
 

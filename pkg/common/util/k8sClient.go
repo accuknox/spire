@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
@@ -94,6 +95,11 @@ func ConnectInClusterAPIClient() *kubernetes.Clientset {
 func CreateK8sSecrets(namespace, secretname string, data map[string][]byte) error {
 
 	client := ConnectK8sClient()
+	var oldVersion, newVersion int64
+
+	if tmpVersion, ok := data["version"]; ok {
+		newVersion = BytesToInt64(tmpVersion)
+	}
 
 	secret := &v1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
@@ -109,9 +115,20 @@ func CreateK8sSecrets(namespace, secretname string, data map[string][]byte) erro
 		if oldSec.Data == nil {
 			oldSec.Data = map[string][]byte{}
 		}
-		for k, value := range data {
-			oldSec.Data[k] = value
+		if tmpVersion, ok := oldSec.Data["version"]; ok {
+			oldVersion = BytesToInt64(tmpVersion)
 		}
+
+		for key, value := range data {
+			if value == nil {
+				continue
+			}
+			oldSec.Data[key] = value
+
+		}
+
+		oldSec.Data["version"] = Int64ToBytes(max(oldVersion, newVersion) + 1)
+
 		_, err := client.CoreV1().Secrets(namespace).Update(context.Background(), &oldSec, metav1.UpdateOptions{})
 		if err != nil {
 			return err
@@ -153,6 +170,20 @@ func DeleteK8sSecrets(namespace, secretname, typeString string) error {
 	if err != nil {
 		return err
 	}
-	log.WithField("secret=%v", secret.Name).Info("Successfully deleted secret")
+	log.WithField("secret", secret.Name).Info("Successfully deleted secret")
 	return CreateK8sSecrets(namespace, secretname, mapData)
+}
+
+func Int64ToBytes(i int64) []byte {
+	str := strconv.FormatInt(i, 10)
+	return []byte(str)
+}
+
+func BytesToInt64(b []byte) int64 {
+	num, err := strconv.ParseInt(string(b), 10, 64)
+	if err != nil {
+		log.WithError(err).Error("unable to convert bytes to int64")
+		return 0
+	}
+	return num
 }

@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/godbus/dbus/v5"
-	"github.com/hashicorp/go-hclog"
 	workloadattestorv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/agent/workloadattestor/v1"
 	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/godbus/dbus/v5"
+	"github.com/hashicorp/go-hclog"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

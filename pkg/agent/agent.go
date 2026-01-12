@@ -7,7 +7,6 @@ import (
 	"net/http"
 	_ "net/http/pprof" //nolint: gosec // import registers routes on DefaultServeMux
 	"runtime"
-	"strings"
 	"sync"
 	"time"
 
@@ -51,30 +50,25 @@ type pluginConfig struct {
 func (a *Agent) Run(ctx context.Context) error {
 
 	var sto storage.Storage
-	var err error
-
-	defer func() {
-		if err != nil && sto != nil && !strings.Contains(err.Error(), "connection refused") {
-			sto.DeleteSVID()
-		}
-	}()
 
 	keyManager, ok := a.c.PluginConfigs.Find("KeyManager", "keymanager-k8s")
 	newConfig := new(pluginConfig)
 	if ok {
-		if err = hcl.Decode(newConfig, keyManager.Data); err != nil {
+		if err := hcl.Decode(newConfig, keyManager.Data); err != nil {
 			return fmt.Errorf("failed to decode configuration: %v", err)
 		}
 	}
+
+	err := diskutil.CreateDataDirectory(a.c.DataDir)
+	if err != nil {
+		return err
+	}
 	if newConfig.Namespace != "" && newConfig.SecretName != "" {
 		a.c.Log.Infof("Starting agent with kubernetes secret store")
-		sto, err = storage.Open("", newConfig.Namespace, newConfig.SecretName)
+		sto, err = storage.Open("", newConfig.Namespace, newConfig.SecretName, a.c.DataDir)
 	} else {
 		a.c.Log.Infof("Starting agent with data directory: %q", a.c.DataDir)
-		if err = diskutil.CreateDataDirectory(a.c.DataDir); err != nil {
-			return err
-		}
-		sto, err = storage.Open(a.c.DataDir, "", "")
+		sto, err = storage.Open(a.c.DataDir, "", "", "")
 	}
 	if err != nil {
 		return fmt.Errorf("failed to open storage: %w", err)

@@ -25,15 +25,15 @@ var (
 
 	attestor1Pids = map[int32][]string{
 		1: nil,
-		2: []string{"bar"},
+		2: {"bar"},
 		// 3: attestor1 cannot attest process 3
-		4: []string{"bar"},
+		4: {"bar"},
 	}
 	attestor2Pids = map[int32][]string{
 		1: nil,
 		2: nil,
-		3: []string{"baz"},
-		4: []string{"baz"},
+		3: {"baz"},
+		4: {"baz"},
 	}
 )
 

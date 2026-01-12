@@ -90,7 +90,7 @@ func TestBundle(t *testing.T) {
 		require.NoError(t, sto.StoreBundle(certsA))
 
 		// Assert the legacy bundle has been stored
-		actual, _, err := loadLegacyBundle(dir)
+		actual, _, _, err := loadLegacyBundle(dir)
 		require.NoError(t, err)
 		require.Equal(t, certsA, actual)
 	})
@@ -184,7 +184,7 @@ func TestSVID(t *testing.T) {
 		require.NoError(t, sto.StoreSVID(certsA, false))
 
 		// Assert the legacy SVID has been stored
-		actual, _, err := loadLegacySVID(dir)
+		actual, _, _, err := loadLegacySVID(dir)
 		require.NoError(t, err)
 		require.Equal(t, certsA, actual)
 	})
@@ -263,7 +263,7 @@ func TestSVID(t *testing.T) {
 }
 
 func openStorage(t *testing.T, dir string) Storage {
-	sto, err := Open(dir, "", "")
+	sto, err := Open(dir, "", "", "")
 	require.NoError(t, err)
 	return sto
 }
