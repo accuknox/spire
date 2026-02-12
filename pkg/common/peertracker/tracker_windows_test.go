@@ -178,7 +178,7 @@ func TestWindowsTracker(t *testing.T) {
 			require.NotNil(t, w)
 
 			// Exercise IsAlive
-			err = w.IsAlive()
+			err = w.IsAlive(make(map[string]string))
 			if testCase.expectIsAliveErr != "" {
 				require.EqualError(t, err, testCase.expectIsAliveErr)
 				spiretest.AssertLogs(t, logHook.AllEntries(), testCase.expectLogs)
