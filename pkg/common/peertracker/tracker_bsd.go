@@ -164,6 +164,7 @@ type bsdWatcher struct {
 	mtx    sync.Mutex
 	pid    int32
 	log    logrus.FieldLogger
+	meta   map[string]string
 }
 
 func newBSDWatcher(info CallerInfo, done <-chan struct{}, log logrus.FieldLogger) *bsdWatcher {
@@ -171,6 +172,7 @@ func newBSDWatcher(info CallerInfo, done <-chan struct{}, log logrus.FieldLogger
 		done: done,
 		pid:  info.PID,
 		log:  log,
+		meta: info.Meta,
 	}
 }
 
@@ -186,7 +188,8 @@ func (b *bsdWatcher) Close() {
 	b.closed = true
 }
 
-func (b *bsdWatcher) IsAlive() error {
+func (b *bsdWatcher) IsAlive(meta map[string]string) error {
+	b.meta = meta
 	b.mtx.Lock()
 	if b.closed {
 		b.mtx.Unlock()

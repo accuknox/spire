@@ -320,7 +320,7 @@ func TestAttest(t *testing.T) {
 			p, err := test.loadPlugin(t, testCase.pq, testCase.config)
 			require.NoError(t, err)
 
-			selectors, err := p.Attest(ctx, testPID)
+			selectors, err := p.Attest(ctx, testPID, make(map[string]string))
 			spiretest.RequireGRPCStatus(t, err, testCase.expectCode, testCase.expectMsg)
 			if testCase.expectCode != codes.OK {
 				require.Nil(t, selectors)

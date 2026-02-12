@@ -113,7 +113,7 @@ func (w *windowsWatcher) Close() {
 	w.procHandle = windows.InvalidHandle
 }
 
-func (w *windowsWatcher) IsAlive() error {
+func (w *windowsWatcher) IsAlive(meta map[string]string) error {
 	w.mtx.Lock()
 	defer w.mtx.Unlock()
 
