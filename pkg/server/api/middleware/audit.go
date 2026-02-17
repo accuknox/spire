@@ -74,7 +74,14 @@ func fieldsFromTracker(ctx context.Context) (logrus.Fields, error) {
 		fields[telemetry.CallerPath] = addr
 	}
 
-	if err := watcher.IsAlive(make(map[string]string)); err != nil {
+	var meta map[string]string
+
+	v := ctx.Value("meta")
+	if v != nil {
+		meta = v.(map[string]string)
+	}
+
+	if err := watcher.IsAlive(meta); err != nil {
 		return nil, status.Errorf(codes.Internal, "peertracker fails: %v", err)
 	}
 	return fields, nil

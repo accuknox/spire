@@ -100,27 +100,29 @@ func (l *linuxWatcher) Close() {
 }
 
 func (l *linuxWatcher) IsAlive(meta map[string]string) error {
-	l.meta = meta
 	l.mtx.Lock()
 	defer l.mtx.Unlock()
+	l.meta = meta
 
-	if l.procfd < 0 {
+	if l.procfd < 0 && len(l.meta) <= 0 {
 		l.log.Warn("Caller is no longer being watched")
 		return errors.New("caller is no longer being watched")
 	}
 
-	// First we will check if we can read from the original directory handle.
-	// If the process has exited since we opened it, the read should fail (i.e.
-	// the ReadDirent syscall will return -1)
-	var buf [8196]byte
-	n, err := syscall.ReadDirent(l.procfd, buf[:])
-	if err != nil {
-		l.log.WithError(err).Warn("Caller exit suspected due to failed readdirent")
-		return errors.New("caller exit suspected due to failed readdirent")
-	}
-	if n < 0 {
-		l.log.WithField(telemetry.StatusCode, n).Warn("Caller exit suspected due to failed readdirent")
-		return fmt.Errorf("caller exit suspected due to failed readdirent: n=%d", n)
+	if l.procfd > 0 {
+		// First we will check if we can read from the original directory handle.
+		// If the process has exited since we opened it, the read should fail (i.e.
+		// the ReadDirent syscall will return -1)
+		var buf [8196]byte
+		n, err := syscall.ReadDirent(l.procfd, buf[:])
+		if err != nil {
+			l.log.WithError(err).Warn("Caller exit suspected due to failed readdirent")
+			return errors.New("caller exit suspected due to failed readdirent")
+		}
+		if n < 0 {
+			l.log.WithField(telemetry.StatusCode, n).Warn("Caller exit suspected due to failed readdirent")
+			return fmt.Errorf("caller exit suspected due to failed readdirent: n=%d", n)
+		}
 	}
 
 	// A successful fd read should indicate that the original process is still alive, however
