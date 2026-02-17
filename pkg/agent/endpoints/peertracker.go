@@ -29,6 +29,10 @@ func (a PeerTrackerAttestor) Attest(ctx context.Context) ([]*common.Selector, er
 
 	selectors := a.Attestor.Attest(ctx, int(watcher.PID()), meta)
 
+	if len(meta) > 0 {
+		return selectors, nil
+	}
+
 	// Ensure that the original caller is still alive so that we know we didn't
 	// attest some other process that happened to be assigned the original PID
 	if err := watcher.IsAlive(meta); err != nil {
