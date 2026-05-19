@@ -14,25 +14,27 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/accuknox/spire/pkg/common/util"
+	"github.com/go-sql-driver/mysql"
 	"github.com/gofrs/uuid/v5"
 	"github.com/hashicorp/hcl"
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/hashicorp/hcl/hcl/printer"
 	"github.com/jinzhu/gorm"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/util"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	configv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/service/common/config/v1"
+	"github.com/accuknox/spire/pkg/common/bundleutil"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/protoutil"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/x509util"
+	"github.com/accuknox/spire/pkg/server/datastore"
+	"github.com/accuknox/spire/proto/private/server/journal"
+	"github.com/accuknox/spire/proto/spire/common"
+	vapi "github.com/hashicorp/vault/api"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	configv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/service/common/config/v1"
-	"github.com/spiffe/spire/pkg/common/bundleutil"
-	"github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/pkg/common/protoutil"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/common/x509util"
-	"github.com/spiffe/spire/pkg/server/datastore"
-	"github.com/spiffe/spire/proto/private/server/journal"
-	"github.com/spiffe/spire/proto/spire/common"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
@@ -86,9 +88,13 @@ type configuration struct {
 	MaxIdleConns       *int     `hcl:"max_idle_conns" json:"max_idle_conns"`
 	DisableMigration   bool     `hcl:"disable_migration" json:"disable_migration"`
 
+	username string
+	password string
+
 	databaseTypeConfig *dbTypeConfig
 	// Undocumented flags
-	LogSQL bool `hcl:"log_sql" json:"log_sql"`
+	LogSQL bool         `hcl:"log_sql" json:"log_sql"`
+	Vault  *vaultConfig `hcl:"vault" json:"vault"`
 }
 
 type dbTypeConfig struct {
@@ -140,6 +146,7 @@ type Plugin struct {
 	roDb                *sqlDB
 	log                 logrus.FieldLogger
 	useServerTimestamps bool
+	vaultClient         *vapi.Client
 }
 
 // New creates a new sql plugin struct. Configure must be called
@@ -868,6 +875,12 @@ func (ds *Plugin) Configure(ctx context.Context, hclConfiguration string) error 
 		return err
 	}
 
+	if config.Vault != nil && config.Vault.Enabled {
+		if err := ds.initializeVault(config.Vault); err != nil {
+			return err
+		}
+	}
+
 	return ds.openConnections(ctx, config)
 }
 
@@ -908,6 +921,15 @@ func buildConfig(hclConfiguration string) (*configuration, error) {
 func (ds *Plugin) openConnections(ctx context.Context, config *configuration) error {
 	ds.mu.Lock()
 	defer ds.mu.Unlock()
+
+	if ds.vaultClient != nil {
+		username, password, err := getUsernamePasswordFromVault(config.Vault, ds.vaultClient)
+		if err != nil {
+			return err
+		}
+		config.username = username
+		config.password = password
+	}
 
 	if err := ds.openConnection(ctx, config, false); err != nil {
 		return err
@@ -4856,6 +4878,11 @@ func getConnectionString(cfg *configuration, isReadOnly bool) string {
 	if isReadOnly {
 		connectionString = cfg.RoConnectionString
 	}
+
+	if cfg.username != "" && cfg.password != "" {
+		connectionString = injectDBCredentials(cfg.databaseTypeConfig.databaseType, connectionString, cfg.username, cfg.password)
+	}
+
 	return connectionString
 }
 
@@ -5129,4 +5156,45 @@ func buildArgs(args []string) []any {
 	}
 
 	return anyArgs
+}
+
+func injectDBCredentials(dbType, dsn, username, password string) string {
+
+	if isMySQLDbType(dbType) {
+		cfg, err := mysql.ParseDSN(dsn)
+		if err == nil {
+			cfg.User = username
+			cfg.Passwd = password
+			return cfg.FormatDSN()
+		}
+	} else if isPostgresDbType(dbType) {
+		return setOrReplace(dsn, map[string]string{
+			"user":     username,
+			"password": password,
+		})
+	}
+	return dsn
+}
+
+func setOrReplace(dsn string, keyValue map[string]string) string {
+	for key, value := range keyValue {
+		parts := strings.Fields(dsn)
+		found := false
+
+		for i, part := range parts {
+			if strings.HasPrefix(part, key+"=") {
+				parts[i] = key + "=" + value
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			parts = append(parts, key+"="+value)
+		}
+
+		dsn = strings.Join(parts, " ")
+	}
+
+	return dsn
 }

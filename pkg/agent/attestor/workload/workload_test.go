@@ -6,16 +6,16 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	telemetry_workload "github.com/accuknox/spire/pkg/common/telemetry/agent/workloadapi"
+	"github.com/accuknox/spire/pkg/common/util"
+	"github.com/accuknox/spire/proto/spire/common"
+	"github.com/accuknox/spire/test/fakes/fakeagentcatalog"
+	"github.com/accuknox/spire/test/fakes/fakemetrics"
+	"github.com/accuknox/spire/test/fakes/fakeworkloadattestor"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	telemetry_workload "github.com/spiffe/spire/pkg/common/telemetry/agent/workloadapi"
-	"github.com/spiffe/spire/pkg/common/util"
-	"github.com/spiffe/spire/proto/spire/common"
-	"github.com/spiffe/spire/test/fakes/fakeagentcatalog"
-	"github.com/spiffe/spire/test/fakes/fakemetrics"
-	"github.com/spiffe/spire/test/fakes/fakeworkloadattestor"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -70,22 +70,22 @@ func (s *WorkloadAttestorTestSuite) TestAttestWorkload() {
 	)
 
 	// both attestors succeed but with no selectors
-	selectors, err := s.attestor.Attest(ctx, 1)
+	selectors, err := s.attestor.Attest(ctx, 1, nil)
 	s.Assert().Nil(err)
 	s.Empty(selectors)
 
 	// attestor1 has selectors, but not attestor2
-	selectors, err = s.attestor.Attest(ctx, 2)
+	selectors, err = s.attestor.Attest(ctx, 2, nil)
 	s.Assert().Nil(err)
 	spiretest.AssertProtoListEqual(s.T(), selectors1, selectors)
 
 	// attestor2 has selectors, attestor1 fails
-	selectors, err = s.attestor.Attest(ctx, 3)
+	selectors, err = s.attestor.Attest(ctx, 3, nil)
 	s.Assert().Nil(err)
 	spiretest.AssertProtoListEqual(s.T(), selectors2, selectors)
 
 	// both have selectors
-	selectors, err = s.attestor.Attest(ctx, 4)
+	selectors, err = s.attestor.Attest(ctx, 4, nil)
 	s.Assert().Nil(err)
 	util.SortSelectors(selectors)
 	combined := make([]*common.Selector, 0, len(selectors1)+len(selectors2))
@@ -105,7 +105,7 @@ func (s *WorkloadAttestorTestSuite) TestAttestWorkloadMetrics() {
 	metrics := fakemetrics.New()
 	s.attestor.c.Metrics = metrics
 
-	selectors, err := s.attestor.Attest(ctx, 2)
+	selectors, err := s.attestor.Attest(ctx, 2, nil)
 	s.Assert().Nil(err)
 
 	// Create expected metrics
@@ -123,7 +123,7 @@ func (s *WorkloadAttestorTestSuite) TestAttestWorkloadMetrics() {
 	s.attestor.c.Metrics = metrics
 
 	// No selectors expected
-	selectors, err = s.attestor.Attest(ctx, 3)
+	selectors, err = s.attestor.Attest(ctx, 3, nil)
 	s.Assert().Nil(err)
 	s.Empty(selectors)
 
@@ -163,7 +163,7 @@ func (s *WorkloadAttestorTestSuite) TestAttestLogsOnContextCancellation() {
 	var selectors []*common.Selector
 	var attestErr error
 	go func(innerCtx context.Context, pid int) {
-		selectors, attestErr = s.attestor.Attest(innerCtx, pid)
+		selectors, attestErr = s.attestor.Attest(innerCtx, pid, nil)
 		attestCh <- struct{}{}
 	}(ctx, pid)
 

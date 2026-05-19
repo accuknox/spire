@@ -13,8 +13,8 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/accuknox/spire/pkg/agent/common/cgroups"
 	"github.com/hashicorp/go-hclog"
-	"github.com/spiffe/spire/pkg/agent/common/cgroups"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"k8s.io/apimachinery/pkg/types"

@@ -3,7 +3,7 @@ package errorjson
 import (
 	"io"
 
-	"github.com/spiffe/spire/pkg/common/cliprinter/internal/structjson"
+	"github.com/accuknox/spire/pkg/common/cliprinter/internal/structjson"
 )
 
 func Print(err error, stdout, stderr io.Writer) error {

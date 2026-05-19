@@ -6,18 +6,18 @@ import (
 	"sync"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/agent/client"
+	"github.com/accuknox/spire/pkg/agent/manager/cache"
+	"github.com/accuknox/spire/pkg/agent/plugin/keymanager"
+	"github.com/accuknox/spire/pkg/agent/plugin/nodeattestor"
+	"github.com/accuknox/spire/pkg/common/backoff"
+	"github.com/accuknox/spire/pkg/common/rotationutil"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/tlspolicy"
 	"github.com/andres-erbsen/clock"
 	"github.com/imkira/go-observer"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/pkg/agent/client"
-	"github.com/spiffe/spire/pkg/agent/manager/cache"
-	"github.com/spiffe/spire/pkg/agent/plugin/keymanager"
-	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor"
-	"github.com/spiffe/spire/pkg/common/backoff"
-	"github.com/spiffe/spire/pkg/common/rotationutil"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/common/tlspolicy"
 )
 
 const DefaultRotatorInterval = 5 * time.Second

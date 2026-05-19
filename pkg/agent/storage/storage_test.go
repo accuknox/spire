@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/spiffe/spire/pkg/common/pemutil"
-	"github.com/spiffe/spire/test/spiretest"
+	"github.com/accuknox/spire/pkg/common/pemutil"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
 )
 
@@ -135,7 +135,7 @@ func TestSVID(t *testing.T) {
 }
 
 func openStorage(t *testing.T, dir string) Storage {
-	sto, err := Open(dir)
+	sto, err := Open(dir, "", "")
 	require.NoError(t, err)
 	return sto
 }

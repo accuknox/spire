@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"testing"
 
+	authority_common_test "github.com/accuknox/spire/cmd/spire-server/cli/authoritycommon/test"
+	"github.com/accuknox/spire/cmd/spire-server/cli/upstreamauthority"
+	"github.com/accuknox/spire/test/clitest"
 	"github.com/gogo/status"
-	authority_common_test "github.com/spiffe/spire/cmd/spire-server/cli/authoritycommon/test"
-	"github.com/spiffe/spire/cmd/spire-server/cli/upstreamauthority"
-	"github.com/spiffe/spire/test/clitest"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 )

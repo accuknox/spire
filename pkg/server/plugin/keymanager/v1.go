@@ -7,9 +7,9 @@ import (
 	"crypto/x509"
 	"io"
 
-	keymanagerv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/server/keymanager/v1"
-	"github.com/spiffe/spire/pkg/common/plugin"
-	"github.com/spiffe/spire/pkg/common/util"
+	keymanagerv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/server/keymanager/v1"
+	"github.com/accuknox/spire/pkg/common/plugin"
+	"github.com/accuknox/spire/pkg/common/util"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

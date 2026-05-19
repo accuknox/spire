@@ -3,7 +3,7 @@
 package wit
 
 import (
-	"github.com/spiffe/spire/test/clitest"
+	"github.com/accuknox/spire/test/clitest"
 )
 
 var (

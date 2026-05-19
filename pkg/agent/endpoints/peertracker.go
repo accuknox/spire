@@ -3,9 +3,9 @@ package endpoints
 import (
 	"context"
 
-	attestor "github.com/spiffe/spire/pkg/agent/attestor/workload"
-	"github.com/spiffe/spire/pkg/common/peertracker"
-	"github.com/spiffe/spire/proto/spire/common"
+	attestor "github.com/accuknox/spire/pkg/agent/attestor/workload"
+	"github.com/accuknox/spire/pkg/common/peertracker"
+	"github.com/accuknox/spire/proto/spire/common"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -20,14 +20,23 @@ func (a PeerTrackerAttestor) Attest(ctx context.Context) ([]*common.Selector, er
 		return nil, status.Error(codes.Internal, "peer tracker watcher missing from context")
 	}
 
-	selectors, err := a.Attestor.Attest(ctx, int(watcher.PID()))
+	var metadata map[string]string
+	if v, ok := ctx.Value("metadata").(map[string]string); ok {
+		metadata = v
+	}
+
+	selectors, err := a.Attestor.Attest(ctx, int(watcher.PID()), metadata)
 	if err != nil {
 		return nil, err
 	}
 
+	if len(metadata) > 0 {
+		return selectors, nil
+	}
+
 	// Ensure that the original caller is still alive so that we know we didn't
 	// attest some other process that happened to be assigned the original PID
-	if err := watcher.IsAlive(); err != nil {
+	if err := watcher.IsAlive(metadata); err != nil {
 		return nil, status.Errorf(codes.Unauthenticated, "could not verify existence of the original caller: %v", err)
 	}
 

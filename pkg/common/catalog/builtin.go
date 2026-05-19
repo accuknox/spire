@@ -7,10 +7,10 @@ import (
 	"sync"
 	"time"
 
+	"github.com/accuknox/spire-plugin-sdk/pluginsdk"
+	"github.com/accuknox/spire-plugin-sdk/private"
+	"github.com/accuknox/spire/pkg/common/log"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire-plugin-sdk/pluginsdk"
-	"github.com/spiffe/spire-plugin-sdk/private"
-	"github.com/spiffe/spire/pkg/common/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )

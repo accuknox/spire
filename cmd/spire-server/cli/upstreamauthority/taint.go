@@ -6,11 +6,11 @@ import (
 	"flag"
 	"fmt"
 
+	"github.com/accuknox/spire/cmd/spire-server/util"
+	commoncli "github.com/accuknox/spire/pkg/common/cli"
+	"github.com/accuknox/spire/pkg/common/cliprinter"
 	"github.com/mitchellh/cli"
 	localauthorityv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/localauthority/v1"
-	"github.com/spiffe/spire/cmd/spire-server/util"
-	commoncli "github.com/spiffe/spire/pkg/common/cli"
-	"github.com/spiffe/spire/pkg/common/cliprinter"
 )
 
 // NewTaintCommand creates a new "upstreamauthority taint" subcommand for "upstreamauthority" command.

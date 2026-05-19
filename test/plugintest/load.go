@@ -5,8 +5,8 @@ import (
 	"io"
 	"testing"
 
+	"github.com/accuknox/spire/pkg/common/catalog"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/catalog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/test/clock"
-	"github.com/spiffe/spire/test/fakes/fakemetrics"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/test/clock"
+	"github.com/accuknox/spire/test/fakes/fakemetrics"
 	"github.com/stretchr/testify/assert"
 )
 

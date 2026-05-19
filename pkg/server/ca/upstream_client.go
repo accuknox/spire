@@ -8,9 +8,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/spiffe/spire/pkg/common/coretypes/x509certificate"
-	"github.com/spiffe/spire/pkg/server/plugin/upstreamauthority"
-	"github.com/spiffe/spire/proto/spire/common"
+	"github.com/accuknox/spire/pkg/common/coretypes/x509certificate"
+	"github.com/accuknox/spire/pkg/server/plugin/upstreamauthority"
+	"github.com/accuknox/spire/proto/spire/common"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

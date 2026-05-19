@@ -6,7 +6,7 @@ import (
 	"crypto/x509"
 	"testing"
 
-	"github.com/spiffe/spire/pkg/common/pemutil"
+	"github.com/accuknox/spire/pkg/common/pemutil"
 	"github.com/stretchr/testify/require"
 )
 

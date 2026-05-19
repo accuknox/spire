@@ -145,7 +145,7 @@ instead of:
 k8s:container-image:docker.io/envoyproxy/envoy-alpine:v1.16.0
 ```
 
-Tag-based selectors remain useful for human readability and for dynamic workload registration scenarios where the digest is not yet known (e.g. before an image pull is initiated). However, operators should be aware of the trade-off between readability and uniqueness, and avoid relying on tag-based image selectors in environments where multiple tags may reference the same image digest. See [#4287](https://github.com/spiffe/spire/issues/4287) for more details.
+Tag-based selectors remain useful for human readability and for dynamic workload registration scenarios where the digest is not yet known (e.g. before an image pull is initiated). However, operators should be aware of the trade-off between readability and uniqueness, and avoid relying on tag-based image selectors in environments where multiple tags may reference the same image digest. See [#4287](https://github.com/accuknox/spire/issues/4287) for more details.
 
 ## Examples
 
@@ -207,6 +207,6 @@ This plugin is only supported on Unix systems.
 
 ### Known issues
 
-* This plugin may fail to correctly attest workloads in pods that use lifecycle hooks to alter pod start behavior. This includes Istio workloads when the `holdApplicationUntilProxyStarts` configurable is set to true. Please see [#3092](https://github.com/spiffe/spire/issues/3092) for more information. The `disable_container_selectors` configurable can be used to successfully attest workloads in this situation, albeit with reduced selector granularity (i.e. pod selectors only).
+* This plugin may fail to correctly attest workloads in pods that use lifecycle hooks to alter pod start behavior. This includes Istio workloads when the `holdApplicationUntilProxyStarts` configurable is set to true. Please see [#3092](https://github.com/accuknox/spire/issues/3092) for more information. The `disable_container_selectors` configurable can be used to successfully attest workloads in this situation, albeit with reduced selector granularity (i.e. pod selectors only).
 
-* Tag-based image selectors (`container-image`, `pod-image`, `pod-init-image`) can produce inconsistent attestation results when multiple image tags reference the same digest. The container runtime may non-deterministically report any of the associated tags, which can cause workloads to fail attestation on some nodes. Use digest-based image identifiers for reliable matching. See the [image selector limitations](#image-selector-limitations) section and [#4287](https://github.com/spiffe/spire/issues/4287) for more information.
+* Tag-based image selectors (`container-image`, `pod-image`, `pod-init-image`) can produce inconsistent attestation results when multiple image tags reference the same digest. The container runtime may non-deterministically report any of the associated tags, which can cause workloads to fail attestation on some nodes. Use digest-based image identifiers for reliable matching. See the [image selector limitations](#image-selector-limitations) section and [#4287](https://github.com/accuknox/spire/issues/4287) for more information.

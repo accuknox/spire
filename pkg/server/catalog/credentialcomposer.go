@@ -1,9 +1,9 @@
 package catalog
 
 import (
-	"github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/pkg/server/plugin/credentialcomposer"
-	"github.com/spiffe/spire/pkg/server/plugin/credentialcomposer/uniqueid"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/server/plugin/credentialcomposer"
+	"github.com/accuknox/spire/pkg/server/plugin/credentialcomposer/uniqueid"
 )
 
 type credentialComposerRepository struct {

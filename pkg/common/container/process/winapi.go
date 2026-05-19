@@ -6,7 +6,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/spiffe/spire/pkg/common/util"
+	"github.com/accuknox/spire/pkg/common/util"
 	"golang.org/x/sys/windows"
 )
 

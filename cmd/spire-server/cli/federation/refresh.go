@@ -6,12 +6,12 @@ import (
 	"flag"
 	"fmt"
 
+	"github.com/accuknox/spire/cmd/spire-server/util"
+	commoncli "github.com/accuknox/spire/pkg/common/cli"
+	"github.com/accuknox/spire/pkg/common/cliprinter"
+	"github.com/accuknox/spire/pkg/server/api"
 	"github.com/mitchellh/cli"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/server/trustdomain/v1"
-	"github.com/spiffe/spire/cmd/spire-server/util"
-	commoncli "github.com/spiffe/spire/pkg/common/cli"
-	"github.com/spiffe/spire/pkg/common/cliprinter"
-	"github.com/spiffe/spire/pkg/server/api"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

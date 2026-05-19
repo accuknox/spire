@@ -7,14 +7,14 @@ import (
 	"sync"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/bundle/spiffebundle"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/agent/manager/cache"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	telemetry_agent "github.com/accuknox/spire/pkg/common/telemetry/agent"
+	"github.com/accuknox/spire/pkg/common/x509util"
+	"github.com/accuknox/spire/proto/spire/common"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/bundle/spiffebundle"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/pkg/agent/manager/cache"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	telemetry_agent "github.com/spiffe/spire/pkg/common/telemetry/agent"
-	"github.com/spiffe/spire/pkg/common/x509util"
-	"github.com/spiffe/spire/proto/spire/common"
 )
 
 // Record holds the latest cached SVID with its context

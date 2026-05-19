@@ -11,9 +11,9 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/pkg/common/x509util"
-	"github.com/spiffe/spire/test/clock"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/x509util"
+	"github.com/accuknox/spire/test/clock"
 )
 
 // NewCSRTemplate returns a default CSR template with the specified SPIFFE ID.

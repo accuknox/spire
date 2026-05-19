@@ -431,7 +431,7 @@ const file_spire_common_plugin_plugin_proto_rawDesc = "" +
 	"\x0fplugin_services\x18\x01 \x03(\tR\x0epluginServices2Y\n" +
 	"\n" +
 	"PluginInit\x12K\n" +
-	"\x04Init\x12 .spire.common.plugin.InitRequest\x1a!.spire.common.plugin.InitResponseB3Z1github.com/spiffe/spire/proto/spire/common/pluginb\x06proto3"
+	"\x04Init\x12 .spire.common.plugin.InitRequest\x1a!.spire.common.plugin.InitResponseB5Z3github.com/accuknox/spire/proto/spire/common/pluginb\x06proto3"
 
 var (
 	file_spire_common_plugin_plugin_proto_rawDescOnce sync.Once

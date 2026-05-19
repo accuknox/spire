@@ -3,9 +3,9 @@ package plugintest
 import (
 	"fmt"
 
+	"github.com/accuknox/spire-plugin-sdk/pluginsdk"
+	"github.com/accuknox/spire/pkg/common/catalog"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire-plugin-sdk/pluginsdk"
-	"github.com/spiffe/spire/pkg/common/catalog"
 )
 
 // Option is plugin test option

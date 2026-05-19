@@ -8,14 +8,14 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/accuknox/go-spiffe/v2/workloadapi"
+	nodeattestorv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/agent/nodeattestor/v1"
+	configv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/service/common/config/v1"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/plugin/x509pop"
+	"github.com/accuknox/spire/pkg/common/pluginconf"
+	"github.com/accuknox/spire/pkg/common/util"
 	"github.com/hashicorp/hcl"
-	"github.com/spiffe/go-spiffe/v2/workloadapi"
-	nodeattestorv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/agent/nodeattestor/v1"
-	configv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/service/common/config/v1"
-	"github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/pkg/common/plugin/x509pop"
-	"github.com/spiffe/spire/pkg/common/pluginconf"
-	"github.com/spiffe/spire/pkg/common/util"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -170,7 +170,7 @@ func loadConfigData(ctx context.Context, config *Config, inAttest bool) (*config
 
 	if config.SpiffeEndpointSocket != "" {
 		if inAttest {
-			svid, err := workloadapi.FetchX509SVID(ctx, workloadapi.WithAddr(config.SpiffeEndpointSocket))
+			svid, err := workloadapi.FetchX509SVID(ctx, nil, workloadapi.WithAddr(config.SpiffeEndpointSocket))
 			if err != nil {
 				return nil, status.Errorf(codes.Unavailable, "unable to fetch SVID from workload API: %v", err)
 			}

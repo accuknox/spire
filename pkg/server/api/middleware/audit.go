@@ -3,12 +3,12 @@ package middleware
 import (
 	"context"
 
+	"github.com/accuknox/spire/pkg/common/peertracker"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/server/api/audit"
+	"github.com/accuknox/spire/pkg/server/api/rpccontext"
 	"github.com/shirou/gopsutil/v4/process"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/peertracker"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/server/api/audit"
-	"github.com/spiffe/spire/pkg/server/api/rpccontext"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -74,7 +74,12 @@ func fieldsFromTracker(ctx context.Context) (logrus.Fields, error) {
 		fields[telemetry.CallerPath] = addr
 	}
 
-	if err := watcher.IsAlive(); err != nil {
+	var metadata map[string]string
+	if v, ok := ctx.Value("metadata").(map[string]string); ok {
+		metadata = v
+	}
+
+	if err := watcher.IsAlive(metadata); err != nil {
 		return nil, status.Errorf(codes.Internal, "peertracker fails: %v", err)
 	}
 	return fields, nil

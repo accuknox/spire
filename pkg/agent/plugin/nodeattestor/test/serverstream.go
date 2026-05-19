@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor"
+	"github.com/accuknox/spire/pkg/agent/plugin/nodeattestor"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

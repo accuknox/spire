@@ -7,8 +7,8 @@ import (
 	"crypto/rsa"
 	"testing"
 
+	"github.com/accuknox/spire/test/testkey"
 	"github.com/go-jose/go-jose/v4"
-	"github.com/spiffe/spire/test/testkey"
 	"github.com/stretchr/testify/require"
 )
 

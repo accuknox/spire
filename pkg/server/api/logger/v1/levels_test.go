@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/accuknox/spire/pkg/server/api/logger/v1"
 	"github.com/sirupsen/logrus"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/server/api/logger/v1"
 )
 
 func TestAPILevelValues(t *testing.T) {

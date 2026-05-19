@@ -1,6 +1,6 @@
 package server
 
-import "github.com/spiffe/spire/pkg/common/telemetry"
+import "github.com/accuknox/spire/pkg/common/telemetry"
 
 // SetEntryDeletedGauge emits a gauge with the number of entries that will
 // be deleted in the entry cache.

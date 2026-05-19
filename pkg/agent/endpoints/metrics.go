@@ -4,12 +4,12 @@ import (
 	"context"
 	"sync/atomic"
 
-	"github.com/spiffe/spire/pkg/agent/api/rpccontext"
-	"github.com/spiffe/spire/pkg/common/api/middleware"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	sdsAPITelemetry "github.com/spiffe/spire/pkg/common/telemetry/agent"
-	"github.com/spiffe/spire/pkg/common/telemetry/agent/adminapi"
-	workloadAPITelemetry "github.com/spiffe/spire/pkg/common/telemetry/agent/workloadapi"
+	"github.com/accuknox/spire/pkg/agent/api/rpccontext"
+	"github.com/accuknox/spire/pkg/common/api/middleware"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	sdsAPITelemetry "github.com/accuknox/spire/pkg/common/telemetry/agent"
+	"github.com/accuknox/spire/pkg/common/telemetry/agent/adminapi"
+	workloadAPITelemetry "github.com/accuknox/spire/pkg/common/telemetry/agent/workloadapi"
 )
 
 func withPerServiceConnectionMetrics(metrics telemetry.Metrics) middleware.Middleware {

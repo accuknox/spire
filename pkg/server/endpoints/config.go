@@ -8,31 +8,32 @@ import (
 	"net"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/bundle/spiffebundle"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/bundleutil"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/tlspolicy"
+	"github.com/accuknox/spire/pkg/server/api"
+	agentv1 "github.com/accuknox/spire/pkg/server/api/agent/v1"
+	bundlev1 "github.com/accuknox/spire/pkg/server/api/bundle/v1"
+	debugv1 "github.com/accuknox/spire/pkg/server/api/debug/v1"
+	entryv1 "github.com/accuknox/spire/pkg/server/api/entry/v1"
+	healthv1 "github.com/accuknox/spire/pkg/server/api/health/v1"
+	localauthorityv1 "github.com/accuknox/spire/pkg/server/api/localauthority/v1"
+	loggerv1 "github.com/accuknox/spire/pkg/server/api/logger/v1"
+	svidv1 "github.com/accuknox/spire/pkg/server/api/svid/v1"
+	trustdomainv1 "github.com/accuknox/spire/pkg/server/api/trustdomain/v1"
+	"github.com/accuknox/spire/pkg/server/authpolicy"
+	bundle_client "github.com/accuknox/spire/pkg/server/bundle/client"
+	"github.com/accuknox/spire/pkg/server/ca"
+	"github.com/accuknox/spire/pkg/server/ca/manager"
+	"github.com/accuknox/spire/pkg/server/cache/dscache"
+	"github.com/accuknox/spire/pkg/server/catalog"
+	"github.com/accuknox/spire/pkg/server/endpoints/bundle"
+	"github.com/accuknox/spire/pkg/server/svid"
+	"github.com/accuknox/spire/proto/spire/common"
 	"github.com/andres-erbsen/clock"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/bundle/spiffebundle"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/pkg/common/bundleutil"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/common/tlspolicy"
-	"github.com/spiffe/spire/pkg/server/api"
-	agentv1 "github.com/spiffe/spire/pkg/server/api/agent/v1"
-	bundlev1 "github.com/spiffe/spire/pkg/server/api/bundle/v1"
-	debugv1 "github.com/spiffe/spire/pkg/server/api/debug/v1"
-	entryv1 "github.com/spiffe/spire/pkg/server/api/entry/v1"
-	healthv1 "github.com/spiffe/spire/pkg/server/api/health/v1"
-	localauthorityv1 "github.com/spiffe/spire/pkg/server/api/localauthority/v1"
-	loggerv1 "github.com/spiffe/spire/pkg/server/api/logger/v1"
-	svidv1 "github.com/spiffe/spire/pkg/server/api/svid/v1"
-	trustdomainv1 "github.com/spiffe/spire/pkg/server/api/trustdomain/v1"
-	"github.com/spiffe/spire/pkg/server/authpolicy"
-	bundle_client "github.com/spiffe/spire/pkg/server/bundle/client"
-	"github.com/spiffe/spire/pkg/server/ca"
-	"github.com/spiffe/spire/pkg/server/ca/manager"
-	"github.com/spiffe/spire/pkg/server/cache/dscache"
-	"github.com/spiffe/spire/pkg/server/catalog"
-	"github.com/spiffe/spire/pkg/server/endpoints/bundle"
-	"github.com/spiffe/spire/pkg/server/svid"
 )
 
 // Config is a configuration for endpoints
@@ -117,6 +118,8 @@ type Config struct {
 	MaxAttestedNodeInfoStaleness time.Duration
 
 	AgentSpiffeIdAsSelector bool
+
+	Entries *common.RegistrationEntries
 }
 
 func (c *Config) maybeMakeBundleEndpointServer() (Server, func(context.Context) error) {
@@ -175,6 +178,7 @@ func (c *Config) makeAPIServers(entryFetcher api.AuthorizedEntryFetcher) APIServ
 			Catalog:                 c.Catalog,
 			Clock:                   c.Clock,
 			AgentSpiffeIdAsSelector: c.AgentSpiffeIdAsSelector,
+			Entries:                 c.Entries,
 		}),
 		BundleServer: bundlev1.New(bundlev1.Config{
 			TrustDomain:       c.TrustDomain,

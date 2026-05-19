@@ -1,12 +1,12 @@
 package catalog
 
 import (
-	"github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/pkg/server/plugin/bundlepublisher"
-	"github.com/spiffe/spire/pkg/server/plugin/bundlepublisher/awsrolesanywhere"
-	"github.com/spiffe/spire/pkg/server/plugin/bundlepublisher/awss3"
-	"github.com/spiffe/spire/pkg/server/plugin/bundlepublisher/gcpcloudstorage"
-	"github.com/spiffe/spire/pkg/server/plugin/bundlepublisher/k8sconfigmap"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/server/plugin/bundlepublisher"
+	"github.com/accuknox/spire/pkg/server/plugin/bundlepublisher/awsrolesanywhere"
+	"github.com/accuknox/spire/pkg/server/plugin/bundlepublisher/awss3"
+	"github.com/accuknox/spire/pkg/server/plugin/bundlepublisher/gcpcloudstorage"
+	"github.com/accuknox/spire/pkg/server/plugin/bundlepublisher/k8sconfigmap"
 )
 
 type bundlePublisherRepository struct {

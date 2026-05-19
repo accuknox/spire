@@ -10,10 +10,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/plugin/azure"
+	"github.com/accuknox/spire/test/spiretest"
+	"github.com/accuknox/spire/test/testkey"
 	"github.com/smallstep/pkcs7"
-	"github.com/spiffe/spire/pkg/common/plugin/azure"
-	"github.com/spiffe/spire/test/spiretest"
-	"github.com/spiffe/spire/test/testkey"
 	"github.com/stretchr/testify/require"
 )
 

@@ -7,9 +7,9 @@ import (
 	"sync"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/andres-erbsen/clock"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/telemetry"
 )
 
 type checkState struct {

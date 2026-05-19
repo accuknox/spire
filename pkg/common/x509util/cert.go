@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/spiffe/spire/pkg/common/cryptoutil"
+	"github.com/accuknox/spire/pkg/common/cryptoutil"
 )
 
 const (

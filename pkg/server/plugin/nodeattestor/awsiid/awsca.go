@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/spiffe/spire/pkg/common/pemutil"
-	"github.com/spiffe/spire/pkg/server/plugin/nodeattestor/awsiid/awsrsa1024"
-	"github.com/spiffe/spire/pkg/server/plugin/nodeattestor/awsiid/awsrsa2048"
+	"github.com/accuknox/spire/pkg/common/pemutil"
+	"github.com/accuknox/spire/pkg/server/plugin/nodeattestor/awsiid/awsrsa1024"
+	"github.com/accuknox/spire/pkg/server/plugin/nodeattestor/awsiid/awsrsa2048"
 )
 
 // PublicKeyType is the type of public key used to verify the AWS signature.

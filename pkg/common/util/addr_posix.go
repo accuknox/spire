@@ -6,7 +6,7 @@ import (
 	"errors"
 	"net"
 
-	"github.com/spiffe/go-spiffe/v2/workloadapi"
+	"github.com/accuknox/go-spiffe/v2/workloadapi"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -24,5 +24,6 @@ func GetWorkloadAPIClientOption(addr net.Addr) (workloadapi.ClientOption, error)
 	if err != nil {
 		return nil, err
 	}
+
 	return workloadapi.WithAddr(target), nil
 }

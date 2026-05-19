@@ -3,12 +3,12 @@ package fakeserverkeymanager
 import (
 	"testing"
 
-	keymanagerv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/server/keymanager/v1"
-	"github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/pkg/server/plugin/keymanager"
-	keymanagerbase "github.com/spiffe/spire/pkg/server/plugin/keymanager/base"
-	"github.com/spiffe/spire/test/plugintest"
-	"github.com/spiffe/spire/test/testkey"
+	keymanagerv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/server/keymanager/v1"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/server/plugin/keymanager"
+	keymanagerbase "github.com/accuknox/spire/pkg/server/plugin/keymanager/base"
+	"github.com/accuknox/spire/test/plugintest"
+	"github.com/accuknox/spire/test/testkey"
 )
 
 func New(t *testing.T) keymanager.KeyManager {

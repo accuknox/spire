@@ -5,7 +5,7 @@ source init-kubectl
 # SPIRE agent version 1.14.0 signature metadata
 # These values are extracted from the official SPIRE release signed by GitHub Actions
 readonly SPIRE_IMAGE_VERSION="1.14.0"
-readonly SIGNATURE_SUBJECT="https://github.com/spiffe/spire/.github/workflows/release_build.yaml@refs/tags/v${SPIRE_IMAGE_VERSION}"
+readonly SIGNATURE_SUBJECT="https://github.com/accuknox/spire/.github/workflows/release_build.yaml@refs/tags/v${SPIRE_IMAGE_VERSION}"
 readonly SIGNATURE_VALUE="MEUCIQDLVDQxo7wpBTRkQy8B0Qe4wZIt3MrcF63nfRgq3sN24AIgElcsTjxDMrpUW3wjbghejNvUmZbRUg7aP7R9NAi1lGw="
 readonly SIGNATURE_LOG_ID="c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d"
 readonly SIGNATURE_INTEGRATED_TIME="1765492059"

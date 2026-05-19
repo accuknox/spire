@@ -9,9 +9,9 @@ import (
 	"sync"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/util"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/common/util"
 	"golang.org/x/sys/unix"
 )
 
@@ -161,18 +161,20 @@ func (b *bsdTracker) receiveKevents(kqfd int) {
 }
 
 type bsdWatcher struct {
-	closed bool
-	done   <-chan struct{}
-	mtx    sync.Mutex
-	pid    int32
-	log    logrus.FieldLogger
+	closed   bool
+	done     <-chan struct{}
+	mtx      sync.Mutex
+	pid      int32
+	log      logrus.FieldLogger
+	metadata map[string]string
 }
 
 func newBSDWatcher(info CallerInfo, done <-chan struct{}, log logrus.FieldLogger) *bsdWatcher {
 	return &bsdWatcher{
-		done: done,
-		pid:  info.PID,
-		log:  log,
+		done:     done,
+		pid:      info.PID,
+		log:      log,
+		metadata: info.Metadata,
 	}
 }
 
@@ -188,13 +190,14 @@ func (b *bsdWatcher) Close() {
 	b.closed = true
 }
 
-func (b *bsdWatcher) IsAlive() error {
+func (b *bsdWatcher) IsAlive(metadata map[string]string) error {
 	b.mtx.Lock()
 	if b.closed {
 		b.mtx.Unlock()
 		b.log.Warn("Caller is no longer being watched")
 		return errors.New("caller is no longer being watched")
 	}
+	b.metadata = metadata
 	b.mtx.Unlock()
 
 	// Using kqueue/kevent means we are relying on an asynchronous notification

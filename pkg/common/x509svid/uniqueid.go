@@ -7,7 +7,7 @@ import (
 	"encoding/hex"
 	"io"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
 )
 
 var (

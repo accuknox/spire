@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 
-	cvault "github.com/spiffe/spire/pkg/server/common/vault"
+	cvault "github.com/accuknox/spire/pkg/server/common/vault"
 )
 
 const (

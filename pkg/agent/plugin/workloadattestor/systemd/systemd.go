@@ -1,6 +1,6 @@
 package systemd
 
-import "github.com/spiffe/spire/pkg/common/catalog"
+import "github.com/accuknox/spire/pkg/common/catalog"
 
 const (
 	pluginName = "systemd"

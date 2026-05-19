@@ -7,35 +7,37 @@ import (
 	"fmt"
 	"net/http"
 	_ "net/http/pprof" //nolint: gosec // import registers routes on DefaultServeMux
+	"os"
 	"runtime"
 	"sync"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/workloadapi"
+	admin_api "github.com/accuknox/spire/pkg/agent/api"
+	node_attestor "github.com/accuknox/spire/pkg/agent/attestor/node"
+	workload_attestor "github.com/accuknox/spire/pkg/agent/attestor/workload"
+	"github.com/accuknox/spire/pkg/agent/catalog"
+	"github.com/accuknox/spire/pkg/agent/endpoints"
+	"github.com/accuknox/spire/pkg/agent/manager"
+	"github.com/accuknox/spire/pkg/agent/manager/storecache"
+	"github.com/accuknox/spire/pkg/agent/plugin/nodeattestor"
+	"github.com/accuknox/spire/pkg/agent/storage"
+	"github.com/accuknox/spire/pkg/agent/svid/store"
+	"github.com/accuknox/spire/pkg/common/backoff"
+	"github.com/accuknox/spire/pkg/common/diskutil"
+	"github.com/accuknox/spire/pkg/common/errorutil"
+	"github.com/accuknox/spire/pkg/common/health"
+	"github.com/accuknox/spire/pkg/common/nodeutil"
+	"github.com/accuknox/spire/pkg/common/profiling"
+	"github.com/accuknox/spire/pkg/common/rotationutil"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/uptime"
+	"github.com/accuknox/spire/pkg/common/util"
+	"github.com/accuknox/spire/pkg/common/version"
+	"github.com/accuknox/spire/pkg/common/x509util"
 	"github.com/andres-erbsen/clock"
+	"github.com/hashicorp/hcl"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/workloadapi"
-	admin_api "github.com/spiffe/spire/pkg/agent/api"
-	node_attestor "github.com/spiffe/spire/pkg/agent/attestor/node"
-	workload_attestor "github.com/spiffe/spire/pkg/agent/attestor/workload"
-	"github.com/spiffe/spire/pkg/agent/catalog"
-	"github.com/spiffe/spire/pkg/agent/endpoints"
-	"github.com/spiffe/spire/pkg/agent/manager"
-	"github.com/spiffe/spire/pkg/agent/manager/storecache"
-	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor"
-	"github.com/spiffe/spire/pkg/agent/storage"
-	"github.com/spiffe/spire/pkg/agent/svid/store"
-	"github.com/spiffe/spire/pkg/common/backoff"
-	"github.com/spiffe/spire/pkg/common/diskutil"
-	"github.com/spiffe/spire/pkg/common/errorutil"
-	"github.com/spiffe/spire/pkg/common/health"
-	"github.com/spiffe/spire/pkg/common/nodeutil"
-	"github.com/spiffe/spire/pkg/common/profiling"
-	"github.com/spiffe/spire/pkg/common/rotationutil"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/common/uptime"
-	"github.com/spiffe/spire/pkg/common/util"
-	"github.com/spiffe/spire/pkg/common/version"
-	"github.com/spiffe/spire/pkg/common/x509util"
 	_ "golang.org/x/net/trace" // registers handlers on the DefaultServeMux
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -66,7 +68,14 @@ func (a *Agent) Run(ctx context.Context) error {
 		return err
 	}
 
-	sto, err := storage.Open(a.c.DataDir)
+	namespace, secret := a.getNamespaceAndSecret()
+	if namespace != "" && secret != "" {
+		a.c.Log.WithFields(logrus.Fields{
+			"namespace": namespace,
+			"secret":    secret,
+		}).Info("Saving data to kubernetes secret")
+	}
+	sto, err := storage.Open(a.c.DataDir, namespace, secret)
 	if err != nil {
 		return fmt.Errorf("failed to open storage: %w", err)
 	}
@@ -248,6 +257,7 @@ func (a *Agent) Run(ctx context.Context) error {
 		manager.Run,
 		storeService.Run,
 		agentEndpoints.ListenAndServe,
+		agentEndpoints.ListenAndServeTcp,
 		catalog.ReconfigureTask(a.c.Log.WithField(telemetry.SubsystemName, "reconfigurer"), cat),
 	}
 
@@ -451,6 +461,7 @@ func (a *Agent) newSVIDStoreService(cache *storecache.Cache, cat catalog.Catalog
 func (a *Agent) newEndpoints(metrics telemetry.Metrics, mgr manager.Manager, attestor workload_attestor.Attestor) endpoints.Server {
 	return endpoints.New(endpoints.Config{
 		BindAddr:                      a.c.BindAddress,
+		AgentAddr:                     a.c.AgentAddress,
 		Attestor:                      attestor,
 		Manager:                       mgr,
 		Log:                           a.c.Log.WithField(telemetry.SubsystemName, telemetry.Endpoints),
@@ -508,7 +519,15 @@ func (a *Agent) checkWorkloadAPI() error {
 		return err
 	}
 
-	_, err = workloadapi.FetchX509Bundles(context.TODO(), clientOption)
+	wlName, err := os.Hostname()
+	if err != nil {
+		wlName = "spire-agent"
+	}
+	metadata := map[string]string{
+		"workload": wlName,
+		"check":    "health",
+	}
+	_, err = workloadapi.FetchX509Bundles(context.TODO(), metadata, clientOption)
 	if status.Code(err) == codes.Unavailable {
 		// Only an unavailable status fails the health check.
 		return errors.New("workload api is unavailable")
@@ -538,4 +557,24 @@ func (a *Agent) startHealthChecks(readyForHealthChecks chan struct{}, taskRunner
 		// Timeout waiting for endpoints to start listening.
 	}
 	taskRunner.StartTasks(healthChecker.ListenAndServe)
+}
+
+func (a *Agent) getNamespaceAndSecret() (string, string) {
+	var (
+		namespace, secret string
+		useSecret         bool
+	)
+	if km, ok := a.c.PluginConfigs.Find("KeyManager", "disk"); ok {
+		keyConfig := map[string]any{}
+		val, err := km.DataSource.Load()
+		if err == nil {
+			_ = hcl.Decode(&keyConfig, val)
+		}
+		useSecret, _ = keyConfig["use_secret"].(bool)
+		if useSecret {
+			namespace, _ = keyConfig["namespace"].(string)
+			secret, _ = keyConfig["secret"].(string)
+		}
+	}
+	return namespace, secret
 }

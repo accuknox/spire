@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	workloadattestorv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/agent/workloadattestor/v1"
-	"github.com/spiffe/spire/pkg/common/plugin"
-	"github.com/spiffe/spire/pkg/common/util"
-	"github.com/spiffe/spire/proto/spire/common"
+	workloadattestorv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/agent/workloadattestor/v1"
+	"github.com/accuknox/spire/pkg/common/plugin"
+	"github.com/accuknox/spire/pkg/common/util"
+	"github.com/accuknox/spire/proto/spire/common"
 )
 
 type V1 struct {
@@ -15,13 +15,15 @@ type V1 struct {
 	workloadattestorv1.WorkloadAttestorPluginClient
 }
 
-func (v1 *V1) Attest(ctx context.Context, pid int) ([]*common.Selector, error) {
+func (v1 *V1) Attest(ctx context.Context, pid int, metadata map[string]string) ([]*common.Selector, error) {
 	pidInt32, err := util.CheckedCast[int32](pid)
 	if err != nil {
 		return nil, v1.WrapErr(fmt.Errorf("invalid value for PID: %w", err))
 	}
+
 	resp, err := v1.WorkloadAttestorPluginClient.Attest(ctx, &workloadattestorv1.AttestRequest{
-		Pid: pidInt32,
+		Pid:      pidInt32,
+		Metadata: metadata,
 	})
 	if err != nil {
 		return nil, v1.WrapErr(err)

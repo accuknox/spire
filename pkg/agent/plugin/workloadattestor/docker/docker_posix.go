@@ -11,11 +11,11 @@ import (
 	"regexp"
 	"strconv"
 
+	"github.com/accuknox/spire/pkg/agent/common/cgroups"
+	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor/docker/cgroup"
+	"github.com/accuknox/spire/pkg/common/containerinfo"
+	"github.com/accuknox/spire/pkg/common/pluginconf"
 	"github.com/hashicorp/go-hclog"
-	"github.com/spiffe/spire/pkg/agent/common/cgroups"
-	"github.com/spiffe/spire/pkg/agent/plugin/workloadattestor/docker/cgroup"
-	"github.com/spiffe/spire/pkg/common/containerinfo"
-	"github.com/spiffe/spire/pkg/common/pluginconf"
 )
 
 const (

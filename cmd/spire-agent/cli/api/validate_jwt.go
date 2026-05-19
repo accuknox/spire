@@ -6,10 +6,10 @@ import (
 	"flag"
 	"fmt"
 
+	"github.com/accuknox/go-spiffe/v2/proto/spiffe/workload"
+	commoncli "github.com/accuknox/spire/pkg/common/cli"
+	"github.com/accuknox/spire/pkg/common/cliprinter"
 	"github.com/mitchellh/cli"
-	"github.com/spiffe/go-spiffe/v2/proto/spiffe/workload"
-	commoncli "github.com/spiffe/spire/pkg/common/cli"
-	"github.com/spiffe/spire/pkg/common/cliprinter"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/encoding/protojson"

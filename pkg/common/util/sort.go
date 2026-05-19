@@ -4,8 +4,8 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/accuknox/spire/proto/spire/common"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/proto/spire/common"
 	"google.golang.org/protobuf/proto"
 )
 

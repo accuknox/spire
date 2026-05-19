@@ -6,10 +6,10 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/sirupsen/logrus"
 	logtest "github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/sys/windows"
 )
@@ -177,7 +177,7 @@ func TestWindowsTracker(t *testing.T) {
 			require.NotNil(t, w)
 
 			// Exercise IsAlive
-			err = w.IsAlive()
+			err = w.IsAlive(nil)
 			if testCase.expectIsAliveErr != "" {
 				require.EqualError(t, err, testCase.expectIsAliveErr)
 				spiretest.AssertLogs(t, logHook.AllEntries(), testCase.expectLogs)

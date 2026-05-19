@@ -10,11 +10,11 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/accuknox/spire/pkg/agent/storage"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/test/spiretest"
+	"github.com/accuknox/spire/test/util"
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/spire/pkg/agent/storage"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/test/spiretest"
-	"github.com/spiffe/spire/test/util"
 	"github.com/stretchr/testify/require"
 )
 
@@ -269,7 +269,7 @@ func TestDownloadTrustBundle(t *testing.T) {
 }
 
 func openStorage(t *testing.T, dir string) storage.Storage {
-	sto, err := storage.Open(dir)
+	sto, err := storage.Open(dir, "", "")
 	require.NoError(t, err)
 	return sto
 }

@@ -60,8 +60,8 @@ RUN mkdir -p /spireroot/opt/spire/bin \
 
 # SPIRE Server
 FROM spire-base AS spire-server
-ARG spireuid=1000
-ARG spiregid=1000
+ARG spireuid=0
+ARG spiregid=0
 USER ${spireuid}:${spiregid}
 ENTRYPOINT ["/opt/spire/bin/spire-server", "run"]
 COPY --link --from=prep-spire-server --chown=${spireuid}:${spiregid} --chmod=755 /spireroot /

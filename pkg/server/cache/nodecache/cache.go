@@ -5,10 +5,10 @@ import (
 	"sync"
 	"time"
 
+	"github.com/accuknox/spire/pkg/server/datastore"
+	"github.com/accuknox/spire/proto/spire/common"
 	"github.com/andres-erbsen/clock"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/server/datastore"
-	"github.com/spiffe/spire/proto/spire/common"
 )
 
 const (

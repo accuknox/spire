@@ -1,7 +1,7 @@
 package common
 
 import (
-	"github.com/spiffe/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/telemetry"
 )
 
 // AddAttestorType add Attestor type label to the given counter

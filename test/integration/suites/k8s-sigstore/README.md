@@ -68,7 +68,7 @@ This test suite validates Sigstore functionality without requiring image signing
 The test uses official container images from public registries:
 
 * `ghcr.io/spiffe/spire-agent:1.14.0` - Official SPIRE release signed by GitHub Actions with Sigstore
-  * Subject: `https://github.com/spiffe/spire/.github/workflows/release_build.yaml@refs/tags/v1.14.0`
+  * Subject: `https://github.com/accuknox/spire/.github/workflows/release_build.yaml@refs/tags/v1.14.0`
   * Issuer: `https://token.actions.githubusercontent.com`
   * Used for: Signed workload containers (`:signed` tag)
   * Copied with `cosign copy` to preserve signatures
@@ -124,7 +124,7 @@ The test uses:
 * A local Docker registry with self-signed certificates (`docker-registry-local:5001`)
 * Official SPIRE release images signed by GitHub Actions
 * SPIRE agent configured with the sigstore feature:
-  * `allowed_identities`: `https://token.actions.githubusercontent.com` with subject `https://github.com/spiffe/spire/.github/workflows/release_build.yaml@refs/tags/v1.14.0`
+  * `allowed_identities`: `https://token.actions.githubusercontent.com` with subject `https://github.com/accuknox/spire/.github/workflows/release_build.yaml@refs/tags/v1.14.0`
   * `rekor_url`: `https://rekor.sigstore.dev/`
   * `ignore_sct`: `true` (skips Signed Certificate Timestamp verification)
   * `ignore_attestations`: `true` (skips attestation verification, only verifies signatures)

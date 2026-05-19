@@ -5,14 +5,14 @@ import (
 	"flag"
 	"fmt"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	serverutil "github.com/accuknox/spire/cmd/spire-server/util"
+	commoncli "github.com/accuknox/spire/pkg/common/cli"
+	"github.com/accuknox/spire/pkg/common/cliprinter"
+	"github.com/accuknox/spire/pkg/common/util"
 	"github.com/mitchellh/cli"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	agentv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/agent/v1"
 	prototypes "github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	serverutil "github.com/spiffe/spire/cmd/spire-server/util"
-	commoncli "github.com/spiffe/spire/pkg/common/cli"
-	"github.com/spiffe/spire/pkg/common/cliprinter"
-	"github.com/spiffe/spire/pkg/common/util"
 )
 
 func NewGenerateCommand() cli.Command {

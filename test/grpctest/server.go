@@ -8,8 +8,8 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/spiffe/spire/pkg/common/api/middleware"
-	"github.com/spiffe/spire/test/spiretest"
+	"github.com/accuknox/spire/pkg/common/api/middleware"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"

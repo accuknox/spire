@@ -8,9 +8,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/bundle/spiffebundle"
+	"github.com/accuknox/spire/pkg/common/bundleutil"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/bundle/spiffebundle"
-	"github.com/spiffe/spire/pkg/common/bundleutil"
 )
 
 type Getter interface {

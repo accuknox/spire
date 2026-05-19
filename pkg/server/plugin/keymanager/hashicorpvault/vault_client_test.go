@@ -4,10 +4,10 @@ import (
 	"testing"
 	"time"
 
+	keymanagerv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/server/keymanager/v1"
+	"github.com/accuknox/spire/pkg/server/common/vault"
+	"github.com/accuknox/spire/test/spiretest"
 	hclog "github.com/hashicorp/go-hclog"
-	keymanagerv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/server/keymanager/v1"
-	"github.com/spiffe/spire/pkg/server/common/vault"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 )

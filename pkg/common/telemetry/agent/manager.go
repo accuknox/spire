@@ -1,8 +1,8 @@
 package agent
 
 import (
-	"github.com/spiffe/spire/pkg/agent/client"
-	"github.com/spiffe/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/agent/client"
+	"github.com/accuknox/spire/pkg/common/telemetry"
 )
 
 const (

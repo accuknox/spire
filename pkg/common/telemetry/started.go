@@ -1,8 +1,8 @@
 package telemetry
 
 import (
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/pkg/common/version"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/version"
 )
 
 func EmitStarted(m Metrics, td spiffeid.TrustDomain) {

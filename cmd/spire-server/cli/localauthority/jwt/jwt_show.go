@@ -5,12 +5,12 @@ import (
 	"errors"
 	"flag"
 
+	"github.com/accuknox/spire/cmd/spire-server/cli/authoritycommon"
+	"github.com/accuknox/spire/cmd/spire-server/util"
+	commoncli "github.com/accuknox/spire/pkg/common/cli"
+	"github.com/accuknox/spire/pkg/common/cliprinter"
 	"github.com/mitchellh/cli"
 	localauthorityv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/localauthority/v1"
-	"github.com/spiffe/spire/cmd/spire-server/cli/authoritycommon"
-	"github.com/spiffe/spire/cmd/spire-server/util"
-	commoncli "github.com/spiffe/spire/pkg/common/cli"
-	"github.com/spiffe/spire/pkg/common/cliprinter"
 )
 
 // NewJWTShowCommand creates a new "jwt show" subcommand for "localauthority" command.

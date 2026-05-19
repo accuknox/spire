@@ -43,6 +43,11 @@ func (l *Listener) Accept() (net.Conn, error) {
 			caller, err = CallerFromUDSConn(conn)
 		case "pipe":
 			caller, err = CallerFromNamedPipeConn(conn)
+		case "tcp":
+			caller = CallerInfo{
+				Addr: conn.RemoteAddr(),
+				PID:  1,
+			}
 		default:
 			err = ErrUnsupportedTransport
 		}
@@ -86,8 +91,8 @@ type closeOnIsAliveErr struct {
 	conn io.Closer
 }
 
-func (w closeOnIsAliveErr) IsAlive() error {
-	err := w.Watcher.IsAlive()
+func (w closeOnIsAliveErr) IsAlive(metadata map[string]string) error {
+	err := w.Watcher.IsAlive(metadata)
 	if err != nil {
 		_ = w.conn.Close()
 	}

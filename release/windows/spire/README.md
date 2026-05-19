@@ -1,11 +1,11 @@
 # SPIRE
 
-[SPIRE](https://github.com/spiffe/spire) (the [SPIFFE](https://github.com/spiffe/spiffe) Runtime Environment) is a tool-chain for establishing trust between software systems across a wide variety of hosting platforms.
+[SPIRE](https://github.com/accuknox/spire) (the [SPIFFE](https://github.com/accuknox/spiffe) Runtime Environment) is a tool-chain for establishing trust between software systems across a wide variety of hosting platforms.
 
 The configuration files included in this release are intended for evaluation
 purposes only and are **NOT** production ready.
 
-You can find additional example configurations for SPIRE [here](https://github.com/spiffe/spire-examples).
+You can find additional example configurations for SPIRE [here](https://github.com/accuknox/spire-examples).
 
 ## Contents
 

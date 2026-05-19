@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor/docker/cgroup"
+	"github.com/accuknox/spire/test/spiretest"
 	dockerclient "github.com/docker/docker/client"
-	"github.com/spiffe/spire/pkg/agent/plugin/workloadattestor/docker/cgroup"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
 )
 

@@ -19,6 +19,24 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/bundleutil"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	common_cli "github.com/accuknox/spire/pkg/common/cli"
+	"github.com/accuknox/spire/pkg/common/config"
+	"github.com/accuknox/spire/pkg/common/diskcertmanager"
+	"github.com/accuknox/spire/pkg/common/fflag"
+	"github.com/accuknox/spire/pkg/common/health"
+	"github.com/accuknox/spire/pkg/common/log"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/tlspolicy"
+	"github.com/accuknox/spire/pkg/server"
+	"github.com/accuknox/spire/pkg/server/authpolicy"
+	bundleClient "github.com/accuknox/spire/pkg/server/bundle/client"
+	"github.com/accuknox/spire/pkg/server/ca/manager"
+	"github.com/accuknox/spire/pkg/server/credtemplate"
+	"github.com/accuknox/spire/pkg/server/endpoints/bundle"
+	"github.com/accuknox/spire/pkg/server/plugin/keymanager"
 	"github.com/google/go-cmp/cmp"
 	"github.com/hashicorp/hcl"
 	"github.com/hashicorp/hcl/hcl/ast"
@@ -27,24 +45,6 @@ import (
 	"github.com/imdario/mergo"
 	"github.com/mitchellh/cli"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/pkg/common/bundleutil"
-	"github.com/spiffe/spire/pkg/common/catalog"
-	common_cli "github.com/spiffe/spire/pkg/common/cli"
-	"github.com/spiffe/spire/pkg/common/config"
-	"github.com/spiffe/spire/pkg/common/diskcertmanager"
-	"github.com/spiffe/spire/pkg/common/fflag"
-	"github.com/spiffe/spire/pkg/common/health"
-	"github.com/spiffe/spire/pkg/common/log"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/common/tlspolicy"
-	"github.com/spiffe/spire/pkg/server"
-	"github.com/spiffe/spire/pkg/server/authpolicy"
-	bundleClient "github.com/spiffe/spire/pkg/server/bundle/client"
-	"github.com/spiffe/spire/pkg/server/ca/manager"
-	"github.com/spiffe/spire/pkg/server/credtemplate"
-	"github.com/spiffe/spire/pkg/server/endpoints/bundle"
-	"github.com/spiffe/spire/pkg/server/plugin/keymanager"
 )
 
 const (
@@ -1006,7 +1006,7 @@ func checkForUnknownConfig(c *Config, l logrus.FieldLogger) (err error) {
 		}
 
 		// TODO: Re-enable unused key detection for experimental config. See
-		// https://github.com/spiffe/spire/issues/1101 for more information
+		// https://github.com/accuknox/spire/issues/1101 for more information
 		//
 		// if len(c.Server.Experimental.UnusedKeyPositions) != 0 {
 		//	detectedUnknown("experimental", c.Server.Experimental.UnusedKeyPositions)
@@ -1014,7 +1014,7 @@ func checkForUnknownConfig(c *Config, l logrus.FieldLogger) (err error) {
 
 		if c.Server.Federation != nil {
 			// TODO: Re-enable unused key detection for federation config. See
-			// https://github.com/spiffe/spire/issues/1101 for more information
+			// https://github.com/accuknox/spire/issues/1101 for more information
 			//
 			// if len(c.Server.Federation.UnusedKeyPositions) != 0 {
 			//	detectedUnknown("federation", c.Server.Federation.UnusedKeyPositions)
@@ -1031,7 +1031,7 @@ func checkForUnknownConfig(c *Config, l logrus.FieldLogger) (err error) {
 			}
 
 			// TODO: Re-enable unused key detection for bundle endpoint profile config. See
-			// https://github.com/spiffe/spire/issues/1101 for more information
+			// https://github.com/accuknox/spire/issues/1101 for more information
 			//
 			// for k, v := range c.Server.Federation.FederatesWith {
 			//	if len(v.UnusedKeyPositions) != 0 {
@@ -1042,7 +1042,7 @@ func checkForUnknownConfig(c *Config, l logrus.FieldLogger) (err error) {
 	}
 
 	// TODO: Re-enable unused key detection for telemetry. See
-	// https://github.com/spiffe/spire/issues/1101 for more information
+	// https://github.com/accuknox/spire/issues/1101 for more information
 	//
 	// if len(c.Telemetry.UnusedKeyPositions) != 0 {
 	//	detectedUnknown("telemetry", c.Telemetry.UnusedKeyPositions)

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/spiffe/spire/pkg/common/plugin"
+	"github.com/accuknox/spire/pkg/common/plugin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	spb "google.golang.org/genproto/googleapis/rpc/status"

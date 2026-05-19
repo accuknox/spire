@@ -3,9 +3,9 @@ package rpccontext
 import (
 	"context"
 
+	"github.com/accuknox/spire/pkg/common/api"
+	"github.com/accuknox/spire/pkg/common/api/rpccontext"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/api"
-	"github.com/spiffe/spire/pkg/common/api/rpccontext"
 )
 
 func WithLogger(ctx context.Context, log logrus.FieldLogger) context.Context {

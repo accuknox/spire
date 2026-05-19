@@ -5,8 +5,8 @@ import (
 	"errors"
 	"io"
 
-	nodeattestorv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/agent/nodeattestor/v1"
-	"github.com/spiffe/spire/pkg/common/plugin"
+	nodeattestorv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/agent/nodeattestor/v1"
+	"github.com/accuknox/spire/pkg/common/plugin"
 	"google.golang.org/grpc/codes"
 )
 

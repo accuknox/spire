@@ -3,8 +3,8 @@ package logger_test
 import (
 	"testing"
 
+	"github.com/accuknox/spire/cmd/spire-server/cli/logger"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/cmd/spire-server/cli/logger"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

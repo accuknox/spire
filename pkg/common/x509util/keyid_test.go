@@ -3,7 +3,7 @@ package x509util
 import (
 	"testing"
 
-	"github.com/spiffe/spire/test/testkey"
+	"github.com/accuknox/spire/test/testkey"
 	"github.com/stretchr/testify/require"
 )
 

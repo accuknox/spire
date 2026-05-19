@@ -6,10 +6,10 @@ import (
 	"crypto/tls"
 	"fmt"
 
+	"github.com/accuknox/spire/pkg/common/version"
+	"github.com/accuknox/spire/pkg/server/endpoints/bundle/internal/autocert"
+	"github.com/accuknox/spire/pkg/server/plugin/keymanager"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/version"
-	"github.com/spiffe/spire/pkg/server/endpoints/bundle/internal/autocert"
-	"github.com/spiffe/spire/pkg/server/plugin/keymanager"
 	"golang.org/x/crypto/acme"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

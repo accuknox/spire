@@ -10,14 +10,14 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/test/plugintest"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/pkg/agent/plugin/workloadattestor"
-	"github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/test/plugintest"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/sys/windows"
 	"google.golang.org/grpc/codes"
@@ -337,7 +337,7 @@ func TestAttest(t *testing.T) {
 			p, err := test.loadPlugin(t, testCase.pq, testCase.trustDomain, testCase.config)
 			require.NoError(t, err)
 
-			selectors, err := p.Attest(ctx, testPID)
+			selectors, err := p.Attest(ctx, testPID, nil)
 			spiretest.RequireGRPCStatus(t, err, testCase.expectCode, testCase.expectMsg)
 			if testCase.expectCode != codes.OK {
 				require.Nil(t, selectors)

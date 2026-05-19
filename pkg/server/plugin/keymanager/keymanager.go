@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/spiffe/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/catalog"
 )
 
 // KeyManager is the client interface for the service type KeyManager interface.

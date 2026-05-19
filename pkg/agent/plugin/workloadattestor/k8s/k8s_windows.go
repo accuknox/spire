@@ -5,8 +5,8 @@ package k8s
 import (
 	"path/filepath"
 
+	"github.com/accuknox/spire/pkg/common/container/process"
 	"github.com/hashicorp/go-hclog"
-	"github.com/spiffe/spire/pkg/common/container/process"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"k8s.io/apimachinery/pkg/types"

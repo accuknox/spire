@@ -1,10 +1,10 @@
 package catalog
 
 import (
-	"github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/pkg/server/plugin/notifier"
-	"github.com/spiffe/spire/pkg/server/plugin/notifier/gcsbundle"
-	"github.com/spiffe/spire/pkg/server/plugin/notifier/k8sbundle"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/server/plugin/notifier"
+	"github.com/accuknox/spire/pkg/server/plugin/notifier/gcsbundle"
+	"github.com/accuknox/spire/pkg/server/plugin/notifier/k8sbundle"
 )
 
 type notifierRepository struct {

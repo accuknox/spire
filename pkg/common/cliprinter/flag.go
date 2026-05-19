@@ -5,7 +5,7 @@ import (
 	"flag"
 	"fmt"
 
-	commoncli "github.com/spiffe/spire/pkg/common/cli"
+	commoncli "github.com/accuknox/spire/pkg/common/cli"
 )
 
 const defaultFlagName = "output"

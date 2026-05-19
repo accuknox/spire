@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/spiffe/spire/pkg/agent/plugin/keymanager"
-	"github.com/spiffe/spire/test/fakes/fakeagentkeymanager"
+	"github.com/accuknox/spire/pkg/agent/plugin/keymanager"
+	"github.com/accuknox/spire/test/fakes/fakeagentkeymanager"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

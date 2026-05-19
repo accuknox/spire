@@ -3,9 +3,9 @@ package rpccontext
 import (
 	"context"
 
+	"github.com/accuknox/spire/pkg/server/api/audit"
 	"github.com/sirupsen/logrus"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/server/api/audit"
 )
 
 type auditLogKey struct{}

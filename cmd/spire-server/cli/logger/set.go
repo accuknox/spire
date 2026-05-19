@@ -7,13 +7,13 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/accuknox/spire/cmd/spire-server/util"
+	commoncli "github.com/accuknox/spire/pkg/common/cli"
+	"github.com/accuknox/spire/pkg/common/cliprinter"
+	serverlogger "github.com/accuknox/spire/pkg/server/api/logger/v1"
 	"github.com/mitchellh/cli"
 	"github.com/sirupsen/logrus"
 	api "github.com/spiffe/spire-api-sdk/proto/spire/api/server/logger/v1"
-	"github.com/spiffe/spire/cmd/spire-server/util"
-	commoncli "github.com/spiffe/spire/pkg/common/cli"
-	"github.com/spiffe/spire/pkg/common/cliprinter"
-	serverlogger "github.com/spiffe/spire/pkg/server/api/logger/v1"
 )
 
 type setCommand struct {

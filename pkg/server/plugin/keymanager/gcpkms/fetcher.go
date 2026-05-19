@@ -8,8 +8,8 @@ import (
 	"sync"
 
 	"cloud.google.com/go/kms/apiv1/kmspb"
+	keymanagerv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/server/keymanager/v1"
 	"github.com/hashicorp/go-hclog"
-	keymanagerv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/server/keymanager/v1"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/api/iterator"
 	"google.golang.org/grpc/codes"

@@ -5,10 +5,10 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/go-spiffe/v2/svid/x509svid"
-	"github.com/spiffe/spire/pkg/common/x509util"
-	"github.com/spiffe/spire/test/testca"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/go-spiffe/v2/svid/x509svid"
+	"github.com/accuknox/spire/pkg/common/x509util"
+	"github.com/accuknox/spire/test/testca"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

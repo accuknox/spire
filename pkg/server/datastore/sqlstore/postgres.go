@@ -5,10 +5,10 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/accuknox/spire/pkg/server/datastore/sqldriver/awsrds"
 	"github.com/jackc/pgx/v5"
 	"github.com/jinzhu/gorm"
 	"github.com/lib/pq"
-	"github.com/spiffe/spire/pkg/server/datastore/sqldriver/awsrds"
 
 	// gorm postgres `cloudsql` dialect, for GCP Cloud SQL Proxy
 	_ "github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/dialers/postgres"

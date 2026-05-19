@@ -1,0 +1,10 @@
+# this contains vulnerabilities that are accepted 
+
+# CVE-2026-34040 is not applicable to spire,
+# because it doesn't use AuthZ plugin from Moby
+CVE-2026-34040
+
+# only get operations are performed
+# these vulnerabilities are not applicable
+CVE-2026-41567
+CVE-2026-42306

@@ -1,7 +1,7 @@
 package datastore
 
 import (
-	"github.com/spiffe/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/telemetry"
 )
 
 // StartSetCAJournal return metric for server's datastore, on setting a CA

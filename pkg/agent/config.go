@@ -5,14 +5,14 @@ import (
 	"net"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/agent/trustbundlesources"
+	"github.com/accuknox/spire/pkg/agent/workloadkey"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/health"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/tlspolicy"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/pkg/agent/trustbundlesources"
-	"github.com/spiffe/spire/pkg/agent/workloadkey"
-	"github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/pkg/common/health"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/common/tlspolicy"
 )
 
 const (
@@ -62,6 +62,9 @@ type Config struct {
 
 	// Address of SPIRE server
 	ServerAddress string
+
+	// Address of SPIRE agent
+	AgentAddress *net.TCPAddr
 
 	// SVID key type
 	WorkloadKeyType workloadkey.KeyType

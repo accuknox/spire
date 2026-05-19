@@ -4,7 +4,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/spiffe/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/telemetry"
 )
 
 type MetricType int

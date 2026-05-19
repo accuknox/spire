@@ -12,10 +12,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/x509util"
+	"github.com/accuknox/spire/test/clock"
+	"github.com/accuknox/spire/test/testkey"
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/spire/pkg/common/x509util"
-	"github.com/spiffe/spire/test/clock"
-	"github.com/spiffe/spire/test/testkey"
 	"github.com/stretchr/testify/require"
 )
 

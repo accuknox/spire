@@ -3,7 +3,7 @@ package catalog_test
 import (
 	"testing"
 
-	"github.com/spiffe/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/catalog"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -3,10 +3,10 @@ package bundlepublisher
 import (
 	"context"
 
-	bundlepublisherv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/server/bundlepublisher/v1"
-	"github.com/spiffe/spire/pkg/common/coretypes/bundle"
-	"github.com/spiffe/spire/pkg/common/plugin"
-	"github.com/spiffe/spire/proto/spire/common"
+	bundlepublisherv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/server/bundlepublisher/v1"
+	"github.com/accuknox/spire/pkg/common/coretypes/bundle"
+	"github.com/accuknox/spire/pkg/common/plugin"
+	"github.com/accuknox/spire/proto/spire/common"
 	"google.golang.org/grpc/codes"
 )
 

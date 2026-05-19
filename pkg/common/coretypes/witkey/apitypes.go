@@ -1,8 +1,8 @@
 package witkey
 
 import (
+	plugintypes "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/types"
 	apitypes "github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	plugintypes "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/types"
 )
 
 func ToAPIProto(witKey WITKey) (*apitypes.WITKey, error) {

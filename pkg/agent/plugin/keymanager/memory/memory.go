@@ -1,9 +1,9 @@
 package memory
 
 import (
-	keymanagerv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/agent/keymanager/v1"
-	keymanagerbase "github.com/spiffe/spire/pkg/agent/plugin/keymanager/base"
-	"github.com/spiffe/spire/pkg/common/catalog"
+	keymanagerv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/agent/keymanager/v1"
+	keymanagerbase "github.com/accuknox/spire/pkg/agent/plugin/keymanager/base"
+	"github.com/accuknox/spire/pkg/common/catalog"
 )
 
 type Generator = keymanagerbase.Generator

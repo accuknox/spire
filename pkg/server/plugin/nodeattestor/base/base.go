@@ -3,11 +3,11 @@ package base
 import (
 	"context"
 
+	"github.com/accuknox/spire-plugin-sdk/pluginsdk"
+	agentstorev1 "github.com/accuknox/spire-plugin-sdk/proto/spire/hostservice/server/agentstore/v1"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/server/hostservice/agentstore"
 	"github.com/hashicorp/go-hclog"
-	"github.com/spiffe/spire-plugin-sdk/pluginsdk"
-	agentstorev1 "github.com/spiffe/spire-plugin-sdk/proto/spire/hostservice/server/agentstore/v1"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/server/hostservice/agentstore"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

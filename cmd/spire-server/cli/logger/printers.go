@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 
+	commoncli "github.com/accuknox/spire/pkg/common/cli"
+	serverlogger "github.com/accuknox/spire/pkg/server/api/logger/v1"
 	apitype "github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	commoncli "github.com/spiffe/spire/pkg/common/cli"
-	serverlogger "github.com/spiffe/spire/pkg/server/api/logger/v1"
 )
 
 func PrettyPrintLogger(env *commoncli.Env, results ...any) error {

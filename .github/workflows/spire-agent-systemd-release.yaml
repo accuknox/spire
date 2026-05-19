@@ -1,0 +1,64 @@
+name: spire-agent-systemd-release
+
+on:
+  workflow_dispatch:
+    inputs:
+      current_tag:
+        description: "Release tag to be built"
+        type: string
+        required: true
+  push:
+    tags:
+      - "*"
+
+permissions: read-all
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: recursive
+          token: ${{ secrets.GH_ORG_TOKEN }}
+
+      - name: Check out tag
+        run: |
+          git fetch --tags
+          git checkout ${{ github.ref_name }}
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USER }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Extract tag for artifacts
+        id: vars
+        run: |
+            TAG="${{ github.ref_name }}"
+            echo "tag=$TAG" >> $GITHUB_OUTPUT
+            echo "tag_no_v=${TAG#v}" >> $GITHUB_OUTPUT
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          version: v1.25.0
+          args: release --rm-dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GOPRIVATE: github.com/accuknox
+
+      - name: Setup ORAS
+        uses: oras-project/setup-oras@v1
+        with:
+          version: 1.0.0
+
+      - name: Publish release artifacts to Dockerhub
+        working-directory: dist
+        run: |
+          oras push docker.io/accuknox/spire-agent-systemd:${{ steps.vars.outputs.tag_no_v }}_linux-amd64 spire-agent_${{ steps.vars.outputs.tag_no_v }}_linux-amd64.tar.gz
+          oras push docker.io/accuknox/spire-agent-systemd:${{ steps.vars.outputs.tag_no_v }}_linux-arm64 spire-agent_${{ steps.vars.outputs.tag_no_v }}_linux-arm64.tar.gz

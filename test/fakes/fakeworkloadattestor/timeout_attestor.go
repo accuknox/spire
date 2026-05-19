@@ -4,10 +4,10 @@ import (
 	"context"
 	"testing"
 
-	workloadattestorv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/agent/workloadattestor/v1"
-	"github.com/spiffe/spire/pkg/agent/plugin/workloadattestor"
-	"github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/test/plugintest"
+	workloadattestorv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/agent/workloadattestor/v1"
+	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/test/plugintest"
 )
 
 func NewTimeoutAttestor(t *testing.T, name string, c chan struct{}) workloadattestor.WorkloadAttestor {

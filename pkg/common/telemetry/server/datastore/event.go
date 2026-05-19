@@ -1,7 +1,7 @@
 package datastore
 
 import (
-	"github.com/spiffe/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/telemetry"
 )
 
 // StartListRegistrationEntryEventsCall return metric

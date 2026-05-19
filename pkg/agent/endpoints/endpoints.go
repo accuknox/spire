@@ -5,19 +5,19 @@ import (
 	"errors"
 	"net"
 
+	workload_pb "github.com/accuknox/go-spiffe/v2/proto/spiffe/workload"
 	secret_v3 "github.com/envoyproxy/go-control-plane/envoy/service/secret/v3"
 	"github.com/sirupsen/logrus"
-	workload_pb "github.com/spiffe/go-spiffe/v2/proto/spiffe/workload"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
 
-	healthv1 "github.com/spiffe/spire/pkg/agent/api/health/v1"
-	"github.com/spiffe/spire/pkg/agent/endpoints/sdsv3"
-	"github.com/spiffe/spire/pkg/agent/endpoints/workload"
-	"github.com/spiffe/spire/pkg/common/api/middleware"
-	"github.com/spiffe/spire/pkg/common/peertracker"
-	"github.com/spiffe/spire/pkg/common/telemetry"
+	healthv1 "github.com/accuknox/spire/pkg/agent/api/health/v1"
+	"github.com/accuknox/spire/pkg/agent/endpoints/sdsv3"
+	"github.com/accuknox/spire/pkg/agent/endpoints/workload"
+	"github.com/accuknox/spire/pkg/common/api/middleware"
+	"github.com/accuknox/spire/pkg/common/peertracker"
+	"github.com/accuknox/spire/pkg/common/telemetry"
 )
 
 const (
@@ -27,10 +27,12 @@ const (
 type Server interface {
 	ListenAndServe(ctx context.Context) error
 	WaitForListening(listening chan struct{})
+	ListenAndServeTcp(ctx context.Context) error
 }
 
 type Endpoints struct {
 	addr              net.Addr
+	TCPAddr           *net.TCPAddr
 	log               logrus.FieldLogger
 	metrics           telemetry.Metrics
 	workloadAPIServer workload_pb.SpiffeWorkloadAPIServer
@@ -89,6 +91,7 @@ func New(c Config) *Endpoints {
 
 	return &Endpoints{
 		addr:              c.BindAddr,
+		TCPAddr:           c.AgentAddr,
 		log:               c.Log,
 		metrics:           c.Metrics,
 		workloadAPIServer: workloadAPIServer,
@@ -97,7 +100,7 @@ func New(c Config) *Endpoints {
 		hooks: struct {
 			listening chan struct{}
 		}{
-			listening: make(chan struct{}),
+			listening: make(chan struct{}, 2),
 		},
 	}
 }
@@ -137,7 +140,9 @@ func (e *Endpoints) ListenAndServe(ctx context.Context) error {
 	}).Info("Starting Workload and SDS APIs")
 	e.triggerListeningHook()
 	errChan := make(chan error)
-	go func() { errChan <- server.Serve(l) }()
+	go func() {
+		errChan <- server.Serve(l)
+	}()
 
 	select {
 	case err = <-errChan:
@@ -166,4 +171,53 @@ func (e *Endpoints) WaitForListening(listening chan struct{}) {
 
 	<-e.hooks.listening
 	listening <- struct{}{}
+}
+
+// ListenAndServeTcp will start the agent and block until it exits or we are dying.
+func (e *Endpoints) ListenAndServeTcp(ctx context.Context) error {
+
+	unaryInterceptor, streamInterceptor := middleware.Interceptors(
+		Middleware(e.log, e.metrics),
+	)
+
+	tcpServer := grpc.NewServer(
+		grpc.Creds(peertracker.NewCredentials()),
+		grpc.UnaryInterceptor(unaryInterceptor),
+		grpc.StreamInterceptor(streamInterceptor),
+	)
+
+	grpc_health_v1.RegisterHealthServer(tcpServer, e.healthServer)
+	workload_pb.RegisterSpiffeWorkloadAPIServer(tcpServer, e.workloadAPIServer)
+	secret_v3.RegisterSecretDiscoveryServiceServer(tcpServer, e.sdsv3Server)
+
+	reflection.Register(tcpServer)
+
+	l, err := e.createTCPListener()
+	if err != nil {
+		return err
+	}
+	defer l.Close()
+
+	e.log.WithFields(logrus.Fields{
+		telemetry.Network: e.TCPAddr.Network(),
+		telemetry.Address: e.TCPAddr,
+	}).Info("Starting TCP Workload and SDS APIs")
+	e.triggerListeningHook()
+	errChan := make(chan error)
+	go func() {
+		errChan <- tcpServer.Serve(l)
+	}()
+	select {
+	case err = <-errChan:
+	case <-ctx.Done():
+		e.log.Info("Stopping TCP Workload and SDS APIs")
+		tcpServer.Stop()
+		err = <-errChan
+		if errors.Is(err, grpc.ErrServerStopped) {
+			err = nil
+		}
+	}
+
+	return err
+
 }

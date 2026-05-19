@@ -8,7 +8,7 @@ import (
 	"encoding/asn1"
 	"fmt"
 
-	"github.com/spiffe/spire/pkg/common/util"
+	"github.com/accuknox/spire/pkg/common/util"
 )
 
 var x509utilsha256skid = util.FIPS140Only()

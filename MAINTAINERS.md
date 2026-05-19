@@ -140,9 +140,9 @@ The responsibilities of the community chair are as follows:
 * Protect the privacy and confidentiality of non-public community information, including personal contact information such as email addresses and phone numbers.
 * Onboard contributors and welcome them into the community.
 
-[1]: https://github.com/spiffe/spiffe/blob/main/GOVERNANCE.md
-[2]: https://github.com/spiffe/spiffe/blob/main/GOVERNANCE.md#maintainers
-[3]: https://github.com/spiffe/spiffe/blob/main/GOVERNANCE.md#change-review-process
-[4]: https://github.com/spiffe/spire/blob/main/CONTRIBUTING.md
-[5]: https://github.com/spiffe/spire/blob/main/doc/upgrading.md
-[6]: https://github.com/spiffe/spiffe/blob/main/CODE-OF-CONDUCT.md
+[1]: https://github.com/accuknox/spiffe/blob/main/GOVERNANCE.md
+[2]: https://github.com/accuknox/spiffe/blob/main/GOVERNANCE.md#maintainers
+[3]: https://github.com/accuknox/spiffe/blob/main/GOVERNANCE.md#change-review-process
+[4]: https://github.com/accuknox/spire/blob/main/CONTRIBUTING.md
+[5]: https://github.com/accuknox/spire/blob/main/doc/upgrading.md
+[6]: https://github.com/accuknox/spiffe/blob/main/CODE-OF-CONDUCT.md

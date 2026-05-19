@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/spiffe/spire/pkg/common/x509util"
+	"github.com/accuknox/spire/pkg/common/x509util"
 	"github.com/stretchr/testify/assert"
 )
 

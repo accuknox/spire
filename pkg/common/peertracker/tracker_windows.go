@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/util"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/common/util"
 	"golang.org/x/sys/windows"
 )
 
@@ -117,7 +117,7 @@ func (w *windowsWatcher) Close() {
 	w.procHandle = windows.InvalidHandle
 }
 
-func (w *windowsWatcher) IsAlive() error {
+func (w *windowsWatcher) IsAlive(metadata map[string]string) error {
 	w.mtx.Lock()
 	defer w.mtx.Unlock()
 

@@ -51,7 +51,7 @@ SPIFFE and SPIRE have integrations available with a number of open-source projec
 * [Emissary](https://github.com/github/emissary)
 * [Envoy](https://github.com/envoyproxy/envoy)
 * [Ghostunnel](https://github.com/square/ghostunnel)
-* [gRPC](https://pkg.go.dev/github.com/spiffe/go-spiffe/v2/examples/spiffe-grpc)
+* [gRPC](https://pkg.go.dev/github.com/accuknox/go-spiffe/v2/examples/spiffe-grpc)
 * [Hamlet](https://github.com/vmware/hamlet)
 * [Istio](https://github.com/istio/istio)
 * [Keycloak](https://www.cncf.io/blog/2025/11/07/self-hosted-human-and-machine-identities-in-keycloak-26-4/)
@@ -62,7 +62,7 @@ SPIFFE and SPIRE have integrations available with a number of open-source projec
 * [Parsec](https://github.com/parallaxsecond/parsec)
 * [Sigstore](https://github.com/sigstore/fulcio)
 * [Tekton](https://github.com/tektoncd/chains)
-* [Tornjak](https://github.com/spiffe/tornjak)
+* [Tornjak](https://github.com/accuknox/tornjak)
 * [Traefik](https://github.com/traefik/traefik)
 * [Vault](https://www.hashicorp.com/en/blog/spiffe-securing-the-identity-of-agentic-ai-and-non-human-actors)
 

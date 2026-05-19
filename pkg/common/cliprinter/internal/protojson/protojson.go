@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/spiffe/spire/pkg/common/cliprinter/internal/errorjson"
+	"github.com/accuknox/spire/pkg/common/cliprinter/internal/errorjson"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )

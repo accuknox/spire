@@ -3,7 +3,7 @@ package selector
 import (
 	"sort"
 
-	"github.com/spiffe/spire/proto/spire/common"
+	"github.com/accuknox/spire/proto/spire/common"
 )
 
 func Dedupe(selectorSets ...[]*common.Selector) []*common.Selector {

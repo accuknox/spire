@@ -8,23 +8,23 @@ import (
 	"sort"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/agent/api/rpccontext"
+	workloadattestor "github.com/accuknox/spire/pkg/agent/attestor/workload"
+	"github.com/accuknox/spire/pkg/agent/client"
+	"github.com/accuknox/spire/pkg/agent/endpoints"
+	"github.com/accuknox/spire/pkg/agent/manager"
+	"github.com/accuknox/spire/pkg/agent/manager/cache"
+	"github.com/accuknox/spire/pkg/common/bundleutil"
+	"github.com/accuknox/spire/pkg/common/idutil"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/telemetry/agent/adminapi"
+	"github.com/accuknox/spire/pkg/common/x509util"
+	"github.com/accuknox/spire/pkg/server/api"
+	"github.com/accuknox/spire/proto/spire/common"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	delegatedidentityv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/agent/delegatedidentity/v1"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/agent/api/rpccontext"
-	workloadattestor "github.com/spiffe/spire/pkg/agent/attestor/workload"
-	"github.com/spiffe/spire/pkg/agent/client"
-	"github.com/spiffe/spire/pkg/agent/endpoints"
-	"github.com/spiffe/spire/pkg/agent/manager"
-	"github.com/spiffe/spire/pkg/agent/manager/cache"
-	"github.com/spiffe/spire/pkg/common/bundleutil"
-	"github.com/spiffe/spire/pkg/common/idutil"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/common/telemetry/agent/adminapi"
-	"github.com/spiffe/spire/pkg/common/x509util"
-	"github.com/spiffe/spire/pkg/server/api"
-	"github.com/spiffe/spire/proto/spire/common"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -140,7 +140,7 @@ func (s *Service) constructValidSelectorsFromReq(ctx context.Context, log logrus
 		}
 	} else {
 		// Delegate authorized, use PID the delegate gave us to try and attest on-behalf-of
-		selectors, err = s.delegateWorkloadAttestor.Attest(ctx, int(reqPid))
+		selectors, err = s.delegateWorkloadAttestor.Attest(ctx, int(reqPid), nil)
 		if err != nil {
 			return nil, err
 		}

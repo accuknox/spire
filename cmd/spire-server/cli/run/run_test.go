@@ -9,19 +9,19 @@ import (
 	"testing"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/log"
+	"github.com/accuknox/spire/pkg/server"
+	bundleClient "github.com/accuknox/spire/pkg/server/bundle/client"
+	"github.com/accuknox/spire/pkg/server/credtemplate"
+	"github.com/accuknox/spire/pkg/server/endpoints/bundle"
+	"github.com/accuknox/spire/pkg/server/plugin/keymanager"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/hashicorp/hcl"
 	"github.com/hashicorp/hcl/hcl/ast"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/pkg/common/log"
-	"github.com/spiffe/spire/pkg/server"
-	bundleClient "github.com/spiffe/spire/pkg/server/bundle/client"
-	"github.com/spiffe/spire/pkg/server/credtemplate"
-	"github.com/spiffe/spire/pkg/server/endpoints/bundle"
-	"github.com/spiffe/spire/pkg/server/plugin/keymanager"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -1513,7 +1513,7 @@ func TestWarnOnUnknownConfig(t *testing.T) {
 			},
 		},
 		// TODO: Re-enable unused key detection for experimental config. See
-		// https://github.com/spiffe/spire/issues/1101 for more information
+		// https://github.com/accuknox/spire/issues/1101 for more information
 		//
 		// {
 		//	msg:            "in nested experimental block",
@@ -1556,7 +1556,7 @@ func TestWarnOnUnknownConfig(t *testing.T) {
 			},
 		},
 		// TODO: Re-enable unused key detection for experimental config. See
-		// https://github.com/spiffe/spire/issues/1101 for more information
+		// https://github.com/accuknox/spire/issues/1101 for more information
 		//
 		// {
 		//	msg:      "in nested federates_with block",

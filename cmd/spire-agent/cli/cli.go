@@ -4,13 +4,13 @@ import (
 	"context"
 	stdlog "log"
 
+	"github.com/accuknox/spire/cmd/spire-agent/cli/api"
+	"github.com/accuknox/spire/cmd/spire-agent/cli/healthcheck"
+	"github.com/accuknox/spire/cmd/spire-agent/cli/run"
+	"github.com/accuknox/spire/cmd/spire-agent/cli/validate"
+	"github.com/accuknox/spire/pkg/common/log"
+	"github.com/accuknox/spire/pkg/common/version"
 	"github.com/mitchellh/cli"
-	"github.com/spiffe/spire/cmd/spire-agent/cli/api"
-	"github.com/spiffe/spire/cmd/spire-agent/cli/healthcheck"
-	"github.com/spiffe/spire/cmd/spire-agent/cli/run"
-	"github.com/spiffe/spire/cmd/spire-agent/cli/validate"
-	"github.com/spiffe/spire/pkg/common/log"
-	"github.com/spiffe/spire/pkg/common/version"
 )
 
 type CLI struct {

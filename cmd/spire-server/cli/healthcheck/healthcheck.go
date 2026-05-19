@@ -6,9 +6,9 @@ import (
 	"flag"
 	"fmt"
 
+	"github.com/accuknox/spire/cmd/spire-server/util"
+	common_cli "github.com/accuknox/spire/pkg/common/cli"
 	"github.com/mitchellh/cli"
-	"github.com/spiffe/spire/cmd/spire-server/util"
-	common_cli "github.com/spiffe/spire/pkg/common/cli"
 	"google.golang.org/grpc/health/grpc_health_v1"
 )
 

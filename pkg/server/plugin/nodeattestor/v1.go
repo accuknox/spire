@@ -6,9 +6,9 @@ import (
 	"io"
 	"net"
 
-	nodeattestorv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/server/nodeattestor/v1"
-	"github.com/spiffe/spire/pkg/common/plugin"
-	"github.com/spiffe/spire/proto/spire/common"
+	nodeattestorv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/server/nodeattestor/v1"
+	"github.com/accuknox/spire/pkg/common/plugin"
+	"github.com/accuknox/spire/proto/spire/common"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"

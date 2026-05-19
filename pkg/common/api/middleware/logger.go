@@ -3,9 +3,9 @@ package middleware
 import (
 	"context"
 
+	"github.com/accuknox/spire/pkg/common/api/rpccontext"
+	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/api/rpccontext"
-	"github.com/spiffe/spire/pkg/common/telemetry"
 )
 
 // WithLogger returns logging middleware that provides a per-rpc logger with

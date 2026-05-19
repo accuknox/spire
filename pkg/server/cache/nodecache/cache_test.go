@@ -5,11 +5,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/accuknox/spire/proto/spire/common"
+	"github.com/accuknox/spire/test/clock"
+	"github.com/accuknox/spire/test/fakes/fakedatastore"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/spire/proto/spire/common"
-	"github.com/spiffe/spire/test/clock"
-	"github.com/spiffe/spire/test/fakes/fakedatastore"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
 )
 

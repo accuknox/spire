@@ -10,18 +10,18 @@ import (
 	"os"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/bundle/spiffebundle"
+	"github.com/accuknox/go-spiffe/v2/proto/spiffe/workload"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/agent/api/rpccontext"
+	"github.com/accuknox/spire/pkg/agent/client"
+	"github.com/accuknox/spire/pkg/agent/manager/cache"
+	"github.com/accuknox/spire/pkg/common/bundleutil"
+	"github.com/accuknox/spire/pkg/common/jwtsvid"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/x509util"
+	"github.com/accuknox/spire/proto/spire/common"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/bundle/spiffebundle"
-	"github.com/spiffe/go-spiffe/v2/proto/spiffe/workload"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/pkg/agent/api/rpccontext"
-	"github.com/spiffe/spire/pkg/agent/client"
-	"github.com/spiffe/spire/pkg/agent/manager/cache"
-	"github.com/spiffe/spire/pkg/common/bundleutil"
-	"github.com/spiffe/spire/pkg/common/jwtsvid"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/common/x509util"
-	"github.com/spiffe/spire/proto/spire/common"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -76,7 +76,6 @@ func (h *Handler) FetchJWTSVID(ctx context.Context, req *workload.JWTSVIDRequest
 			return nil, status.Errorf(codes.InvalidArgument, "invalid requested SPIFFE ID: %v", err)
 		}
 	}
-
 	selectors, err := h.c.Attestor.Attest(ctx)
 	if err != nil {
 		loggerWithContextInfo(ctx, log, start, err).Error("Workload attestation failed")
@@ -116,7 +115,6 @@ func (h *Handler) FetchJWTBundles(_ *workload.JWTBundlesRequest, stream workload
 	ctx := stream.Context()
 	start := time.Now()
 	log := rpccontext.Logger(ctx)
-
 	selectors, err := h.c.Attestor.Attest(ctx)
 	if err != nil {
 		loggerWithContextInfo(ctx, log, start, err).Error("Workload attestation failed")
@@ -157,7 +155,6 @@ func (h *Handler) ValidateJWTSVID(ctx context.Context, req *workload.ValidateJWT
 	}
 
 	log = log.WithField(telemetry.Audience, req.Audience)
-
 	selectors, err := h.c.Attestor.Attest(ctx)
 	if err != nil {
 		loggerWithContextInfo(ctx, log, start, err).Error("Workload attestation failed")
@@ -211,12 +208,13 @@ func (h *Handler) ValidateJWTSVID(ctx context.Context, req *workload.ValidateJWT
 
 // FetchX509SVID processes request for a x509 SVID. In case of multiple fetched SVIDs with same hint, the SVID that has the oldest
 // associated entry will be returned.
-func (h *Handler) FetchX509SVID(_ *workload.X509SVIDRequest, stream workload.SpiffeWorkloadAPI_FetchX509SVIDServer) error {
+func (h *Handler) FetchX509SVID(req *workload.X509SVIDRequest, stream workload.SpiffeWorkloadAPI_FetchX509SVIDServer) error {
 	ctx := stream.Context()
 	start := time.Now()
 	log := rpccontext.Logger(ctx)
 
-	selectors, err := h.c.Attestor.Attest(ctx)
+	ctxWithMetadata := context.WithValue(ctx, "metadata", req.Metadata)
+	selectors, err := h.c.Attestor.Attest(ctxWithMetadata)
 	if err != nil {
 		loggerWithContextInfo(ctx, log, start, err).Error("Workload attestation failed")
 		return err
@@ -246,12 +244,13 @@ func (h *Handler) FetchX509SVID(_ *workload.X509SVIDRequest, stream workload.Spi
 }
 
 // FetchX509Bundles processes request for x509 bundles
-func (h *Handler) FetchX509Bundles(_ *workload.X509BundlesRequest, stream workload.SpiffeWorkloadAPI_FetchX509BundlesServer) error {
+func (h *Handler) FetchX509Bundles(req *workload.X509BundlesRequest, stream workload.SpiffeWorkloadAPI_FetchX509BundlesServer) error {
 	ctx := stream.Context()
 	start := time.Now()
 	log := rpccontext.Logger(ctx)
 
-	selectors, err := h.c.Attestor.Attest(ctx)
+	ctxWithMetadata := context.WithValue(ctx, "metadata", req.Metadata)
+	selectors, err := h.c.Attestor.Attest(ctxWithMetadata)
 	if err != nil {
 		loggerWithContextInfo(ctx, log, start, err).Error("Workload attestation failed")
 		return err

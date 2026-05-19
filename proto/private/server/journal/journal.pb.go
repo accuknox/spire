@@ -485,7 +485,7 @@ const file_private_server_journal_journal_proto_rawDesc = "" +
 	"\bPREPARED\x10\x02\x12\n" +
 	"\n" +
 	"\x06ACTIVE\x10\x03\x12\a\n" +
-	"\x03OLD\x10\x04B6Z4github.com/spiffe/spire/proto/private/server/journalb\x06proto3"
+	"\x03OLD\x10\x04B8Z6github.com/accuknox/spire/proto/private/server/journalb\x06proto3"
 
 var (
 	file_private_server_journal_journal_proto_rawDescOnce sync.Once

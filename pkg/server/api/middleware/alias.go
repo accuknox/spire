@@ -1,9 +1,9 @@
 package middleware
 
 import (
+	"github.com/accuknox/spire/pkg/common/api/middleware"
+	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/api/middleware"
-	"github.com/spiffe/spire/pkg/common/telemetry"
 	"google.golang.org/grpc"
 )
 

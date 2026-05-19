@@ -3,7 +3,7 @@ package fakehealthchecker
 import (
 	"fmt"
 
-	"github.com/spiffe/spire/pkg/common/health"
+	"github.com/accuknox/spire/pkg/common/health"
 )
 
 type Checker struct {

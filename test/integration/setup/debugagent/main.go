@@ -8,9 +8,9 @@ import (
 	"log"
 	"time"
 
+	"github.com/accuknox/spire/test/integration/setup/itclient"
 	agent_debugv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/agent/debug/v1"
 	server_debugv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/debug/v1"
-	"github.com/spiffe/spire/test/integration/setup/itclient"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"

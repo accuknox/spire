@@ -5,8 +5,8 @@ import (
 	"strings"
 	"time"
 
-	keymanagerv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/server/keymanager/v1"
-	"github.com/spiffe/spire/pkg/server/common/vault"
+	keymanagerv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/server/keymanager/v1"
+	"github.com/accuknox/spire/pkg/server/common/vault"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

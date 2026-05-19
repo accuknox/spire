@@ -5,7 +5,7 @@ package clitest
 import (
 	"net"
 
-	"github.com/spiffe/spire/pkg/common/namedpipe"
+	"github.com/accuknox/spire/pkg/common/namedpipe"
 )
 
 func GetAddr(addr net.Addr) string {

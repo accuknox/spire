@@ -9,9 +9,9 @@ import (
 	"strings"
 	"unsafe"
 
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/util"
 	"github.com/hashicorp/go-hclog"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/common/util"
 	"golang.org/x/sys/windows"
 )
 

@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/accuknox/spire/cmd/spire-server/cli/logger"
+	commoncli "github.com/accuknox/spire/pkg/common/cli"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/cmd/spire-server/cli/logger"
-	commoncli "github.com/spiffe/spire/pkg/common/cli"
 )
 
 func TestPrettyPrintLogger(t *testing.T) {

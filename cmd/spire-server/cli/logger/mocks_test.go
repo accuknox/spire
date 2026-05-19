@@ -6,13 +6,13 @@ import (
 	"io"
 	"testing"
 
-	"github.com/spiffe/spire/test/clitest"
-	"github.com/spiffe/spire/test/spiretest"
+	"github.com/accuknox/spire/test/clitest"
+	"github.com/accuknox/spire/test/spiretest"
 
+	commoncli "github.com/accuknox/spire/pkg/common/cli"
 	"github.com/mitchellh/cli"
 	loggerv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/logger/v1"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	commoncli "github.com/spiffe/spire/pkg/common/cli"
 	"google.golang.org/grpc"
 )
 

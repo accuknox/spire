@@ -6,12 +6,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/health"
+	"github.com/accuknox/spire/pkg/server/ca/manager"
+	"github.com/accuknox/spire/proto/private/server/journal"
+	"github.com/accuknox/spire/test/clock"
+	"github.com/accuknox/spire/test/fakes/fakehealthchecker"
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/spire/pkg/common/health"
-	"github.com/spiffe/spire/pkg/server/ca/manager"
-	"github.com/spiffe/spire/proto/private/server/journal"
-	"github.com/spiffe/spire/test/clock"
-	"github.com/spiffe/spire/test/fakes/fakehealthchecker"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

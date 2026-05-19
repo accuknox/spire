@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
-	"github.com/spiffe/spire/cmd/spire-agent/cli"
-	"github.com/spiffe/spire/pkg/common/entrypoint"
+	"github.com/accuknox/spire/cmd/spire-agent/cli"
+	"github.com/accuknox/spire/pkg/common/entrypoint"
 )
 
 func main() {

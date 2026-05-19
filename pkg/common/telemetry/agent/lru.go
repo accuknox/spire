@@ -1,6 +1,6 @@
 package agent
 
-import "github.com/spiffe/spire/pkg/common/telemetry"
+import "github.com/accuknox/spire/pkg/common/telemetry"
 
 func IncrementEntriesAdded(m telemetry.Metrics, entriesAdded int) {
 	m.IncrCounter([]string{telemetry.EntryAdded}, float32(entriesAdded))

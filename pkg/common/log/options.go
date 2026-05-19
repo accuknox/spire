@@ -159,5 +159,5 @@ var loggingFuncRegexp = regexp.MustCompile(
 
 func isLoggingFunc(funcName string) bool {
 	return loggingFuncRegexp.MatchString(funcName) &&
-		!strings.HasPrefix(funcName, "github.com/spiffe/spire/pkg/common/log.Test")
+		!strings.HasPrefix(funcName, "github.com/accuknox/spire/pkg/common/log.Test")
 }

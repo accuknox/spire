@@ -9,8 +9,8 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/telemetry"
 	"golang.org/x/sys/unix"
 )
 
@@ -44,6 +44,7 @@ type linuxWatcher struct {
 	starttime string
 	uid       uint32
 	log       logrus.FieldLogger
+	metadata  map[string]string
 }
 
 func newLinuxWatcher(info CallerInfo, log logrus.FieldLogger) (*linuxWatcher, error) {
@@ -82,6 +83,7 @@ func newLinuxWatcher(info CallerInfo, log logrus.FieldLogger) (*linuxWatcher, er
 		starttime: starttime,
 		uid:       info.UID,
 		log:       log,
+		metadata:  info.Metadata,
 	}, nil
 }
 
@@ -97,29 +99,32 @@ func (l *linuxWatcher) Close() {
 	l.procfd = -1
 }
 
-func (l *linuxWatcher) IsAlive() error {
+func (l *linuxWatcher) IsAlive(metadata map[string]string) error {
 	l.mtx.Lock()
 	defer l.mtx.Unlock()
 
-	if l.procfd < 0 {
+	l.metadata = metadata
+
+	if l.procfd < 0 && len(l.metadata) <= 0 {
 		l.log.Warn("Caller is no longer being watched")
 		return errors.New("caller is no longer being watched")
 	}
 
-	// First we will check if we can read from the original directory handle.
-	// If the process has exited since we opened it, the read should fail (i.e.
-	// the ReadDirent syscall will return -1)
-	var buf [8196]byte
-	n, err := unix.ReadDirent(l.procfd, buf[:])
-	if err != nil {
-		l.log.WithError(err).Warn("Caller exit suspected due to failed readdirent")
-		return errors.New("caller exit suspected due to failed readdirent")
+	if l.procfd > 0 {
+		// First we will check if we can read from the original directory handle.
+		// If the process has exited since we opened it, the read should fail (i.e.
+		// the ReadDirent syscall will return -1)
+		var buf [8196]byte
+		n, err := unix.ReadDirent(l.procfd, buf[:])
+		if err != nil {
+			l.log.WithError(err).Warn("Caller exit suspected due to failed readdirent")
+			return errors.New("caller exit suspected due to failed readdirent")
+		}
+		if n < 0 {
+			l.log.WithField(telemetry.StatusCode, n).Warn("Caller exit suspected due to failed readdirent")
+			return fmt.Errorf("caller exit suspected due to failed readdirent: n=%d", n)
+		}
 	}
-	if n < 0 {
-		l.log.WithField(telemetry.StatusCode, n).Warn("Caller exit suspected due to failed readdirent")
-		return fmt.Errorf("caller exit suspected due to failed readdirent: n=%d", n)
-	}
-
 	// A successful fd read should indicate that the original process is still alive, however
 	// it is not clear if the original inode can be freed by Linux while it is still referenced.
 	// This _shouldn't_ happen, but if it does, then there might be room for a reused PID to
@@ -150,14 +155,14 @@ func (l *linuxWatcher) IsAlive() error {
 		l.log.WithError(err).Warn("Caller exit suspected due to failed proc stat")
 		return errors.New("caller exit suspected due to failed proc stat")
 	}
-	if stat.Uid != l.uid {
+	if stat.Uid != l.uid && len(l.metadata) <= 0 {
 		l.log.WithFields(logrus.Fields{
 			telemetry.ExpectUID:   l.uid,
 			telemetry.ReceivedUID: stat.Uid,
 		}).Warn("New process detected: process uid does not match original caller")
 		return fmt.Errorf("new process detected: process uid %v does not match original caller %v", stat.Uid, l.uid)
 	}
-	if stat.Gid != l.gid {
+	if stat.Gid != l.gid && len(l.metadata) <= 0 {
 		l.log.WithFields(logrus.Fields{
 			telemetry.ExpectGID:   l.gid,
 			telemetry.ReceivedGID: stat.Gid,

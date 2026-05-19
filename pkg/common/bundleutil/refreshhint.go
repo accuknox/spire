@@ -4,7 +4,7 @@ import (
 	"math"
 	"time"
 
-	"github.com/spiffe/go-spiffe/v2/bundle/spiffebundle"
+	"github.com/accuknox/go-spiffe/v2/bundle/spiffebundle"
 )
 
 const (

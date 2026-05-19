@@ -5,12 +5,12 @@ import (
 	"crypto/x509/pkix"
 	"testing"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/pkg/common/x509svid"
-	"github.com/spiffe/spire/pkg/server/plugin/credentialcomposer"
-	"github.com/spiffe/spire/pkg/server/plugin/credentialcomposer/uniqueid"
-	"github.com/spiffe/spire/test/plugintest"
-	"github.com/spiffe/spire/test/testkey"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/x509svid"
+	"github.com/accuknox/spire/pkg/server/plugin/credentialcomposer"
+	"github.com/accuknox/spire/pkg/server/plugin/credentialcomposer/uniqueid"
+	"github.com/accuknox/spire/test/plugintest"
+	"github.com/accuknox/spire/test/testkey"
 	"github.com/stretchr/testify/assert"
 )
 

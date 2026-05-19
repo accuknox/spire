@@ -11,12 +11,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	svidstorev1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/agent/svidstore/v1"
+	"github.com/accuknox/spire/test/integration/setup/itclient"
 	bundlev1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/bundle/v1"
 	entryv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/entry/v1"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	svidstorev1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/agent/svidstore/v1"
-	"github.com/spiffe/spire/test/integration/setup/itclient"
 )
 
 func main() {

@@ -1,4 +1,13 @@
-FROM ubuntu:24.04
-WORKDIR /spire
-RUN apt-get update && apt-get -y install \
-    curl unzip git build-essential ca-certificates libssl-dev
+FROM debian:bookworm-slim
+WORKDIR /opt/spire/bin/
+ARG spireuid=0
+ARG spiregid=0
+USER ${spireuid}:${spiregid}
+COPY bin .
+RUN apt-get update && \
+    apt-get install -y \
+    ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+ENTRYPOINT ["/opt/spire/bin/spire-server", "run"]
+
+# need to change entrypoint to spire-server if testing server

@@ -5,8 +5,8 @@ import (
 	"context"
 	"testing"
 
+	common_cli "github.com/accuknox/spire/pkg/common/cli"
 	"github.com/mitchellh/cli"
-	common_cli "github.com/spiffe/spire/pkg/common/cli"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"

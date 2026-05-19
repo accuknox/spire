@@ -5,10 +5,10 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	configv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/service/common/config/v1"
+	"github.com/accuknox/spire/pkg/common/catalog"
 	"github.com/hashicorp/hcl/hcl/token"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	configv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/service/common/config/v1"
-	"github.com/spiffe/spire/pkg/common/catalog"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

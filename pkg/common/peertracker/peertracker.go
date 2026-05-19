@@ -28,7 +28,7 @@ type PeerTracker interface {
 
 type Watcher interface {
 	Close()
-	IsAlive() error
+	IsAlive(map[string]string) error
 	PID() int32
 }
 

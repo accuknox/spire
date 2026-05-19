@@ -7,8 +7,8 @@ import (
 	"fmt"
 
 	ejbcaclient "github.com/Keyfactor/ejbca-go-client-sdk/api/ejbca"
+	"github.com/accuknox/spire/pkg/common/pemutil"
 	"github.com/gogo/status"
-	"github.com/spiffe/spire/pkg/common/pemutil"
 	"google.golang.org/grpc/codes"
 )
 

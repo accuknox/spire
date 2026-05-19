@@ -14,8 +14,8 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/plugin/azure"
 	"github.com/smallstep/pkcs7"
-	"github.com/spiffe/spire/pkg/common/plugin/azure"
 )
 
 // Azure-specific certificate validation constants

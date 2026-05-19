@@ -4,7 +4,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/spiffe/spire/pkg/common/util"
+	"github.com/accuknox/spire/pkg/common/util"
 )
 
 type eventTracker struct {

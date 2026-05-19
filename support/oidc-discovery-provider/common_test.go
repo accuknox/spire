@@ -5,8 +5,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/pemutil"
 	"github.com/go-jose/go-jose/v4"
-	"github.com/spiffe/spire/pkg/common/pemutil"
 )
 
 var (

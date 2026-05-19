@@ -4,9 +4,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/sirupsen/logrus"
 	logtest "github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -9,10 +9,10 @@ import (
 	"io"
 	"strings"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	configv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/service/common/config/v1"
+	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	configv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/service/common/config/v1"
-	"github.com/spiffe/spire/pkg/common/telemetry"
 )
 
 type CoreConfig struct {

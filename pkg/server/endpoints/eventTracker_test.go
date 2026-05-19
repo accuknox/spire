@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/spiffe/spire/pkg/server/endpoints"
+	"github.com/accuknox/spire/pkg/server/endpoints"
 	"github.com/stretchr/testify/require"
 )
 

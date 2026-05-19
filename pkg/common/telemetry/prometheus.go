@@ -10,11 +10,11 @@ import (
 	"sync"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/util"
 	prommetrics "github.com/hashicorp/go-metrics/prometheus"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/util"
 )
 
 type prometheusRunner struct {

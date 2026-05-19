@@ -8,11 +8,13 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"reflect"
 	"sync"
 	"time"
 
-	"github.com/spiffe/spire/pkg/common/diskutil"
-	"github.com/spiffe/spire/pkg/common/pemutil"
+	"github.com/accuknox/spire/pkg/common/diskutil"
+	"github.com/accuknox/spire/pkg/common/pemutil"
+	"github.com/accuknox/spire/pkg/common/util"
 )
 
 var (
@@ -47,20 +49,41 @@ type Storage interface {
 	DeleteBootstrapState() error
 }
 
-func Open(dir string) (Storage, error) {
+func Open(dir, namespace, secret string) (Storage, error) {
+
+	var secretData storageData
 	data, err := loadData(dir)
-	if err != nil && !errors.Is(err, fs.ErrNotExist) {
+	secretBytes, secretErr := util.LoadDataWithBackoff(namespace, secret)
+
+	if secretErr == nil && len(secretBytes) > 0 {
+		secretErr = secretData.UnmarshalJSON(secretBytes)
+	}
+
+	dataMissing := errors.Is(err, fs.ErrNotExist)
+	secretMissing := errors.Is(secretErr, util.ErrNoSecretFound)
+
+	if err != nil && !dataMissing &&
+		secretErr != nil && !secretMissing {
 		return nil, err
 	}
 
+	if reflect.DeepEqual(data, storageData{}) &&
+		!reflect.DeepEqual(secretData, storageData{}) {
+		data = secretData
+	}
+
 	return &storage{
-		dir:  dir,
-		data: data,
+		dir:       dir,
+		namespace: namespace,
+		secret:    secret,
+		data:      data,
 	}, nil
 }
 
 type storage struct {
-	dir string
+	dir       string
+	namespace string
+	secret    string
 
 	mtx  sync.RWMutex
 	data storageData
@@ -84,6 +107,11 @@ func (s *storage) StoreBundle(bundle []*x509.Certificate) error {
 	data.Bundle = bundle
 
 	if err := storeData(s.dir, data); err != nil {
+		return err
+	}
+
+	marshaled, _ := data.MarshalJSON()
+	if err := util.StoreDataWithBackoff(s.namespace, s.secret, marshaled); err != nil {
 		return err
 	}
 
@@ -113,6 +141,11 @@ func (s *storage) StoreSVID(svid []*x509.Certificate, reattestable bool) error {
 		return err
 	}
 
+	marshaled, _ := data.MarshalJSON()
+	if err := util.StoreDataWithBackoff(s.namespace, s.secret, marshaled); err != nil {
+		return err
+	}
+
 	s.data = data
 	return nil
 }
@@ -125,6 +158,11 @@ func (s *storage) DeleteSVID() error {
 	data.SVID = nil
 	data.Reattestable = false
 	if err := storeData(s.dir, data); err != nil {
+		return err
+	}
+
+	marshaled, _ := data.MarshalJSON()
+	if err := util.StoreDataWithBackoff(s.namespace, s.secret, marshaled); err != nil {
 		return err
 	}
 
@@ -149,6 +187,10 @@ func (s *storage) StoreBootstrapState(use int, start_time time.Time, connectionA
 	if err := storeData(s.dir, data); err != nil {
 		return err
 	}
+	marshaled, _ := data.MarshalJSON()
+	if err := util.StoreDataWithBackoff(s.namespace, s.secret, marshaled); err != nil {
+		return err
+	}
 
 	s.data = data
 	return nil
@@ -163,6 +205,11 @@ func (s *storage) DeleteBootstrapState() error {
 	data.BootstrapStartTime = time.Time{}
 	data.ConnectionAttempts = 0
 	if err := storeData(s.dir, data); err != nil {
+		return err
+	}
+
+	marshaled, _ := data.MarshalJSON()
+	if err := util.StoreDataWithBackoff(s.namespace, s.secret, marshaled); err != nil {
 		return err
 	}
 

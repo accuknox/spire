@@ -9,7 +9,7 @@ import (
 	"crypto/rsa"
 	"fmt"
 
-	"github.com/spiffe/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/catalog"
 )
 
 // KeyManager provides either a single or multi-key key manager

@@ -11,6 +11,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/google/go-containerregistry/pkg/authn"
 	"github.com/google/go-containerregistry/pkg/name"
 	"github.com/google/go-containerregistry/pkg/v1/remote"
@@ -22,7 +23,6 @@ import (
 	rekorclient "github.com/sigstore/rekor/pkg/generated/client"
 	"github.com/sigstore/sigstore/pkg/cryptoutils"
 	"github.com/sigstore/sigstore/pkg/fulcioroots"
-	"github.com/spiffe/spire/pkg/common/telemetry"
 )
 
 const (

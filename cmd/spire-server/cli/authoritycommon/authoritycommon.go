@@ -3,8 +3,8 @@ package authoritycommon
 import (
 	"time"
 
+	commoncli "github.com/accuknox/spire/pkg/common/cli"
 	localauthorityv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/localauthority/v1"
-	commoncli "github.com/spiffe/spire/pkg/common/cli"
 )
 
 func PrettyPrintJWTAuthorityState(env *commoncli.Env, authorityState *localauthorityv1.AuthorityState) {

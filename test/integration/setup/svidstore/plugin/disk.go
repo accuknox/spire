@@ -9,10 +9,10 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/accuknox/spire-plugin-sdk/pluginmain"
+	svidstorev1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/agent/svidstore/v1"
+	configv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/service/common/config/v1"
 	"github.com/hashicorp/hcl"
-	"github.com/spiffe/spire-plugin-sdk/pluginmain"
-	svidstorev1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/agent/svidstore/v1"
-	configv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/service/common/config/v1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

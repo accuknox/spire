@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"runtime/debug"
 
+	"github.com/accuknox/spire-plugin-sdk/pluginsdk"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire-plugin-sdk/pluginsdk"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

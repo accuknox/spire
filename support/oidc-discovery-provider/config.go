@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/config"
 	"github.com/hashicorp/hcl"
-	"github.com/spiffe/spire/pkg/common/config"
 )
 
 const (

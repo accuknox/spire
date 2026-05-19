@@ -17,17 +17,17 @@ import (
 	"sync"
 	"time"
 
+	workloadattestorv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/agent/workloadattestor/v1"
+	configv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/service/common/config/v1"
+	"github.com/accuknox/spire/pkg/agent/common/sigstore"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/pemutil"
+	"github.com/accuknox/spire/pkg/common/pluginconf"
+	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/andres-erbsen/clock"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/hcl"
 	hcltoken "github.com/hashicorp/hcl/hcl/token"
-	workloadattestorv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/agent/workloadattestor/v1"
-	configv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/service/common/config/v1"
-	"github.com/spiffe/spire/pkg/agent/common/sigstore"
-	"github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/pkg/common/pemutil"
-	"github.com/spiffe/spire/pkg/common/pluginconf"
-	"github.com/spiffe/spire/pkg/common/telemetry"
 	"github.com/valyala/fastjson"
 	"golang.org/x/sync/singleflight"
 	"google.golang.org/grpc/codes"
@@ -788,12 +788,12 @@ func getPodImageIdentifiers(containerStatuses ...corev1.ContainerStatus) map[str
 	// docker.io/envoyproxy/envoy-alpine:v1.16.0, which does not,
 	// while also maintaining backwards compatibility and allowing for dynamic workload registration (k8s operator)
 	// when the SHA is not yet known (e.g. before the image pull is initiated at workload creation time)
-	// More info here: https://github.com/spiffe/spire/issues/2026
+	// More info here: https://github.com/accuknox/spire/issues/2026
 	//
 	// Note: The tag-based Image value can be non-deterministic when multiple
 	// tags share the same digest, as the CRI API does not standardize which
 	// tag to report. Prefer digest-based selectors for reliable matching.
-	// See https://github.com/spiffe/spire/issues/4287
+	// See https://github.com/accuknox/spire/issues/4287
 	for _, containerStatus := range containerStatuses {
 		podImages[containerStatus.ImageID] = struct{}{}
 		podImages[containerStatus.Image] = struct{}{}

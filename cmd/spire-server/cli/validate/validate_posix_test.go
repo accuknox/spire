@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	common_cli "github.com/spiffe/spire/pkg/common/cli"
-	"github.com/spiffe/spire/pkg/common/fflag"
+	common_cli "github.com/accuknox/spire/pkg/common/cli"
+	"github.com/accuknox/spire/pkg/common/fflag"
 	"github.com/stretchr/testify/require"
 )
 

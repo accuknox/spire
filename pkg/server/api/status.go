@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/accuknox/spire/pkg/common/util"
 	"github.com/sirupsen/logrus"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/common/util"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

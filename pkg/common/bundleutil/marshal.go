@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/bundle/spiffebundle"
 	"github.com/go-jose/go-jose/v4"
-	"github.com/spiffe/go-spiffe/v2/bundle/spiffebundle"
 )
 
 type marshalConfig struct {

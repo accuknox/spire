@@ -261,7 +261,7 @@ This optional section contains the configurables used by SPIRE Server to expose 
 |-----------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | address                                       | IP address where this server will listen for HTTP requests                                                                                                                                                                                         |
 | port                                          | TCP port number where this server will listen for HTTP requests                                                                                                                                                                                    |
-| refresh_hint                                  | Allow manually specifying a [refresh hint](https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE_Trust_Domain_and_Bundle.md#412-refresh-hint). Defaults to 5 minutes. Small values allow to retrieve trust bundle updates in a timely manner |
+| refresh_hint                                  | Allow manually specifying a [refresh hint](https://github.com/accuknox/spiffe/blob/main/standards/SPIFFE_Trust_Domain_and_Bundle.md#412-refresh-hint). Defaults to 5 minutes. Small values allow to retrieve trust bundle updates in a timely manner |
 | profile "&lt;https_web&vert;https_spiffe&gt;" | Allow to configure bundle profile                                                                                                                                                                                                                  |
 
 ### Configuration options for `federation.bundle_endpoint.profile`
@@ -309,7 +309,7 @@ The `https_web` profile does not require additional settings.
 
 Trust domains configured with the `https_spiffe` bundle endpoint profile must specify the expected SPIFFE ID of the remote SPIFFE bundle endpoint server using the `endpoint_spiffe_id` setting as part of the configuration.
 
-For more information about the different profiles defined in SPIFFE, along with the security considerations for setting up SPIFFE Federation, please refer to the [SPIFFE Federation standard](https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE_Federation.md).
+For more information about the different profiles defined in SPIFFE, along with the security considerations for setting up SPIFFE Federation, please refer to the [SPIFFE Federation standard](https://github.com/accuknox/spiffe/blob/main/standards/SPIFFE_Federation.md).
 
 ## Telemetry configuration
 
@@ -797,7 +797,7 @@ A JSON object passed to `-data` for `entry create/update` expects the following 
 }
 ```
 
-The entry object is described by `RegistrationEntry` in the [common protobuf file](https://github.com/spiffe/spire/blob/main/proto/spire/common/common.proto).
+The entry object is described by `RegistrationEntry` in the [common protobuf file](https://github.com/accuknox/spire/blob/main/proto/spire/common/common.proto).
 
 _Note: to create node entries, set `parent_id` to the special value `spiffe://<your-trust-domain>/spire/server`.
 That's what the code does when the `-node` flag is passed on the cli._

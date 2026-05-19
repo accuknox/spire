@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/spiffe/spire/pkg/agent/client"
+	"github.com/accuknox/spire/pkg/agent/client"
 )
 
 const (

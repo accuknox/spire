@@ -4,11 +4,11 @@ import (
 	"context"
 	"testing"
 
+	workload_pb "github.com/accuknox/go-spiffe/v2/proto/spiffe/workload"
 	discovery_v3 "github.com/envoyproxy/go-control-plane/envoy/service/discovery/v3"
 	secret_v3 "github.com/envoyproxy/go-control-plane/envoy/service/secret/v3"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
-	workload_pb "github.com/spiffe/go-spiffe/v2/proto/spiffe/workload"
 	debugv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/agent/debug/v1"
 	delegatedidentityv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/agent/delegatedidentity/v1"
 	"github.com/stretchr/testify/assert"
@@ -16,13 +16,13 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"
 
-	"github.com/spiffe/spire/test/fakes/fakemetrics"
-	"github.com/spiffe/spire/test/grpctest"
+	"github.com/accuknox/spire/test/fakes/fakemetrics"
+	"github.com/accuknox/spire/test/grpctest"
 )
 
 // TestDebugServiceConnectionMetrics verifies that Debug API calls going through
 // the agent middleware do NOT produce misconfiguration error logs.
-// Regression test for https://github.com/spiffe/spire/issues/5183
+// Regression test for https://github.com/accuknox/spire/issues/5183
 func TestDebugServiceConnectionMetrics(t *testing.T) {
 	log, hook := test.NewNullLogger()
 	log.Level = logrus.DebugLevel

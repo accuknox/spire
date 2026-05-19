@@ -5,10 +5,10 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/accuknox/spire/pkg/agent/plugin/nodeattestor"
+	nodeattestortest "github.com/accuknox/spire/pkg/agent/plugin/nodeattestor/test"
+	"github.com/accuknox/spire/test/spiretest"
 	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiffe/spire/pkg/agent/plugin/nodeattestor"
-	nodeattestortest "github.com/spiffe/spire/pkg/agent/plugin/nodeattestor/test"
-	"github.com/spiffe/spire/test/spiretest"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 )

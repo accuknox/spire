@@ -8,10 +8,10 @@ import (
 	"os"
 	"strings"
 
+	"github.com/accuknox/spire/pkg/server/datastore/sqldriver/awsrds"
 	"github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/server/datastore/sqldriver/awsrds"
 
 	// gorm mysql `cloudsql` dialect, for GCP
 	// Cloud SQL Proxy

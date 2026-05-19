@@ -4,12 +4,12 @@ import (
 	"net"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	attestor "github.com/accuknox/spire/pkg/agent/attestor/workload"
+	"github.com/accuknox/spire/pkg/agent/manager"
+	"github.com/accuknox/spire/pkg/common/peertracker"
+	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	attestor "github.com/spiffe/spire/pkg/agent/attestor/workload"
-	"github.com/spiffe/spire/pkg/agent/manager"
-	"github.com/spiffe/spire/pkg/common/peertracker"
-	"github.com/spiffe/spire/pkg/common/telemetry"
 )
 
 type Config struct {

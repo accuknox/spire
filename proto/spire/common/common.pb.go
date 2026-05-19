@@ -1269,7 +1269,7 @@ const file_spire_common_common_proto_rawDesc = "" +
 	"\x16new_cert_serial_number\x18\x04 \x01(\bR\x13newCertSerialNumber\x12+\n" +
 	"\x12new_cert_not_after\x18\x05 \x01(\bR\x0fnewCertNotAfter\x12!\n" +
 	"\fcan_reattest\x18\x06 \x01(\bR\vcanReattest\x12#\n" +
-	"\ragent_version\x18\a \x01(\bR\fagentVersionB,Z*github.com/spiffe/spire/proto/spire/commonb\x06proto3"
+	"\ragent_version\x18\a \x01(\bR\fagentVersionB.Z,github.com/accuknox/spire/proto/spire/commonb\x06proto3"
 
 var (
 	file_spire_common_common_proto_rawDescOnce sync.Once

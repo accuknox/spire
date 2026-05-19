@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/spiffe/spire/pkg/common/bundleutil"
-	"github.com/spiffe/spire/pkg/common/pluginconf"
+	"github.com/accuknox/spire/pkg/common/bundleutil"
+	"github.com/accuknox/spire/pkg/common/pluginconf"
 )
 
 func ParseRefreshHint(refreshHint string, status *pluginconf.Status) (int64, error) {

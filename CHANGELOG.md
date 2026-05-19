@@ -746,7 +746,7 @@ Thanks to Edoardo Geraci for reporting this issue.
 - Improved performance when listing queries for PostgreSQL (#4111)
 - Support for SPIFFE bundle sequence numbers (#4061)
 - New Systemd Workload Attestor plugin (#4058)
-- New [BundlePublisher](https://github.com/spiffe/spire-plugin-sdk/blob/v1.6.4/proto/spire/plugin/server/bundlepublisher/v1/bundlepublisher.proto) plugin type (#4022)
+- New [BundlePublisher](https://github.com/accuknox/spire-plugin-sdk/blob/v1.6.4/proto/spire/plugin/server/bundlepublisher/v1/bundlepublisher.proto) plugin type (#4022)
 - New `agent purge` command for removing stale agent records (#3982)
 
 ### Fixed
@@ -895,7 +895,7 @@ Thanks to Edoardo Geraci for reporting this issue.
 
 ### Deprecated
 
-- `k8s-workload-registrar` is deprecated in favor of [SPIRE Controller Manager](https://github.com/spiffe/spire-controller-manager) (#3526)
+- `k8s-workload-registrar` is deprecated in favor of [SPIRE Controller Manager](https://github.com/accuknox/spire-controller-manager) (#3526)
 - Server `default_svid_ttl` configuration field is deprecated in favor of `default_x509_svid_ttl` and `default_jwt_svid_ttl` fields (#3445)
 - `-ttl` flag in `spire-server entry create` and `spire-server entry update` commands is deprecated in favor of `-x509SVIDTTL` and `-jwtSVIDTTL` flags (#3445)
 - `-format` flag in `spire-agent fetch jwt` CLI command is deprecated in favor of `-output` flag (#3528)
@@ -1054,7 +1054,7 @@ Thanks to Edoardo Geraci for reporting this issue.
 
 ### Added
 
-- Experimental Windows support (<https://github.com/spiffe/spire/projects/12>)
+- Experimental Windows support (<https://github.com/accuknox/spire/projects/12>)
 - Ability to revert SPIFFE cert validation to standard X.509 validation in Envoy (#3009, #3014, #3020, #3034)
 - Configurable leader election resource lock type for the K8s Workload Registrar (#3030)
 - Ability to fetch JWT SVIDs and JWT Bundles on behalf of workloads via the Delegated Identity API (#2789)
@@ -1207,7 +1207,7 @@ Thanks to Edoardo Geraci for reporting this issue.
 ### Added
 
 - SPIRE images are now published to GitHub Container Registry. They will continue to be published to Google Container Registry over the course of the next release (#2576,#2580)
-- SPIRE Server now implements the [TrustDomain API](https://github.com/spiffe/spire-api-sdk/blob/main/proto/spire/api/server/trustdomain/v1/trustdomain.proto) and related CLI commands (<https://github.com/spiffe/spire/projects/11>)
+- SPIRE Server now implements the [TrustDomain API](https://github.com/spiffe/spire-api-sdk/blob/main/proto/spire/api/server/trustdomain/v1/trustdomain.proto) and related CLI commands (<https://github.com/accuknox/spire/projects/11>)
 - The SVIDStore plugin type has been introduced to enable, amongst other things, agentless workload scenarios (#2176,#2483)
 - The TPM DevID Node Attestor emits a new `issuer:cn` selector with the common name of the issuing certificate (#2581)
 - The K8s Bundle Notifier plugin now supports pushing the bundle to resources in multiple clusters (#2531)

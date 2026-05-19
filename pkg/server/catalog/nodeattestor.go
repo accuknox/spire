@@ -1,18 +1,18 @@
 package catalog
 
 import (
-	"github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/pkg/server/plugin/nodeattestor"
-	"github.com/spiffe/spire/pkg/server/plugin/nodeattestor/awsiid"
-	"github.com/spiffe/spire/pkg/server/plugin/nodeattestor/azureimds"
-	"github.com/spiffe/spire/pkg/server/plugin/nodeattestor/azuremsi"
-	"github.com/spiffe/spire/pkg/server/plugin/nodeattestor/gcpiit"
-	"github.com/spiffe/spire/pkg/server/plugin/nodeattestor/httpchallenge"
-	"github.com/spiffe/spire/pkg/server/plugin/nodeattestor/jointoken"
-	"github.com/spiffe/spire/pkg/server/plugin/nodeattestor/k8spsat"
-	"github.com/spiffe/spire/pkg/server/plugin/nodeattestor/sshpop"
-	"github.com/spiffe/spire/pkg/server/plugin/nodeattestor/tpmdevid"
-	"github.com/spiffe/spire/pkg/server/plugin/nodeattestor/x509pop"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/server/plugin/nodeattestor"
+	"github.com/accuknox/spire/pkg/server/plugin/nodeattestor/awsiid"
+	"github.com/accuknox/spire/pkg/server/plugin/nodeattestor/azureimds"
+	"github.com/accuknox/spire/pkg/server/plugin/nodeattestor/azuremsi"
+	"github.com/accuknox/spire/pkg/server/plugin/nodeattestor/gcpiit"
+	"github.com/accuknox/spire/pkg/server/plugin/nodeattestor/httpchallenge"
+	"github.com/accuknox/spire/pkg/server/plugin/nodeattestor/jointoken"
+	"github.com/accuknox/spire/pkg/server/plugin/nodeattestor/k8spsat"
+	"github.com/accuknox/spire/pkg/server/plugin/nodeattestor/sshpop"
+	"github.com/accuknox/spire/pkg/server/plugin/nodeattestor/tpmdevid"
+	"github.com/accuknox/spire/pkg/server/plugin/nodeattestor/x509pop"
 )
 
 type nodeAttestorRepository struct {

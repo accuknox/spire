@@ -4,17 +4,19 @@ import (
 	"context"
 	"crypto/x509"
 	"encoding/json"
+	"errors"
 	"os"
 	"path/filepath"
 	"sync"
 
+	keymanagerv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/agent/keymanager/v1"
+	configv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/service/common/config/v1"
+	keymanagerbase "github.com/accuknox/spire/pkg/agent/plugin/keymanager/base"
+	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/diskutil"
+	"github.com/accuknox/spire/pkg/common/util"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/hcl"
-	keymanagerv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/plugin/agent/keymanager/v1"
-	configv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/service/common/config/v1"
-	keymanagerbase "github.com/spiffe/spire/pkg/agent/plugin/keymanager/base"
-	"github.com/spiffe/spire/pkg/common/catalog"
-	"github.com/spiffe/spire/pkg/common/diskutil"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -36,7 +38,11 @@ func asBuiltIn(p *KeyManager) catalog.BuiltIn {
 }
 
 type configuration struct {
-	Directory string `hcl:"directory"`
+	Directory  string `hcl:"directory"`
+	UseSecret  bool   `hcl:"use_secret"`
+	Secret     string `hcl:"secret"`
+	Namespace  string `hcl:"namespace"`
+	MaxRetries int    `hcl:"max_retries"`
 }
 
 type KeyManager struct {
@@ -76,6 +82,18 @@ func (m *KeyManager) Configure(_ context.Context, req *configv1.ConfigureRequest
 		return nil, status.Errorf(codes.FailedPrecondition, "directory validation failed: %v", err)
 	}
 
+	if config.UseSecret {
+		if config.Secret == "" {
+			return nil, status.Error(codes.InvalidArgument, "secret must be configured")
+		}
+		if config.Namespace == "" {
+			return nil, status.Error(codes.InvalidArgument, "namespace must be configured")
+		}
+		if config.MaxRetries <= 0 {
+			config.MaxRetries = 3
+		}
+	}
+
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -89,7 +107,7 @@ func (m *KeyManager) Configure(_ context.Context, req *configv1.ConfigureRequest
 func (m *KeyManager) configure(config *configuration) error {
 	// Only load entry information on first configure
 	if m.config == nil {
-		if err := m.loadEntries(config.Directory); err != nil {
+		if err := m.loadEntries(config.Directory, config.Namespace, config.Secret, config.UseSecret, config.MaxRetries); err != nil {
 			return err
 		}
 	}
@@ -112,11 +130,45 @@ func (m *KeyManager) verifyDirectory(dir string) error {
 	return nil
 }
 
-func (m *KeyManager) loadEntries(dir string) error {
+func (m *KeyManager) loadEntries(dir, namespace, secret string, useSecret bool, maxRetries int) error {
 	// Load the entries from the keys file.
 	entries, err := loadEntries(keysPath(dir))
 	if err != nil {
 		return err
+	}
+
+	if entries == nil {
+		if useSecret {
+			entryBytes, err := util.LoadEntriesWithBackoff(namespace, secret, maxRetries)
+			if err != nil &&
+				!(errors.Is(err, util.ErrNoSecretFound) ||
+					errors.Is(err, util.ErrNoPKIFound)) {
+				return err
+			}
+			if len(entryBytes) > 0 {
+				entries, err = makeEntries(entryBytes)
+				if err != nil {
+					return err
+				}
+				err = writeEntries(keysPath(dir), entries)
+				if err != nil {
+					return err
+				}
+			}
+		}
+	} else {
+		if useSecret {
+			entryBytes, err := json.Marshal(entries)
+			if err != nil {
+				return err
+			}
+			if len(entryBytes) > 0 {
+				err = util.WriteEntriesWithBackoff(namespace, secret, maxRetries, entryBytes)
+				if err != nil {
+					return err
+				}
+			}
+		}
 	}
 
 	m.Base.SetEntries(entries)
@@ -132,7 +184,23 @@ func (m *KeyManager) writeEntries(_ context.Context, allEntries []*keymanagerbas
 		return status.Error(codes.FailedPrecondition, "not configured")
 	}
 
-	return writeEntries(keysPath(config.Directory), allEntries)
+	err := writeEntries(keysPath(config.Directory), allEntries)
+	if err != nil {
+		return err
+	}
+
+	if m.config.UseSecret {
+		entryBytes, err := marshalKeys(allEntries)
+		if err != nil {
+			return err
+		}
+		err = util.WriteEntriesWithBackoff(config.Namespace, config.Secret, config.MaxRetries, entryBytes)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+
 }
 
 type entriesData struct {
@@ -147,7 +215,51 @@ func loadEntries(path string) ([]*keymanagerbase.KeyEntry, error) {
 		}
 		return nil, err
 	}
+	entries, err := makeEntries(jsonBytes)
+	if err != nil {
+		return nil, err
+	}
+	return entries, nil
+}
 
+func writeEntries(path string, entries []*keymanagerbase.KeyEntry) error {
+	jsonBytes, err := marshalKeys(entries)
+	if err != nil {
+		return err
+	}
+
+	if err := diskutil.AtomicWritePrivateFile(path, jsonBytes); err != nil {
+		return status.Errorf(codes.Internal, "unable to write entries: %v", err)
+	}
+
+	return nil
+}
+
+func keysPath(dir string) string {
+	return filepath.Join(dir, "keys.json")
+}
+
+func marshalKeys(entries []*keymanagerbase.KeyEntry) ([]byte, error) {
+	data := &entriesData{
+		Keys: make(map[string][]byte),
+	}
+	for _, entry := range entries {
+		keyBytes, err := x509.MarshalPKCS8PrivateKey(entry.PrivateKey)
+		if err != nil {
+			return nil, err
+		}
+		data.Keys[entry.Id] = keyBytes
+	}
+
+	jsonBytes, err := json.MarshalIndent(data, "", "\t")
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "unable to marshal entries: %v", err)
+	}
+
+	return jsonBytes, nil
+}
+
+func makeEntries(jsonBytes []byte) ([]*keymanagerbase.KeyEntry, error) {
 	data := new(entriesData)
 	if err := json.Unmarshal(jsonBytes, data); err != nil {
 		return nil, status.Errorf(codes.Internal, "unable to decode keys JSON: %v", err)
@@ -166,32 +278,4 @@ func loadEntries(path string) ([]*keymanagerbase.KeyEntry, error) {
 		entries = append(entries, entry)
 	}
 	return entries, nil
-}
-
-func writeEntries(path string, entries []*keymanagerbase.KeyEntry) error {
-	data := &entriesData{
-		Keys: make(map[string][]byte),
-	}
-	for _, entry := range entries {
-		keyBytes, err := x509.MarshalPKCS8PrivateKey(entry.PrivateKey)
-		if err != nil {
-			return err
-		}
-		data.Keys[entry.Id] = keyBytes
-	}
-
-	jsonBytes, err := json.MarshalIndent(data, "", "\t")
-	if err != nil {
-		return status.Errorf(codes.Internal, "unable to marshal entries: %v", err)
-	}
-
-	if err := diskutil.AtomicWritePrivateFile(path, jsonBytes); err != nil {
-		return status.Errorf(codes.Internal, "unable to write entries: %v", err)
-	}
-
-	return nil
-}
-
-func keysPath(dir string) string {
-	return filepath.Join(dir, "keys.json")
 }

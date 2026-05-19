@@ -8,39 +8,42 @@ import (
 	_ "net/http/pprof" //nolint: gosec // import registers routes on DefaultServeMux
 	"net/url"
 	"runtime"
+	"strings"
 	"sync"
 	"time"
 
+	server_util "github.com/accuknox/spire/cmd/spire-server/util"
+	"github.com/accuknox/spire/pkg/common/diskutil"
+	"github.com/accuknox/spire/pkg/common/errorutil"
+	"github.com/accuknox/spire/pkg/common/health"
+	"github.com/accuknox/spire/pkg/common/profiling"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/uptime"
+	"github.com/accuknox/spire/pkg/common/util"
+	"github.com/accuknox/spire/pkg/common/version"
+	"github.com/accuknox/spire/pkg/server/authpolicy"
+	bundle_client "github.com/accuknox/spire/pkg/server/bundle/client"
+	ds_pubmanager "github.com/accuknox/spire/pkg/server/bundle/datastore"
+	"github.com/accuknox/spire/pkg/server/bundle/pubmanager"
+	"github.com/accuknox/spire/pkg/server/ca"
+	"github.com/accuknox/spire/pkg/server/ca/manager"
+	"github.com/accuknox/spire/pkg/server/ca/rotator"
+	"github.com/accuknox/spire/pkg/server/catalog"
+	"github.com/accuknox/spire/pkg/server/credtemplate"
+	"github.com/accuknox/spire/pkg/server/credvalidator"
+	"github.com/accuknox/spire/pkg/server/datastore"
+	"github.com/accuknox/spire/pkg/server/endpoints"
+	"github.com/accuknox/spire/pkg/server/hostservice/agentstore"
+	"github.com/accuknox/spire/pkg/server/hostservice/identityprovider"
+	"github.com/accuknox/spire/pkg/server/node"
+	"github.com/accuknox/spire/pkg/server/plugin/bundlepublisher"
+	"github.com/accuknox/spire/pkg/server/registration"
+	"github.com/accuknox/spire/pkg/server/svid"
+	"github.com/accuknox/spire/proto/spire/common"
 	"github.com/andres-erbsen/clock"
+	"github.com/hashicorp/hcl"
 	"github.com/sirupsen/logrus"
 	bundlev1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/bundle/v1"
-	server_util "github.com/spiffe/spire/cmd/spire-server/util"
-	"github.com/spiffe/spire/pkg/common/diskutil"
-	"github.com/spiffe/spire/pkg/common/errorutil"
-	"github.com/spiffe/spire/pkg/common/health"
-	"github.com/spiffe/spire/pkg/common/profiling"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/common/uptime"
-	"github.com/spiffe/spire/pkg/common/util"
-	"github.com/spiffe/spire/pkg/common/version"
-	"github.com/spiffe/spire/pkg/server/authpolicy"
-	bundle_client "github.com/spiffe/spire/pkg/server/bundle/client"
-	ds_pubmanager "github.com/spiffe/spire/pkg/server/bundle/datastore"
-	"github.com/spiffe/spire/pkg/server/bundle/pubmanager"
-	"github.com/spiffe/spire/pkg/server/ca"
-	"github.com/spiffe/spire/pkg/server/ca/manager"
-	"github.com/spiffe/spire/pkg/server/ca/rotator"
-	"github.com/spiffe/spire/pkg/server/catalog"
-	"github.com/spiffe/spire/pkg/server/credtemplate"
-	"github.com/spiffe/spire/pkg/server/credvalidator"
-	"github.com/spiffe/spire/pkg/server/datastore"
-	"github.com/spiffe/spire/pkg/server/endpoints"
-	"github.com/spiffe/spire/pkg/server/hostservice/agentstore"
-	"github.com/spiffe/spire/pkg/server/hostservice/identityprovider"
-	"github.com/spiffe/spire/pkg/server/node"
-	"github.com/spiffe/spire/pkg/server/plugin/bundlepublisher"
-	"github.com/spiffe/spire/pkg/server/registration"
-	"github.com/spiffe/spire/pkg/server/svid"
 	"google.golang.org/grpc"
 )
 
@@ -452,12 +455,52 @@ func (s *Server) newEndpointsServer(ctx context.Context, catalog catalog.Catalog
 		MaxAttestedNodeInfoStaleness: s.config.MaxAttestedNodeInfoStaleness,
 		AgentSpiffeIdAsSelector:      s.config.Experimental.AgentSpiffeIdAsSelector,
 	}
+	config.Entries = &common.RegistrationEntries{
+		Entries: make([]*common.RegistrationEntry, 0),
+	}
 	if s.config.Federation.BundleEndpoint != nil {
 		config.BundleEndpoint.Address = s.config.Federation.BundleEndpoint.Address
 		config.BundleEndpoint.RefreshHint = s.config.Federation.BundleEndpoint.RefreshHint
 		config.BundleEndpoint.ACME = s.config.Federation.BundleEndpoint.ACME
 		config.BundleEndpoint.DiskCertManager = s.config.Federation.BundleEndpoint.DiskCertManager
 	}
+
+	pluginCfg, ok := s.config.PluginConfigs.Find("NodeAttestor", "k8s_psat")
+	if ok {
+		data, err := pluginCfg.DataSource.Load()
+		if err == nil {
+			var cfg struct {
+				Entries []struct {
+					ID        string   `hcl:"id"`
+					Selectors []string `hcl:"selectors"`
+					JWTTTL    int32    `hcl:"jwt_ttl"`
+					X509TTL   int32    `hcl:"x509_ttl"`
+				} `hcl:"entries"`
+			}
+			if err := hcl.Decode(&cfg, data); err == nil {
+				for _, cfgEntry := range cfg.Entries {
+					if cfgEntry.ID != "" {
+						var entry = &common.RegistrationEntry{
+							SpiffeId:    cfgEntry.ID,
+							X509SvidTtl: cfgEntry.X509TTL,
+							JwtSvidTtl:  cfgEntry.JWTTTL,
+						}
+						for _, selector := range cfgEntry.Selectors {
+							splits := strings.Split(selector, ":")
+							if len(splits) > 2 {
+								entry.Selectors = append(entry.Selectors, &common.Selector{
+									Type:  splits[0],
+									Value: strings.Join(splits[1:], ":"),
+								})
+							}
+						}
+						config.Entries.Entries = append(config.Entries.Entries, entry)
+					}
+				}
+			}
+		}
+	}
+
 	return endpoints.New(ctx, config)
 }
 

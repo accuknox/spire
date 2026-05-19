@@ -1,13 +1,14 @@
 package catalog
 
 import (
-	"github.com/spiffe/spire/pkg/agent/plugin/workloadattestor"
-	"github.com/spiffe/spire/pkg/agent/plugin/workloadattestor/docker"
-	"github.com/spiffe/spire/pkg/agent/plugin/workloadattestor/k8s"
-	"github.com/spiffe/spire/pkg/agent/plugin/workloadattestor/systemd"
-	"github.com/spiffe/spire/pkg/agent/plugin/workloadattestor/unix"
-	"github.com/spiffe/spire/pkg/agent/plugin/workloadattestor/windows"
-	"github.com/spiffe/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor"
+	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor/docker"
+	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor/k8s"
+	k8ssat "github.com/accuknox/spire/pkg/agent/plugin/workloadattestor/k8s_sat"
+	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor/systemd"
+	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor/unix"
+	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor/windows"
+	"github.com/accuknox/spire/pkg/common/catalog"
 )
 
 type workloadAttestorRepository struct {
@@ -33,6 +34,7 @@ func (repo *workloadAttestorRepository) BuiltIns() []catalog.BuiltIn {
 		systemd.BuiltIn(),
 		unix.BuiltIn(),
 		windows.BuiltIn(),
+		k8ssat.BuiltIn(),
 	}
 }
 

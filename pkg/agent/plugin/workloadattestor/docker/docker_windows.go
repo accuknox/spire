@@ -3,9 +3,9 @@
 package docker
 
 import (
+	"github.com/accuknox/spire/pkg/common/container/process"
+	"github.com/accuknox/spire/pkg/common/pluginconf"
 	hclog "github.com/hashicorp/go-hclog"
-	"github.com/spiffe/spire/pkg/common/container/process"
-	"github.com/spiffe/spire/pkg/common/pluginconf"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

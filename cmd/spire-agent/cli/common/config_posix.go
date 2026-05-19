@@ -6,8 +6,10 @@ import (
 	"flag"
 	"net"
 
-	"github.com/spiffe/spire/pkg/common/util"
+	"github.com/accuknox/spire/pkg/common/util"
 )
+
+const DefaultServiceAccountTokenFile = "/var/run/secrets/kubernetes.io/serviceaccount/token"
 
 type ConfigOS struct {
 	socketPath string

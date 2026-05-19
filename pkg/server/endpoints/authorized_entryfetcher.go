@@ -6,14 +6,14 @@ import (
 	"sync"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/server/api"
+	"github.com/accuknox/spire/pkg/server/authorizedentries"
+	"github.com/accuknox/spire/pkg/server/cache/nodecache"
+	"github.com/accuknox/spire/pkg/server/datastore"
 	"github.com/andres-erbsen/clock"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/server/api"
-	"github.com/spiffe/spire/pkg/server/authorizedentries"
-	"github.com/spiffe/spire/pkg/server/cache/nodecache"
-	"github.com/spiffe/spire/pkg/server/datastore"
 )
 
 var _ api.AuthorizedEntryFetcher = (*AuthorizedEntryFetcherEvents)(nil)

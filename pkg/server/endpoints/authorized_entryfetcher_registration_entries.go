@@ -8,13 +8,13 @@ import (
 	"slices"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	server_telemetry "github.com/accuknox/spire/pkg/common/telemetry/server"
+	"github.com/accuknox/spire/pkg/server/api"
+	"github.com/accuknox/spire/pkg/server/authorizedentries"
+	"github.com/accuknox/spire/pkg/server/datastore"
 	"github.com/andres-erbsen/clock"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	server_telemetry "github.com/spiffe/spire/pkg/common/telemetry/server"
-	"github.com/spiffe/spire/pkg/server/api"
-	"github.com/spiffe/spire/pkg/server/authorizedentries"
-	"github.com/spiffe/spire/pkg/server/datastore"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

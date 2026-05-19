@@ -4,7 +4,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/spiffe/spire/pkg/common/diskcertmanager"
+	"github.com/accuknox/spire/pkg/common/diskcertmanager"
 )
 
 type EndpointConfig struct {

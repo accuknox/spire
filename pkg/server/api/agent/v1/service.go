@@ -7,25 +7,25 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/errorutil"
+	"github.com/accuknox/spire/pkg/common/idutil"
+	"github.com/accuknox/spire/pkg/common/nodeutil"
+	"github.com/accuknox/spire/pkg/common/selector"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/pkg/common/x509util"
+	"github.com/accuknox/spire/pkg/server/api"
+	"github.com/accuknox/spire/pkg/server/api/rpccontext"
+	"github.com/accuknox/spire/pkg/server/ca"
+	"github.com/accuknox/spire/pkg/server/catalog"
+	"github.com/accuknox/spire/pkg/server/datastore"
+	"github.com/accuknox/spire/pkg/server/plugin/nodeattestor"
+	"github.com/accuknox/spire/proto/spire/common"
 	"github.com/andres-erbsen/clock"
 	"github.com/gofrs/uuid/v5"
 	"github.com/sirupsen/logrus"
-	"github.com/spiffe/go-spiffe/v2/spiffeid"
 	agentv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/agent/v1"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"github.com/spiffe/spire/pkg/common/errorutil"
-	"github.com/spiffe/spire/pkg/common/idutil"
-	"github.com/spiffe/spire/pkg/common/nodeutil"
-	"github.com/spiffe/spire/pkg/common/selector"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/pkg/common/x509util"
-	"github.com/spiffe/spire/pkg/server/api"
-	"github.com/spiffe/spire/pkg/server/api/rpccontext"
-	"github.com/spiffe/spire/pkg/server/ca"
-	"github.com/spiffe/spire/pkg/server/catalog"
-	"github.com/spiffe/spire/pkg/server/datastore"
-	"github.com/spiffe/spire/pkg/server/plugin/nodeattestor"
-	"github.com/spiffe/spire/proto/spire/common"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/peer"
@@ -39,8 +39,10 @@ type Config struct {
 	Clock                   clock.Clock
 	DataStore               datastore.DataStore
 	ServerCA                ca.ServerCA
+	AgentTTL                time.Duration
 	TrustDomain             spiffeid.TrustDomain
 	AgentSpiffeIdAsSelector bool
+	Entries                 *common.RegistrationEntries
 }
 
 // Service implements the v1 agent service
@@ -53,6 +55,7 @@ type Service struct {
 	ca                      ca.ServerCA
 	td                      spiffeid.TrustDomain
 	AgentSpiffeIdAsSelector bool
+	entries                 *common.RegistrationEntries
 }
 
 // New creates a new agent service
@@ -64,6 +67,7 @@ func New(config Config) *Service {
 		ca:                      config.ServerCA,
 		td:                      config.TrustDomain,
 		AgentSpiffeIdAsSelector: config.AgentSpiffeIdAsSelector,
+		entries:                 config.Entries,
 	}
 }
 
@@ -409,6 +413,17 @@ func (s *Service) AttestAgent(stream agentv1.Agent_AttestAgentServer) error {
 		log = log.WithField(telemetry.Address, p.Addr.String())
 	}
 	log.Info("Agent attestation request completed")
+
+	for _, entry := range s.entries.Entries {
+		entry.ParentId = attestResult.AgentID
+		_, existing, err := s.ds.CreateOrReturnRegistrationEntry(ctx, entry)
+		if err != nil {
+			log.WithError(err).Errorf("Failed to create entry for %v", entry.SpiffeId)
+		}
+		if existing {
+			log.Infof("Entry already exisit for %v", entry.SpiffeId)
+		}
+	}
 
 	if err := stream.Send(response); err != nil {
 		return api.MakeErr(log, codes.Internal, "failed to send response over stream", err)

@@ -80,8 +80,8 @@ The following steps must be completed by the primary on-call maintainer to perfo
 
 SPIRE has two SDK repositories:
 
-* [API SDK](https://github.com/spiffe/spire-api-sdk)
-* [Plugin SDK](https://github.com/spiffe/spire-plugin-sdk)
+* [API SDK](https://github.com/accuknox/spire-api-sdk)
+* [Plugin SDK](https://github.com/accuknox/spire-plugin-sdk)
 
 SPIRE consumes these SDKs using pseudo-versions from the `next` branch in each SDK repository. This allows unreleased changes to be reviewed, merged, and consumed by SPIRE.
 

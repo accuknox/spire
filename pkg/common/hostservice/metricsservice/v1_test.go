@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	metricsv1 "github.com/spiffe/spire-plugin-sdk/proto/spire/hostservice/common/metrics/v1"
-	"github.com/spiffe/spire/pkg/common/telemetry"
-	"github.com/spiffe/spire/test/fakes/fakemetrics"
+	metricsv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/hostservice/common/metrics/v1"
+	"github.com/accuknox/spire/pkg/common/telemetry"
+	"github.com/accuknox/spire/test/fakes/fakemetrics"
 	"github.com/stretchr/testify/assert"
 )
 

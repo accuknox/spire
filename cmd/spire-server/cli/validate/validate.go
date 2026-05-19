@@ -5,11 +5,11 @@ import (
 	"io"
 	"time"
 
+	"github.com/accuknox/spire/cmd/spire-server/cli/run"
+	commoncli "github.com/accuknox/spire/pkg/common/cli"
+	"github.com/accuknox/spire/pkg/common/log"
+	"github.com/accuknox/spire/pkg/server"
 	"github.com/mitchellh/cli"
-	"github.com/spiffe/spire/cmd/spire-server/cli/run"
-	commoncli "github.com/spiffe/spire/pkg/common/cli"
-	"github.com/spiffe/spire/pkg/common/log"
-	"github.com/spiffe/spire/pkg/server"
 )
 
 const (
