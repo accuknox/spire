@@ -320,6 +320,16 @@ func migrateDB(db *gorm.DB, dbType string, disableMigration bool, log logrus.Fie
 
 	schemaVersion := migration.Version
 
+	if schemaVersion <= 21 {
+		if err := migrateToV23(db); err != nil {
+			return newWrappedSQLError(err)
+		}
+		if err := db.Assign(Migration{}).FirstOrCreate(migration).Error; err != nil {
+			return newWrappedSQLError(err)
+		}
+		schemaVersion = migration.Version
+	}
+
 	log = log.WithField(telemetry.Schema, strconv.Itoa(schemaVersion))
 
 	dbCodeVersion, err := getDBCodeVersion(*migration)
@@ -551,4 +561,34 @@ func addFederatedRegistrationEntriesRegisteredEntryIDIndex(tx *gorm.DB) error {
 		return newWrappedSQLError(err)
 	}
 	return nil
+}
+
+func migrateToV23(tx *gorm.DB) error {
+	// v22 migration
+	if err := tx.AutoMigrate(
+		&RegisteredEntryEvent{},
+		&AttestedNodeEvent{},
+	).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	// v23 migration
+	if err := tx.AutoMigrate(
+		&CAJournal{},
+	).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	// update schema version
+	if err := tx.Model(&Migration{}).Updates(Migration{
+		Version:     23,
+		CodeVersion: "1.8.0-dev-unk",
+	}).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit().Error
 }
