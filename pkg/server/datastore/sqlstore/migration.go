@@ -569,7 +569,6 @@ func migrateToV23(tx *gorm.DB) error {
 		&RegisteredEntryEvent{},
 		&AttestedNodeEvent{},
 	).Error; err != nil {
-		tx.Rollback()
 		return err
 	}
 
@@ -577,7 +576,6 @@ func migrateToV23(tx *gorm.DB) error {
 	if err := tx.AutoMigrate(
 		&CAJournal{},
 	).Error; err != nil {
-		tx.Rollback()
 		return err
 	}
 
@@ -586,9 +584,8 @@ func migrateToV23(tx *gorm.DB) error {
 		Version:     23,
 		CodeVersion: "1.8.0-dev-unk",
 	}).Error; err != nil {
-		tx.Rollback()
 		return err
 	}
 
-	return tx.Commit().Error
+	return nil
 }
