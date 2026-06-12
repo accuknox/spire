@@ -3,3 +3,8 @@
 # CVE-2026-34040 is not applicable to spire,
 # because it doesn't use AuthZ plugin from Moby
 CVE-2026-34040
+
+# docker package is not being used to 
+# create containers or run services
+CVE-2026-41567
+CVE-2026-42306
