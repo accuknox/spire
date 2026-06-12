@@ -54,8 +54,10 @@ func loadDataFromK8S(namespace, secretname string) (storageData, time.Time, erro
 }
 
 func getAgentData(secretData map[string][]byte) (storageData, time.Time, error) {
-	var data storageData
-	var timeByte, dataByte, versionByte []byte
+	var (
+		data                            storageData
+		timeByte, dataByte, versionByte []byte
+	)
 	for key, value := range secretData {
 		if key == "agent-data" {
 			dataByte = value
@@ -67,6 +69,12 @@ func getAgentData(secretData map[string][]byte) (storageData, time.Time, error) 
 			versionByte = value
 		}
 	}
+
+	if dataByte == nil {
+		log.Warn("no agent data found")
+		return storageData{}, time.Time{}, nil
+	}
+
 	err := json.Unmarshal(dataByte, &data)
 	if err != nil {
 		return storageData{}, time.Time{}, fmt.Errorf("failed to unmarshal data: %w", err)

@@ -1,4 +1,15 @@
-FROM ubuntu:xenial
-WORKDIR /spire
-RUN apt-get update && apt-get -y install \
-    curl unzip git build-essential ca-certificates libssl-dev
+FROM debian:bookworm-slim
+WORKDIR /opt/spire/bin/
+ARG spireuid=0
+ARG spiregid=0
+USER ${spireuid}:${spiregid}
+COPY bin .
+WORKDIR /config/plugin
+COPY bin .
+RUN apt-get update && \
+    apt-get install -y \
+    ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+ENTRYPOINT ["/opt/spire/bin/spire-agent", "run"]
+
+# need to change entrypoint to spire-server if testing server
