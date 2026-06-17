@@ -414,14 +414,17 @@ func (s *Service) AttestAgent(stream agentv1.Agent_AttestAgentServer) error {
 	}
 	log.Info("Agent attestation request completed")
 
-	for _, entry := range s.entries.Entries {
-		entry.ParentId = attestResult.AgentID
-		_, existing, err := s.ds.CreateOrReturnRegistrationEntry(ctx, entry)
-		if err != nil {
-			log.WithError(err).Errorf("Failed to create entry for %v", entry.SpiffeId)
-		}
-		if existing {
-			log.Infof("Entry already exisit for %v", entry.SpiffeId)
+	if params.Data.Type == "k8s_psat" {
+
+		for _, entry := range s.entries.Entries {
+			entry.ParentId = attestResult.AgentID
+			_, existing, err := s.ds.CreateOrReturnRegistrationEntry(ctx, entry)
+			if err != nil {
+				log.WithError(err).Errorf("Failed to create entry for %v", entry.SpiffeId)
+			}
+			if existing {
+				log.Infof("Entry already exist for %v", entry.SpiffeId)
+			}
 		}
 	}
 
