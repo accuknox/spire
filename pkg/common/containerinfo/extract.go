@@ -131,7 +131,7 @@ func (e *Extractor) extractPodUIDAndContainerIDFromMountInfo(pid int32, log hclo
 }
 
 func (e *Extractor) extractPodUIDAndContainerIDFromCGroups(pid int32, log hclog.Logger, extractPodUID bool) (types.UID, string, error) {
-	cgroups, err := cgroups.GetCgroups(pid, dirFS(e.RootDir))
+	cgroups, err := cgroups.GetCgroups(pid, os.DirFS(e.RootDir))
 	if err != nil {
 		if errors.Is(err, fs.ErrNotExist) {
 			return "", "", nil
