@@ -10,7 +10,7 @@ import (
 
 	"github.com/accuknox/spire/pkg/agent/plugin/workloadattestor/docker/cgroup"
 	"github.com/accuknox/spire/test/spiretest"
-	dockerclient "github.com/docker/docker/client"
+	dockerclient "github.com/moby/moby/client"
 	"github.com/stretchr/testify/require"
 )
 
