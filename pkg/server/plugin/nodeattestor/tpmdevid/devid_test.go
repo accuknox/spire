@@ -24,7 +24,7 @@ import (
 	"github.com/accuknox/spire/proto/spire/common"
 	"github.com/accuknox/spire/test/plugintest"
 	"github.com/accuknox/spire/test/tpmsimulator"
-	"github.com/google/go-tpm/tpm2"
+	"github.com/google/go-tpm/legacy/tpm2"
 	"github.com/hashicorp/go-hclog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

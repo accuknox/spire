@@ -9,8 +9,8 @@ import (
 	"fmt"
 
 	devid "github.com/accuknox/spire/pkg/common/plugin/tpmdevid"
-	"github.com/google/go-tpm/tpm2"
-	"github.com/google/go-tpm/tpm2/credactivation"
+	"github.com/google/go-tpm/legacy/tpm2"
+	"github.com/google/go-tpm/legacy/tpm2/credactivation"
 )
 
 func newNonce(size int) ([]byte, error) {

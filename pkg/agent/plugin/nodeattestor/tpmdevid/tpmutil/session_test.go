@@ -15,7 +15,7 @@ import (
 	server_devid "github.com/accuknox/spire/pkg/server/plugin/nodeattestor/tpmdevid"
 	"github.com/accuknox/spire/test/tpmsimulator"
 	"github.com/google/go-tpm-tools/client"
-	"github.com/google/go-tpm/tpm2"
+	"github.com/google/go-tpm/legacy/tpm2"
 	"github.com/hashicorp/go-hclog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

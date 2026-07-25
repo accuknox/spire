@@ -18,7 +18,7 @@ import (
 	"github.com/accuknox/spire/pkg/common/idutil"
 	common_devid "github.com/accuknox/spire/pkg/common/plugin/tpmdevid"
 	"github.com/accuknox/spire/pkg/common/util"
-	"github.com/google/go-tpm/tpm2"
+	"github.com/google/go-tpm/legacy/tpm2"
 	"github.com/hashicorp/hcl"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

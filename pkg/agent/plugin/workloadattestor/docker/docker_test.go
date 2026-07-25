@@ -11,9 +11,8 @@ import (
 	"github.com/accuknox/spire/test/clock"
 	"github.com/accuknox/spire/test/plugintest"
 	"github.com/accuknox/spire/test/spiretest"
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
-	dockerclient "github.com/docker/docker/client"
+	"github.com/moby/moby/api/types/container"
+	dockerclient "github.com/moby/moby/client"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 )
@@ -259,18 +258,28 @@ func newTestPlugin(t *testing.T, opts ...testPluginOpt) *Plugin {
 
 type dockerError struct{}
 
-func (dockerError) ContainerInspect(ctx context.Context, containerID string) (types.ContainerJSON, error) {
-	return types.ContainerJSON{}, errors.New("docker error")
+func (dockerError) ContainerInspect(ctx context.Context, containerID string, options dockerclient.ContainerInspectOptions) (dockerclient.ContainerInspectResult, error) {
+	return dockerclient.ContainerInspectResult{}, errors.New("docker error")
+}
+
+func (dockerError) ImageInspect(ctx context.Context, imageID string, inspectOpts ...dockerclient.ImageInspectOption) (dockerclient.ImageInspectResult, error) {
+	return dockerclient.ImageInspectResult{}, errors.New("docker error")
 }
 
 type fakeContainer container.Config
 
-func (f fakeContainer) ContainerInspect(ctx context.Context, containerID string) (types.ContainerJSON, error) {
+func (f fakeContainer) ContainerInspect(ctx context.Context, containerID string, options dockerclient.ContainerInspectOptions) (dockerclient.ContainerInspectResult, error) {
 	if containerID != testContainerID {
-		return types.ContainerJSON{}, errors.New("expected test container ID")
+		return dockerclient.ContainerInspectResult{}, errors.New("expected test container ID")
 	}
 	config := container.Config(f)
-	return types.ContainerJSON{
-		Config: &config,
+	return dockerclient.ContainerInspectResult{
+		Container: container.InspectResponse{
+			Config: &config,
+		},
 	}, nil
+}
+
+func (f fakeContainer) ImageInspect(ctx context.Context, imageID string, inspectOpts ...dockerclient.ImageInspectOption) (dockerclient.ImageInspectResult, error) {
+	return dockerclient.ImageInspectResult{}, nil
 }
