@@ -19,7 +19,7 @@ import (
 	"github.com/accuknox/spire/pkg/common/pemutil"
 	"github.com/google/go-tpm-tools/client"
 	"github.com/google/go-tpm-tools/simulator"
-	"github.com/google/go-tpm/tpm2"
+	"github.com/google/go-tpm/legacy/tpm2"
 )
 
 var (

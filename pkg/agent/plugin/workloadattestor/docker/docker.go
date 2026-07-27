@@ -9,20 +9,20 @@ import (
 	workloadattestorv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/agent/workloadattestor/v1"
 	configv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/service/common/config/v1"
 	"github.com/accuknox/spire/pkg/common/catalog"
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
-	dockerclient "github.com/docker/docker/client"
 	hclog "github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/hcl"
+	"github.com/moby/moby/api/types/container"
+	dockerclient "github.com/moby/moby/client"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 const (
-	pluginName         = "docker"
-	subselectorLabel   = "label"
-	subselectorImageID = "image_id"
-	subselectorEnv     = "env"
+	pluginName                   = "docker"
+	subselectorLabel             = "label"
+	subselectorImageID           = "image_id"
+	subselectorEnv               = "env"
+	subselectorImageConfigDigest = "image_config_digest"
 )
 
 func BuiltIn() catalog.BuiltIn {
@@ -38,7 +38,8 @@ func builtin(p *Plugin) catalog.BuiltIn {
 
 // Docker is a subset of the docker client functionality, useful for mocking.
 type Docker interface {
-	ContainerInspect(ctx context.Context, containerID string) (types.ContainerJSON, error)
+	ContainerInspect(ctx context.Context, containerID string, options dockerclient.ContainerInspectOptions) (dockerclient.ContainerInspectResult, error)
+	ImageInspect(ctx context.Context, imageID string, inspectOpts ...dockerclient.ImageInspectOption) (dockerclient.ImageInspectResult, error)
 }
 
 type Plugin struct {
@@ -85,9 +86,9 @@ func (p *Plugin) Attest(ctx context.Context, req *workloadattestorv1.AttestReque
 		return &workloadattestorv1.AttestResponse{}, nil
 	}
 
-	var container types.ContainerJSON
+	var containerResult dockerclient.ContainerInspectResult
 	err = p.retryer.Retry(ctx, func() error {
-		container, err = p.docker.ContainerInspect(ctx, containerID)
+		containerResult, err = p.docker.ContainerInspect(ctx, containerID, dockerclient.ContainerInspectOptions{})
 		if err != nil {
 			return err
 		}
@@ -97,8 +98,22 @@ func (p *Plugin) Attest(ctx context.Context, req *workloadattestorv1.AttestReque
 		return nil, err
 	}
 
+	selectors := getSelectorValuesFromConfig(containerResult.Container.Config)
+
+	var imageJSON dockerclient.ImageInspectResult
+	var inspectErr error
+	imageName := containerResult.Container.Config.Image
+	if imageName != "" {
+		imageJSON, inspectErr = p.docker.ImageInspect(ctx, imageName)
+	}
+
+	// Add image_config_digest selector
+	if inspectErr == nil && imageJSON.ID != "" {
+		selectors = append(selectors, fmt.Sprintf("%s:%s", subselectorImageConfigDigest, imageJSON.ID))
+	}
+
 	return &workloadattestorv1.AttestResponse{
-		SelectorValues: getSelectorValuesFromConfig(container.Config),
+		SelectorValues: selectors,
 	}, nil
 }
 
@@ -137,14 +152,12 @@ func (p *Plugin) Configure(ctx context.Context, req *configv1.ConfigureRequest) 
 	if dockerHost != "" {
 		opts = append(opts, dockerclient.WithHost(dockerHost))
 	}
-	switch {
-	case config.DockerVersion != "":
-		opts = append(opts, dockerclient.WithVersion(config.DockerVersion))
-	default:
-		opts = append(opts, dockerclient.WithAPIVersionNegotiation())
+
+	if config.DockerVersion != "" {
+		opts = append(opts, dockerclient.WithAPIVersion(config.DockerVersion))
 	}
 
-	docker, err := dockerclient.NewClientWithOpts(opts...)
+	docker, err := dockerclient.New(opts...)
 	if err != nil {
 		return nil, err
 	}
