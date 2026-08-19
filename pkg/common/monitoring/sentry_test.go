@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
+	spirelog "github.com/accuknox/spire/pkg/common/log"
 	"github.com/getsentry/sentry-go"
 	"github.com/sirupsen/logrus"
-	spirelog "github.com/spiffe/spire/pkg/common/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
