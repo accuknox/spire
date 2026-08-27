@@ -25,10 +25,10 @@ import (
 	"github.com/accuknox/spire/proto/spire/common"
 	"github.com/accuknox/spire/test/plugintest"
 	"github.com/accuknox/spire/test/spiretest"
+	jose "github.com/go-jose/go-jose/v4"
+	"github.com/go-jose/go-jose/v4/jwt"
 	"github.com/google/go-cmp/cmp"
 	"google.golang.org/grpc/codes"
-	jose "gopkg.in/square/go-jose.v2"
-	"gopkg.in/square/go-jose.v2/jwt"
 	authv1 "k8s.io/api/authentication/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -410,7 +410,7 @@ func (s *AttestorSuite) signToken(signer jose.Signer, tokenData *TokenData) stri
 	builder := jwt.Signed(signer)
 	builder = builder.Claims(claims)
 
-	token, err := builder.CompactSerialize()
+	token, err := builder.Serialize()
 	s.Require().NoError(err)
 	return token
 }

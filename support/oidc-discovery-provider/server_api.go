@@ -8,13 +8,13 @@ import (
 
 	"github.com/accuknox/spire/pkg/common/util"
 	"github.com/andres-erbsen/clock"
+	"github.com/go-jose/go-jose/v4"
 	"github.com/sirupsen/logrus"
 	bundlev1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/bundle/v1"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
 	"github.com/zeebo/errs"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/proto"
-	"gopkg.in/square/go-jose.v2"
 )
 
 const (

@@ -21,10 +21,10 @@ import (
 	"github.com/accuknox/spire/pkg/server/plugin/credentialcomposer"
 	"github.com/accuknox/spire/test/clock"
 	"github.com/accuknox/spire/test/testkey"
+	"github.com/go-jose/go-jose/v4"
+	"github.com/go-jose/go-jose/v4/jwt"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"gopkg.in/square/go-jose.v2"
-	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 var (
@@ -1579,7 +1579,7 @@ func makeJWT(t *testing.T, claims interface{}) string {
 	signer, err := jose.NewSigner(signingKey, nil)
 	require.NoError(t, err)
 
-	token, err := jwt.Signed(signer).Claims(claims).CompactSerialize()
+	token, err := jwt.Signed(signer).Claims(claims).Serialize()
 	require.NoError(t, err)
 	return token
 }

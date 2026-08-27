@@ -62,8 +62,9 @@ import (
 	"sync"
 	"time"
 
+	"github.com/accuknox/spire/pkg/common/jwtsvid"
+	"github.com/go-jose/go-jose/v4"
 	"golang.org/x/crypto/acme"
-	"gopkg.in/square/go-jose.v2"
 )
 
 // CAServer is a simple test server which implements ACME spec bits needed for testing.
@@ -585,7 +586,7 @@ func (ca *CAServer) decodePayload(v interface{}, r io.Reader) error {
 	if _, err := buf.ReadFrom(r); err != nil {
 		return errors.New("unable to read JOSE body")
 	}
-	jws, err := jose.ParseSigned(buf.String())
+	jws, err := jose.ParseSigned(buf.String(), jwtsvid.AllowedSignatureAlgorithms)
 	if err != nil {
 		return errors.New("malformed JOSE body")
 	}

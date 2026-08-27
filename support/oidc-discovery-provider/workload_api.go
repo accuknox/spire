@@ -14,9 +14,9 @@ import (
 	"github.com/accuknox/spire/pkg/common/telemetry"
 	"github.com/accuknox/spire/pkg/common/util"
 	"github.com/andres-erbsen/clock"
+	"github.com/go-jose/go-jose/v4"
 	"github.com/sirupsen/logrus"
 	"github.com/zeebo/errs"
-	"gopkg.in/square/go-jose.v2"
 )
 
 const (

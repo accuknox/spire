@@ -8,10 +8,10 @@ import (
 	"github.com/accuknox/go-spiffe/v2/spiffeid"
 	"github.com/accuknox/spire/pkg/common/cryptoutil"
 	"github.com/andres-erbsen/clock"
+	"github.com/go-jose/go-jose/v4"
+	"github.com/go-jose/go-jose/v4/cryptosigner"
+	"github.com/go-jose/go-jose/v4/jwt"
 	"github.com/zeebo/errs"
-	"gopkg.in/square/go-jose.v2"
-	"gopkg.in/square/go-jose.v2/cryptosigner"
-	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 type SignerConfig struct {
@@ -23,6 +23,18 @@ type SignerConfig struct {
 
 type Signer struct {
 	c SignerConfig
+}
+
+var AllowedSignatureAlgorithms = []jose.SignatureAlgorithm{
+	jose.ES256,
+	jose.ES384,
+	jose.ES512,
+	jose.RS256,
+	jose.RS384,
+	jose.RS512,
+	jose.PS256,
+	jose.PS384,
+	jose.PS512,
 }
 
 func NewSigner(config SignerConfig) *Signer {
@@ -77,7 +89,7 @@ func (s *Signer) SignToken(id spiffeid.ID, audience []string, expires time.Time,
 		return "", errs.Wrap(err)
 	}
 
-	signedToken, err := jwt.Signed(jwtSigner).Claims(claims).CompactSerialize()
+	signedToken, err := jwt.Signed(jwtSigner).Claims(claims).Serialize()
 	if err != nil {
 		return "", errs.Wrap(err)
 	}

@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	"github.com/accuknox/spire/test/testkey"
+	"github.com/go-jose/go-jose/v4"
 	"github.com/stretchr/testify/require"
-	"gopkg.in/square/go-jose.v2"
 )
 
 func TestJoseAlgFromPublicKey(t *testing.T) {

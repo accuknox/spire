@@ -3,11 +3,12 @@ package k8s
 import (
 	"testing"
 
+	"github.com/accuknox/spire/pkg/common/jwtsvid"
 	"github.com/stretchr/testify/assert"
 	authv1 "k8s.io/api/authentication/v1"
 
+	"github.com/go-jose/go-jose/v4/jwt"
 	"github.com/stretchr/testify/require"
-	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 const (
@@ -16,7 +17,7 @@ const (
 )
 
 func TestSATClaims(t *testing.T) {
-	token, err := jwt.ParseSigned(rawSAT)
+	token, err := jwt.ParseSigned(rawSAT, jwtsvid.AllowedSignatureAlgorithms)
 	require.NoError(t, err)
 
 	claims := new(SATClaims)
@@ -29,7 +30,7 @@ func TestSATClaims(t *testing.T) {
 }
 
 func TestPSATClaims(t *testing.T) {
-	token, err := jwt.ParseSigned(rawPSAT)
+	token, err := jwt.ParseSigned(rawPSAT, jwtsvid.AllowedSignatureAlgorithms)
 	require.NoError(t, err)
 
 	claims := new(PSATClaims)

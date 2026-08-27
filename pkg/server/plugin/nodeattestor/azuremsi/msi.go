@@ -20,14 +20,15 @@ import (
 	configv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/service/common/config/v1"
 	"github.com/accuknox/spire/pkg/common/agentpathtemplate"
 	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/jwtsvid"
 	"github.com/accuknox/spire/pkg/common/jwtutil"
 	"github.com/accuknox/spire/pkg/common/plugin/azure"
 	nodeattestorbase "github.com/accuknox/spire/pkg/server/plugin/nodeattestor/base"
+	"github.com/go-jose/go-jose/v4/jwt"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/hcl"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 const (
@@ -152,7 +153,7 @@ func (p *MSIAttestorPlugin) Attest(stream nodeattestorv1.NodeAttestor_AttestServ
 		return status.Errorf(codes.Internal, "unable to obtain JWKS: %v", err)
 	}
 
-	token, err := jwt.ParseSigned(attestationData.Token)
+	token, err := jwt.ParseSigned(attestationData.Token, jwtsvid.AllowedSignatureAlgorithms)
 	if err != nil {
 		return status.Errorf(codes.InvalidArgument, "unable to parse token: %v", err)
 	}
@@ -196,8 +197,8 @@ func (p *MSIAttestorPlugin) Attest(stream nodeattestorv1.NodeAttestor_AttestServ
 	}
 
 	if err := claims.ValidateWithLeeway(jwt.Expected{
-		Audience: []string{tenant.resourceID},
-		Time:     p.hooks.now(),
+		AnyAudience: []string{tenant.resourceID},
+		Time:        p.hooks.now(),
 	}, tokenLeeway); err != nil {
 		return status.Errorf(codes.Internal, "unable to validate token claims: %v", err)
 	}

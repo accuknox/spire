@@ -7,7 +7,7 @@ import (
 	"path"
 	"strings"
 
-	"gopkg.in/square/go-jose.v2/jwt"
+	"github.com/go-jose/go-jose/v4/jwt"
 	authv1 "k8s.io/api/authentication/v1"
 )
 

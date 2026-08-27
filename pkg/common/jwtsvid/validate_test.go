@@ -11,10 +11,10 @@ import (
 	"github.com/accuknox/spire/test/clock"
 	"github.com/accuknox/spire/test/spiretest"
 	"github.com/accuknox/spire/test/testkey"
+	"github.com/go-jose/go-jose/v4"
+	"github.com/go-jose/go-jose/v4/cryptosigner"
+	"github.com/go-jose/go-jose/v4/jwt"
 	"github.com/stretchr/testify/require"
-	"gopkg.in/square/go-jose.v2"
-	"gopkg.in/square/go-jose.v2/cryptosigner"
-	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 var (
@@ -193,7 +193,7 @@ func (s *TokenSuite) signToken(alg jose.SignatureAlgorithm, key interface{}, cla
 		}, nil)
 	s.Require().NoError(err)
 
-	token, err := jwt.Signed(signer).Claims(claims).CompactSerialize()
+	token, err := jwt.Signed(signer).Claims(claims).Serialize()
 	s.Require().NoError(err)
 	return token
 }
@@ -221,7 +221,7 @@ func (s *TokenSuite) signJWTSVID(id spiffeid.ID, audience []string, expires time
 	)
 	s.Require().NoError(err)
 
-	signedToken, err := jwt.Signed(jwtSigner).Claims(claims).CompactSerialize()
+	signedToken, err := jwt.Signed(jwtSigner).Claims(claims).Serialize()
 	s.Require().NoError(err)
 	return signedToken
 }

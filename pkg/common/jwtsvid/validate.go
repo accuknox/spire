@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/go-jose/go-jose/v4"
+	"github.com/go-jose/go-jose/v4/jwt"
 	"github.com/zeebo/errs"
-	"gopkg.in/square/go-jose.v2"
-	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 type KeyStore interface {
@@ -40,7 +40,7 @@ func (t *keyStore) FindPublicKey(ctx context.Context, td spiffeid.TrustDomain, k
 }
 
 func ValidateToken(ctx context.Context, token string, keyStore KeyStore, audience []string) (spiffeid.ID, map[string]interface{}, error) {
-	tok, err := jwt.ParseSigned(token)
+	tok, err := jwt.ParseSigned(token, AllowedSignatureAlgorithms)
 	if err != nil {
 		return spiffeid.ID{}, nil, errs.New("unable to parse JWT token")
 	}
@@ -95,8 +95,8 @@ func ValidateToken(ctx context.Context, token string, keyStore KeyStore, audienc
 	// Now that the signature over the claims has been verified, validate the
 	// standard claims.
 	if err := claims.Validate(jwt.Expected{
-		Audience: audience,
-		Time:     time.Now(),
+		AnyAudience: audience,
+		Time:        time.Now(),
 	}); err != nil {
 		// Convert expected validation errors for pretty errors
 		switch {

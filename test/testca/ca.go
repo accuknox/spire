@@ -22,10 +22,10 @@ import (
 	"github.com/accuknox/go-spiffe/v2/svid/x509svid"
 	"github.com/accuknox/spire/pkg/common/util"
 	"github.com/accuknox/spire/test/testkey"
+	"github.com/go-jose/go-jose/v4"
+	"github.com/go-jose/go-jose/v4/cryptosigner"
+	"github.com/go-jose/go-jose/v4/jwt"
 	"github.com/stretchr/testify/require"
-	"gopkg.in/square/go-jose.v2"
-	"gopkg.in/square/go-jose.v2/cryptosigner"
-	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 var (
@@ -111,7 +111,7 @@ func (ca *CA) CreateJWTSVID(id spiffeid.ID, audience []string) *jwtsvid.SVID {
 	)
 	require.NoError(ca.tb, err)
 
-	signedToken, err := jwt.Signed(jwtSigner).Claims(claims).CompactSerialize()
+	signedToken, err := jwt.Signed(jwtSigner).Claims(claims).Serialize()
 	require.NoError(ca.tb, err)
 
 	svid, err := jwtsvid.ParseInsecure(signedToken, audience)

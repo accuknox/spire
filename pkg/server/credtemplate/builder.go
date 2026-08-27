@@ -13,12 +13,13 @@ import (
 
 	"github.com/accuknox/go-spiffe/v2/spiffeid"
 	"github.com/accuknox/spire/pkg/common/idutil"
+	"github.com/accuknox/spire/pkg/common/jwtsvid"
 	"github.com/accuknox/spire/pkg/common/x509svid"
 	"github.com/accuknox/spire/pkg/common/x509util"
 	"github.com/accuknox/spire/pkg/server/api"
 	"github.com/accuknox/spire/pkg/server/plugin/credentialcomposer"
 	"github.com/andres-erbsen/clock"
-	"gopkg.in/square/go-jose.v2/jwt"
+	"github.com/go-jose/go-jose/v4/jwt"
 )
 
 const (
@@ -457,7 +458,7 @@ func (b *Builder) ValidateX509SVID(svid *x509.Certificate, id spiffeid.ID) error
 }
 
 func (b *Builder) ValidateWorkloadJWTSVID(rawToken string, id spiffeid.ID) error {
-	token, err := jwt.ParseSigned(rawToken)
+	token, err := jwt.ParseSigned(rawToken, jwtsvid.AllowedSignatureAlgorithms)
 	if err != nil {
 		return fmt.Errorf("failed to parse JWT-SVID for validation: %w", err)
 	}

@@ -17,15 +17,16 @@ import (
 	nodeattestorv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/plugin/server/nodeattestor/v1"
 	configv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/service/common/config/v1"
 	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/jwtsvid"
 	"github.com/accuknox/spire/pkg/common/plugin/k8s"
 	"github.com/accuknox/spire/pkg/common/plugin/k8s/apiserver"
 	nodeattestorbase "github.com/accuknox/spire/pkg/server/plugin/nodeattestor/base"
+	"github.com/go-jose/go-jose/v4/jwt"
 	"github.com/gofrs/uuid"
 	hclog "github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/hcl"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"gopkg.in/square/go-jose.v2/jwt"
 	authv1 "k8s.io/api/authentication/v1"
 )
 
@@ -183,7 +184,7 @@ func (p *AttestorPlugin) Attest(stream nodeattestorv1.NodeAttestor_AttestServer)
 			return status.Errorf(codes.Internal, "fail to parse username from token review status: %v", err)
 		}
 	} else {
-		token, err := jwt.ParseSigned(attestationData.Token)
+		token, err := jwt.ParseSigned(attestationData.Token, jwtsvid.AllowedSignatureAlgorithms)
 		if err != nil {
 			return status.Errorf(codes.InvalidArgument, "unable to parse token: %v", err)
 		}

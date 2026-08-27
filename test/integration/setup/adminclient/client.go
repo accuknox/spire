@@ -14,8 +14,10 @@ import (
 	"time"
 
 	"github.com/accuknox/go-spiffe/v2/spiffeid"
+	"github.com/accuknox/spire/pkg/common/jwtsvid"
 	"github.com/accuknox/spire/pkg/common/pemutil"
 	"github.com/accuknox/spire/test/integration/setup/itclient"
+	"github.com/go-jose/go-jose/v4/jwt"
 	agentv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/agent/v1"
 	bundlev1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/bundle/v1"
 	entryv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/entry/v1"
@@ -25,7 +27,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
-	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 const (
@@ -204,7 +205,7 @@ func mintJWTSVID(ctx context.Context, c *itclient.Client) error {
 	}
 
 	// Parse token
-	token, err := jwt.ParseSigned(resp.Svid.Token)
+	token, err := jwt.ParseSigned(resp.Svid.Token, jwtsvid.AllowedSignatureAlgorithms)
 	if err != nil {
 		return fmt.Errorf("failed to parse token: %w", err)
 	}
