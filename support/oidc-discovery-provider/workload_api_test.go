@@ -9,11 +9,11 @@ import (
 	"github.com/accuknox/go-spiffe/v2/proto/spiffe/workload"
 	"github.com/accuknox/spire/test/clock"
 	"github.com/accuknox/spire/test/spiretest"
+	"github.com/go-jose/go-jose/v4"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"gopkg.in/square/go-jose.v2"
 )
 
 func TestWorkloadAPISource(t *testing.T) {

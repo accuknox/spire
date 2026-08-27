@@ -28,9 +28,9 @@ import (
 	"github.com/accuknox/spire/test/fakes/fakeagentstore"
 	"github.com/accuknox/spire/test/plugintest"
 	"github.com/accuknox/spire/test/spiretest"
+	jose "github.com/go-jose/go-jose/v4"
+	"github.com/go-jose/go-jose/v4/jwt"
 	"google.golang.org/grpc/codes"
-	jose "gopkg.in/square/go-jose.v2"
-	"gopkg.in/square/go-jose.v2/jwt"
 	authv1 "k8s.io/api/authentication/v1"
 )
 
@@ -195,7 +195,7 @@ func (s *AttestorSuite) TestAttestFailsWithMalformedToken() {
 
 	builder := jwt.Signed(s.fooSigner)
 	builder = builder.Claims(claims)
-	token, err := builder.CompactSerialize()
+	token, err := builder.Serialize()
 	s.Require().NoError(err)
 	s.requireAttestError(makePayload("FOO", token), codes.InvalidArgument, "malformed token: namespace found in two claims")
 
@@ -205,7 +205,7 @@ func (s *AttestorSuite) TestAttestFailsWithMalformedToken() {
 	claims.K8s.ServiceAccount.Name = "sa2"
 
 	builder = builder.Claims(claims)
-	token, err = builder.CompactSerialize()
+	token, err = builder.Serialize()
 	s.Require().NoError(err)
 	s.requireAttestError(makePayload("FOO", token), codes.InvalidArgument, "malformed token: service account name found in two claims")
 }
@@ -419,7 +419,7 @@ func (s *AttestorSuite) TestAttestTokenExpiration() {
 func (s *AttestorSuite) signToken(signer jose.Signer, namespace, serviceAccountName string) string {
 	builder := s.createBuilder(signer, namespace, serviceAccountName, jwt.NewNumericDate(time.Time{}))
 
-	token, err := builder.CompactSerialize()
+	token, err := builder.Serialize()
 	s.Require().NoError(err)
 	return token
 }
@@ -427,7 +427,7 @@ func (s *AttestorSuite) signToken(signer jose.Signer, namespace, serviceAccountN
 func (s *AttestorSuite) signTokenWithExpiry(signer jose.Signer, namespace, serviceAccountName string) string {
 	builder := s.createBuilder(signer, namespace, serviceAccountName, jwt.NewNumericDate(s.now.Add(time.Minute)))
 
-	token, err := builder.CompactSerialize()
+	token, err := builder.Serialize()
 	s.Require().NoError(err)
 	return token
 }

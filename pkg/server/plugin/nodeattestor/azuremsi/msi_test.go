@@ -25,12 +25,12 @@ import (
 	"github.com/accuknox/spire/test/plugintest"
 	"github.com/accuknox/spire/test/spiretest"
 	"github.com/accuknox/spire/test/testkey"
+	jose "github.com/go-jose/go-jose/v4"
+	"github.com/go-jose/go-jose/v4/jwt"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
-	jose "gopkg.in/square/go-jose.v2"
-	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 const (
@@ -158,7 +158,7 @@ func (s *MSIAttestorSuite) TestAttestFailsWithAlgorithmMismatch() {
 	})
 	s.Require().NoError(err)
 
-	token, err := jwt.Signed(signer).CompactSerialize()
+	token, err := jwt.Signed(signer).Serialize()
 	s.Require().NoError(err)
 
 	s.requireAttestError(s.T(), makeAttestPayload(token),
@@ -614,7 +614,7 @@ func (s *MSIAttestorSuite) signToken(keyID, audience, tenantID, principalID stri
 		})
 	}
 
-	token, err := builder.CompactSerialize()
+	token, err := builder.Serialize()
 	s.Require().NoError(err)
 	return token
 }

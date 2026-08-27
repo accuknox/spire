@@ -4,7 +4,7 @@ import (
 	"github.com/accuknox/go-spiffe/v2/spiffeid"
 	"github.com/accuknox/spire/pkg/common/agentpathtemplate"
 	"github.com/accuknox/spire/pkg/common/idutil"
-	"gopkg.in/square/go-jose.v2/jwt"
+	"github.com/go-jose/go-jose/v4/jwt"
 )
 
 const (

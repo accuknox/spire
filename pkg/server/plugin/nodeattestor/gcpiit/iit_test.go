@@ -21,12 +21,12 @@ import (
 	"github.com/accuknox/spire/test/plugintest"
 	"github.com/accuknox/spire/test/spiretest"
 	"github.com/accuknox/spire/test/testkey"
+	"github.com/go-jose/go-jose/v4"
+	"github.com/go-jose/go-jose/v4/cryptosigner"
+	"github.com/go-jose/go-jose/v4/jwt"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/api/compute/v1"
 	"google.golang.org/grpc/codes"
-	"gopkg.in/square/go-jose.v2"
-	"gopkg.in/square/go-jose.v2/cryptosigner"
-	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 const (
@@ -460,7 +460,7 @@ func signToken(t *testing.T, key crypto.Signer, kid string, claims interface{}) 
 	}, nil)
 	require.NoError(t, err)
 
-	token, err := jwt.Signed(signer).Claims(claims).CompactSerialize()
+	token, err := jwt.Signed(signer).Claims(claims).Serialize()
 	require.NoError(t, err)
 	return []byte(token)
 }

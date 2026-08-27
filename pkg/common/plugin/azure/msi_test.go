@@ -11,9 +11,9 @@ import (
 
 	"github.com/accuknox/go-spiffe/v2/spiffeid"
 	"github.com/accuknox/spire/pkg/common/agentpathtemplate"
+	"github.com/go-jose/go-jose/v4/jwt"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 func TestFetchMSIToken(t *testing.T) {

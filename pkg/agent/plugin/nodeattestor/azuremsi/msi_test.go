@@ -12,9 +12,9 @@ import (
 	"github.com/accuknox/spire/pkg/common/plugin/azure"
 	"github.com/accuknox/spire/test/plugintest"
 	"github.com/accuknox/spire/test/spiretest"
+	jose "github.com/go-jose/go-jose/v4"
+	"github.com/go-jose/go-jose/v4/jwt"
 	"google.golang.org/grpc/codes"
-	jose "gopkg.in/square/go-jose.v2"
-	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 var (
@@ -109,7 +109,7 @@ func (s *MSIAttestorSuite) makeAccessToken(principalID, tenantID string) string 
 	signer, err := jose.NewSigner(signingKey, nil)
 	s.Require().NoError(err)
 
-	token, err := jwt.Signed(signer).Claims(claims).CompactSerialize()
+	token, err := jwt.Signed(signer).Claims(claims).Serialize()
 	s.Require().NoError(err)
 	return token
 }

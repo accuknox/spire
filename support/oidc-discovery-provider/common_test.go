@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/accuknox/spire/pkg/common/pemutil"
-	"gopkg.in/square/go-jose.v2"
+	"github.com/go-jose/go-jose/v4"
 )
 
 var (

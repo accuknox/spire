@@ -14,15 +14,16 @@ import (
 	configv1 "github.com/accuknox/spire-plugin-sdk/proto/spire/service/common/config/v1"
 	"github.com/accuknox/spire/pkg/common/agentpathtemplate"
 	"github.com/accuknox/spire/pkg/common/catalog"
+	"github.com/accuknox/spire/pkg/common/jwtsvid"
 	"github.com/accuknox/spire/pkg/common/plugin/gcp"
 	nodeattestorbase "github.com/accuknox/spire/pkg/server/plugin/nodeattestor/base"
+	"github.com/go-jose/go-jose/v4"
+	"github.com/go-jose/go-jose/v4/jwt"
 	hclog "github.com/hashicorp/go-hclog"
 	"google.golang.org/api/compute/v1"
 	"google.golang.org/api/option"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"gopkg.in/square/go-jose.v2"
-	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 const (
@@ -272,7 +273,7 @@ func validateAttestationAndExtractIdentityMetadata(stream nodeattestorv1.NodeAtt
 		return gcp.ComputeEngine{}, status.Errorf(codes.InvalidArgument, "missing attestation payload")
 	}
 
-	token, err := jwt.ParseSigned(string(payload))
+	token, err := jwt.ParseSigned(string(payload), jwtsvid.AllowedSignatureAlgorithms)
 	if err != nil {
 		return gcp.ComputeEngine{}, status.Errorf(codes.InvalidArgument, "unable to parse the identity token: %v", err)
 	}
@@ -283,8 +284,8 @@ func validateAttestationAndExtractIdentityMetadata(stream nodeattestorv1.NodeAtt
 	}
 
 	if err := identityToken.Validate(jwt.Expected{
-		Audience: []string{tokenAudience},
-		Time:     time.Now(),
+		AnyAudience: []string{tokenAudience},
+		Time:        time.Now(),
 	}); err != nil {
 		return gcp.ComputeEngine{}, status.Errorf(codes.PermissionDenied, "failed to validate the identity token claims: %v", err)
 	}

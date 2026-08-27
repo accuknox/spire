@@ -13,9 +13,9 @@ import (
 	sat_common "github.com/accuknox/spire/pkg/common/plugin/k8s"
 	"github.com/accuknox/spire/test/plugintest"
 	"github.com/accuknox/spire/test/spiretest"
+	jose "github.com/go-jose/go-jose/v4"
+	"github.com/go-jose/go-jose/v4/jwt"
 	"google.golang.org/grpc/codes"
-	jose "gopkg.in/square/go-jose.v2"
-	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 var sampleKeyPEM = []byte(`-----BEGIN RSA PRIVATE KEY-----
@@ -136,7 +136,7 @@ func createPSAT(namespace, podName string) (string, error) {
 	builder = builder.Claims(claims)
 
 	// Serialize and return token
-	token, err := builder.CompactSerialize()
+	token, err := builder.Serialize()
 	if err != nil {
 		return "", err
 	}

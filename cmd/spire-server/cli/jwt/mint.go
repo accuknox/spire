@@ -12,10 +12,11 @@ import (
 	commoncli "github.com/accuknox/spire/pkg/common/cli"
 	"github.com/accuknox/spire/pkg/common/cliprinter"
 	"github.com/accuknox/spire/pkg/common/diskutil"
+	"github.com/accuknox/spire/pkg/common/jwtsvid"
+	"github.com/go-jose/go-jose/v4/jwt"
 	"github.com/mitchellh/cli"
 	svidv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/svid/v1"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
-	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 func NewMintCommand() cli.Command {
@@ -109,7 +110,7 @@ func (c *mintCommand) validateToken(token string, env *commoncli.Env) error {
 	return nil
 }
 func getJWTSVIDEndOfLife(token string) (time.Time, error) {
-	t, err := jwt.ParseSigned(token)
+	t, err := jwt.ParseSigned(token, jwtsvid.AllowedSignatureAlgorithms)
 	if err != nil {
 		return time.Time{}, err
 	}

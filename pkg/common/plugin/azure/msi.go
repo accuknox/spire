@@ -9,8 +9,8 @@ import (
 	"github.com/accuknox/go-spiffe/v2/spiffeid"
 	"github.com/accuknox/spire/pkg/common/agentpathtemplate"
 	"github.com/accuknox/spire/pkg/common/idutil"
+	"github.com/go-jose/go-jose/v4/jwt"
 	"github.com/zeebo/errs"
-	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 const (

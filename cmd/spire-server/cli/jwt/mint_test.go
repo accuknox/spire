@@ -16,13 +16,13 @@ import (
 	common_cli "github.com/accuknox/spire/pkg/common/cli"
 	"github.com/accuknox/spire/pkg/common/pemutil"
 	"github.com/accuknox/spire/test/spiretest"
+	"github.com/go-jose/go-jose/v4"
+	"github.com/go-jose/go-jose/v4/jwt"
 	svidv1 "github.com/spiffe/spire-api-sdk/proto/spire/api/server/svid/v1"
 	"github.com/spiffe/spire-api-sdk/proto/spire/api/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
-	"gopkg.in/square/go-jose.v2"
-	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 var (
@@ -81,7 +81,7 @@ func TestMintRun(t *testing.T) {
 	builder := jwt.Signed(signer).Claims(jwt.Claims{
 		Expiry: jwt.NewNumericDate(expiry),
 	})
-	token, err := builder.CompactSerialize()
+	token, err := builder.Serialize()
 	require.NoError(t, err)
 
 	// Create expired token
@@ -89,7 +89,7 @@ func TestMintRun(t *testing.T) {
 	builder = jwt.Signed(signer).Claims(jwt.Claims{
 		Expiry: jwt.NewNumericDate(expiredAt),
 	})
-	expiredToken, err := builder.CompactSerialize()
+	expiredToken, err := builder.Serialize()
 	require.NoError(t, err)
 
 	testCases := []struct {
