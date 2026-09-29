@@ -57,6 +57,7 @@ This may be useful for templating configuration files, for example across differ
 | `profiling_freq`                  | Frequency of dumping profiling data to disk. Only enabled when `profiling_enabled` is `true` and `profiling_freq` > 0.         |                                  |
 | `profiling_names`                 | List of profile names that will be dumped to disk on each profiling tick, see [Profiling Names](#profiling-names)              |                                  |
 | `profiling_port`                  | Port number of the [net/http/pprof](https://pkg.go.dev/net/http/pprof) endpoint. Only used when `profiling_enabled` is `true`. |                                  |
+| `servername`                      | Optional TLS server name (SNI) for insecure bootstrap; supported in local files and Kubernetes ConfigMaps                       |                                  |
 | `server_address`                  | DNS name or IP address of the SPIRE server                                                                                     |                                  |
 | `server_port`                     | Port number of the SPIRE server                                                                                                |                                  |
 | `socket_path`                     | Location to bind the SPIRE Agent API socket (Unix only)                                                                        | /tmp/spire-agent/public/api.sock |

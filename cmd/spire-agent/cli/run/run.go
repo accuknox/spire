@@ -77,6 +77,7 @@ type agentConfig struct {
 	LogFormat                     string    `hcl:"log_format"`
 	LogLevel                      string    `hcl:"log_level"`
 	SDS                           sdsConfig `hcl:"sds"`
+	ServerName                    string    `hcl:"servername"`
 	ServerAddress                 string    `hcl:"server_address"`
 	ServerPort                    int       `hcl:"server_port"`
 	AgentAddress                  string    `hcl:"agent_address"`
@@ -471,6 +472,7 @@ func NewAgentConfig(c *Config, logOptions []log.Option, allowUnknownConfig bool)
 
 	serverHostPort := net.JoinHostPort(c.Agent.ServerAddress, strconv.Itoa(c.Agent.ServerPort))
 	ac.ServerAddress = fmt.Sprintf("dns:///%s", serverHostPort)
+	ac.ServerName = c.Agent.ServerName
 
 	logOptions = append(logOptions,
 		log.WithLevel(c.Agent.LogLevel),

@@ -51,6 +51,7 @@ type Config struct {
 	InsecureBootstrap bool
 	Storage           storage.Storage
 	Log               logrus.FieldLogger
+	ServerName        string
 	ServerAddress     string
 	NodeAttestor      nodeattestor.NodeAttestor
 }
@@ -234,6 +235,7 @@ func (a *attestor) serverConn(ctx context.Context, bundle *bundleutil.Bundle) (*
 	// SPIFFE ID. This is not a security feature but rather a check that we've
 	// reached what appears to be the right trust domain server.
 	tlsConfig := &tls.Config{
+		ServerName:         a.c.ServerName,
 		InsecureSkipVerify: true, //nolint: gosec // this is required in order to do non-hostname based verification
 		VerifyPeerCertificate: func(rawCerts [][]byte, _ [][]*x509.Certificate) error {
 			a.c.Log.Warn("Insecure bootstrap enabled; skipping server certificate verification")

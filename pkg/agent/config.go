@@ -52,6 +52,9 @@ type Config struct {
 	// LogReopener facilitates handling a signal to rotate log file.
 	LogReopener func(context.Context) error
 
+	// Optional TLS server name for insecure bootstrap.
+	ServerName string
+
 	// Address of SPIRE server
 	ServerAddress string
 

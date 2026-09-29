@@ -233,6 +233,7 @@ func (a *Agent) attest(ctx context.Context, sto storage.Storage, cat catalog.Cat
 		Storage:           sto,
 		Log:               a.c.Log.WithField(telemetry.SubsystemName, telemetry.Attestor),
 		ServerAddress:     a.c.ServerAddress,
+		ServerName:        a.c.ServerName,
 		NodeAttestor:      na,
 	}
 	return node_attestor.New(&config).Attest(ctx)
