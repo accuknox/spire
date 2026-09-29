@@ -51,6 +51,7 @@ type Config struct {
 	InsecureBootstrap bool
 	Storage           storage.Storage
 	Log               logrus.FieldLogger
+	ServerName        string
 	ServerAddress     string
 	NodeAttestor      nodeattestor.NodeAttestor
 }
@@ -257,6 +258,11 @@ func (a *attestor) serverConn(ctx context.Context, bundle *bundleutil.Bundle) (*
 			}
 			return nil
 		},
+	}
+
+	// Adding the ServerName to the TLS config is necessary for the TLS handshake to succeed when the server is using SNI.
+	if a.c.ServerName != "" {
+		tlsConfig.ServerName = a.c.ServerName
 	}
 
 	return grpc.DialContext(ctx, a.c.ServerAddress,
