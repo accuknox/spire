@@ -235,7 +235,6 @@ func (a *attestor) serverConn(ctx context.Context, bundle *bundleutil.Bundle) (*
 	// SPIFFE ID. This is not a security feature but rather a check that we've
 	// reached what appears to be the right trust domain server.
 	tlsConfig := &tls.Config{
-		ServerName:         a.c.ServerName,
 		InsecureSkipVerify: true, //nolint: gosec // this is required in order to do non-hostname based verification
 		VerifyPeerCertificate: func(rawCerts [][]byte, _ [][]*x509.Certificate) error {
 			a.c.Log.Warn("Insecure bootstrap enabled; skipping server certificate verification")
@@ -259,6 +258,11 @@ func (a *attestor) serverConn(ctx context.Context, bundle *bundleutil.Bundle) (*
 			}
 			return nil
 		},
+	}
+
+	// Adding the ServerName to the TLS config is necessary for the TLS handshake to succeed when the server is using SNI.
+	if a.c.ServerName != "" {
+		tlsConfig.ServerName = a.c.ServerName
 	}
 
 	return grpc.DialContext(ctx, a.c.ServerAddress,
