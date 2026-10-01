@@ -16,8 +16,6 @@ COPY bin/spire-server.exe C:/spire/bin/spire-server.exe
 FROM spire-base-windows AS spire-agent-windows
 ENTRYPOINT ["c:/spire/bin/spire-agent.exe", "run"]
 COPY ./bin/spire-agent.exe C:/spire/bin/spire-agent.exe
+COPY ./bin/k8s-sat.exe C:/spire/bin/k8s-sat.exe
+COPY ./bin/keymanager-k8s.exe C:/spire/bin/keymanager-k8s.exe
 
-# OIDC Discovery Provider
-FROM spire-base-windows AS oidc-discovery-provider-windows
-ENTRYPOINT ["c:/spire/bin/oidc-discovery-provider.exe"]
-COPY ./bin/oidc-discovery-provider.exe c:/spire/bin/oidc-discovery-provider.exe

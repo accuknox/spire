@@ -11,6 +11,7 @@ import (
 
 type ListenerFactoryOS struct {
 	NewPipeListener func(pipe string, pipeConfig *winio.PipeConfig) (net.Listener, error)
+	NewTCPListener  func(network string, laddr *net.TCPAddr) (*net.TCPListener, error)
 }
 
 func (lf *ListenerFactory) ListenPipe(pipe string, pipeConfig *winio.PipeConfig) (*Listener, error) {

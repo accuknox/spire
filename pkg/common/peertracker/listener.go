@@ -88,3 +88,35 @@ func (l *Listener) Close() error {
 func (l *Listener) Addr() net.Addr {
 	return l.l.Addr()
 }
+
+func (lf *ListenerFactory) ListenTCP(network string, laddr *net.TCPAddr) (*Listener, error) {
+	if lf.NewTCPListener == nil {
+		lf.NewTCPListener = net.ListenTCP
+	}
+	if lf.NewTracker == nil {
+		lf.NewTracker = NewTracker
+	}
+	if lf.Log == nil {
+		lf.Log = newNoopLogger()
+	}
+	return lf.listenTCP(network, laddr)
+}
+
+func (lf *ListenerFactory) listenTCP(network string, laddr *net.TCPAddr) (*Listener, error) {
+	l, err := lf.NewTCPListener(network, laddr)
+	if err != nil {
+		return nil, err
+	}
+
+	tracker, err := lf.NewTracker(lf.Log)
+	if err != nil {
+		l.Close()
+		return nil, err
+	}
+
+	return &Listener{
+		l:       l,
+		Tracker: tracker,
+		log:     lf.Log,
+	}, nil
+}

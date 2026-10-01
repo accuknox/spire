@@ -105,7 +105,7 @@ endif
 
 PLATFORMS ?= linux/amd64,linux/arm64
 
-binaries := spire-server spire-agent oidc-discovery-provider
+binaries := spire-server spire-agent 
 
 build_dir := $(DIR)/.build/$(os1)-$(arch1)
 
@@ -394,9 +394,47 @@ $1: $3
 endef
 
 
+.PHONY: windows-binaries
+windows-binaries: \
+	bin/spire-server.exe \
+	bin/spire-agent.exe \
+	bin/k8s-sat.exe \
+	bin/keymanager-k8s.exe 
+
+
+windows_go_build = GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc $(go_path) go build $(go_flags) -ldflags '$(go_ldflags)' -o
+
+# Standard SPIRE binaries
+bin/%.exe: cmd/% FORCE | go-check
+	@echo "Building Windows binary $@..."
+	$(E)$(windows_go_build) $@ ./$<
+
+# k8s-sat plugin
+bin/k8s-sat.exe: FORCE | go-check
+	@echo "Building Windows binary bin/k8s-sat.exe..."
+	$(E)$(windows_go_build) $@ ./spire-k8s-sat-plugin/cmd/...
+
+# keymanager-k8s plugin
+bin/keymanager-k8s.exe: FORCE | go-check
+	@echo "Building Windows binary bin/keymanager-k8s.exe..."
+	$(E)$(windows_go_build) $@ ./spire-k8s-secret-plugin/
+
+
+define windows_image_rule
+.PHONY: $1
+$1: $3
+	@echo Building docker image $2…
+	$(E)docker build \
+		--build-arg goversion=$(go_version_full) \
+		--target $2 \
+		-t $2 -t $2:latest-local \
+		-f $3 \
+		.
+endef
 
 .PHONY: images-windows
-images-windows: $(addsuffix -windows-image,$(binaries))
+images-windows:  windows-binaries
+	$(MAKE) $(addsuffix -windows-image,$(binaries))
 
 $(eval $(call windows_image_rule,spire-server-windows-image,spire-server-windows,Dockerfile.windows))
 $(eval $(call windows_image_rule,spire-agent-windows-image,spire-agent-windows,Dockerfile.windows))

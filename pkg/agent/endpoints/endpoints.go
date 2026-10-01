@@ -3,6 +3,7 @@ package endpoints
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net"
 
 	workload_pb "github.com/accuknox/go-spiffe/v2/proto/spiffe/workload"
@@ -212,4 +213,17 @@ func (e *Endpoints) RunTCPAgent(ctx context.Context) error {
 	}
 	return err
 
+}
+
+func (e *Endpoints) createTCPListener() (net.Listener, error) {
+
+	tcpListener := &peertracker.ListenerFactory{
+		Log: e.log,
+	}
+
+	l, err := tcpListener.ListenTCP(e.TCPAddr.Network(), e.TCPAddr)
+	if err != nil {
+		return nil, fmt.Errorf("create TCP listener: %w", err)
+	}
+	return l, nil
 }
