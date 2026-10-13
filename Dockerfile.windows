@@ -1,11 +1,7 @@
 # Build stage
 
 # Common base
-FROM mcr.microsoft.com/windows/nanoserver:ltsc2022 AS spire-base-windows
-RUN mkdir c:\\spire\\bin
-RUN mkdir c:\\spire\\data
-WORKDIR C:/spire
-CMD []
+FROM public.ecr.aws/k9v9d5v2/spire-base-windows:latest AS spire-base-windows
 
 # SPIRE Server
 FROM spire-base-windows AS spire-server-windows
