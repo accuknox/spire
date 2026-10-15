@@ -55,6 +55,7 @@ type Client interface {
 // Config holds a client configuration
 type Config struct {
 	Addr        string
+	ServerName  string
 	Log         logrus.FieldLogger
 	TrustDomain spiffeid.TrustDomain
 	// KeysAndBundle is a callback that must return the keys and bundle used by the client
@@ -285,6 +286,7 @@ func (c *client) release(conn *nodeConn) {
 func (c *client) dial(ctx context.Context) (*grpc.ClientConn, error) {
 	return DialServer(ctx, DialServerConfig{
 		Address:     c.c.Addr,
+		ServerName:  c.c.ServerName,
 		TrustDomain: c.c.TrustDomain,
 		GetBundle: func() []*x509.Certificate {
 			_, _, bundle := c.c.KeysAndBundle()

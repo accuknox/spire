@@ -31,6 +31,7 @@ type Config struct {
 	Log              logrus.FieldLogger
 	Metrics          telemetry.Metrics
 	ServerAddr       string
+	ServerName       string
 	Storage          storage.Storage
 	WorkloadKeyType  workloadkey.KeyType
 	SyncInterval     time.Duration
@@ -79,6 +80,7 @@ func newManager(c *Config) *manager {
 		SVIDKey:        c.SVIDKey,
 		BundleStream:   cache.SubscribeToBundleChanges(),
 		ServerAddr:     c.ServerAddr,
+		ServerName:     c.ServerName,
 		TrustDomain:    c.TrustDomain,
 		Interval:       c.RotationInterval,
 		Clk:            c.Clk,

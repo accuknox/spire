@@ -247,6 +247,7 @@ func (a *Agent) newManager(ctx context.Context, sto storage.Storage, cat catalog
 		Catalog:          cat,
 		TrustDomain:      a.c.TrustDomain,
 		ServerAddr:       a.c.ServerAddress,
+		ServerName:       a.c.ServerName,
 		Log:              a.c.Log.WithField(telemetry.SubsystemName, telemetry.Manager),
 		Metrics:          metrics,
 		WorkloadKeyType:  a.c.WorkloadKeyType,

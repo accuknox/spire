@@ -293,6 +293,7 @@ func (r *rotator) generateKey(ctx context.Context) (keymanager.Key, error) {
 func (r *rotator) serverConn(ctx context.Context, bundle *bundleutil.Bundle) (*grpc.ClientConn, error) {
 	return client.DialServer(ctx, client.DialServerConfig{
 		Address:     r.c.ServerAddr,
+		ServerName:  r.c.ServerName,
 		TrustDomain: r.c.TrustDomain,
 		GetBundle:   bundle.RootCAs,
 	})
