@@ -26,6 +26,7 @@ type RotatorConfig struct {
 	Metrics        telemetry.Metrics
 	TrustDomain    spiffeid.TrustDomain
 	ServerAddr     string
+	ServerName     string
 	NodeAttestor   nodeattestor.NodeAttestor
 	Reattestable   bool
 
@@ -68,6 +69,7 @@ func newRotator(c *RotatorConfig) (*rotator, client.Client) {
 		TrustDomain: c.TrustDomain,
 		Log:         c.Log,
 		Addr:        c.ServerAddr,
+		ServerName:  c.ServerName,
 		RotMtx:      rotMtx,
 		KeysAndBundle: func() ([]*x509.Certificate, crypto.Signer, []*x509.Certificate) {
 			s := state.Value().(State)

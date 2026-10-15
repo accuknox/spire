@@ -219,6 +219,7 @@ func (a *attestor) serverConn(ctx context.Context, bundle *bundleutil.Bundle) (*
 	if bundle != nil {
 		return client.DialServer(ctx, client.DialServerConfig{
 			Address:     a.c.ServerAddress,
+			ServerName:  a.c.ServerName,
 			TrustDomain: a.c.TrustDomain,
 			GetBundle:   bundle.RootCAs,
 		})

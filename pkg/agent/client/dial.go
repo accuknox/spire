@@ -28,6 +28,9 @@ type DialServerConfig struct {
 	// Address is the SPIRE server address
 	Address string
 
+	// ServerName is the optional TLS SNI name, independent of the dial address.
+	ServerName string
+
 	TrustDomain spiffeid.TrustDomain
 
 	// GetBundle is a required callback that returns the current trust bundle
@@ -56,6 +59,8 @@ func DialServer(ctx context.Context, config DialServerConfig) (*grpc.ClientConn,
 	} else {
 		tlsConfig = tlsconfig.MTLSClientConfig(newX509SVIDSource(config.GetAgentCertificate), bundleSource, authorizer)
 	}
+
+	tlsConfig.ServerName = config.ServerName
 
 	ctx, cancel := context.WithTimeout(ctx, defaultDialTimeout)
 	defer cancel()
