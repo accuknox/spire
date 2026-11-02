@@ -1,8 +1,10 @@
 # syntax = docker/dockerfile:1.4.2@sha256:443aab4ca21183e069e7d8b2dc68006594f40bddf1b15bbd83f5137bd93e80e2
 
 # Build stage
-ARG goversion
-FROM --platform=${BUILDPLATFORM} golang:${goversion}-alpine as base
+FROM --platform=${BUILDPLATFORM} harbor.do.accuknox.com/baseimage/golang:1.26.10-alpine3.24-fips-rfcurated AS base
+
+USER root
+
 WORKDIR /spire
 RUN apk --no-cache --update add file bash clang lld pkgconfig git make curl ca-certificates libcrypto3 libssl3 
 COPY go.* ./
@@ -18,7 +20,10 @@ RUN --mount=type=cache,target=/go/pkg/mod go mod download
 # crane digest tonistiigi/xx:1.1.2
 FROM --platform=$BUILDPLATFORM tonistiigi/xx@sha256:9dde7edeb9e4a957ce78be9f8c0fbabe0129bf5126933cd3574888f443731cda AS xx
 
-FROM --platform=${BUILDPLATFORM} base as builder
+FROM --platform=${BUILDPLATFORM} base AS builder
+
+USER root
+
 RUN mkdir -p /config/plugin/
 ARG TARGETPLATFORM
 ARG TARGETARCH
@@ -67,13 +72,15 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
     make build-static && \
     for f in $(find bin -executable -type f); do xx-verify $f; done
 
-FROM --platform=${BUILDPLATFORM} scratch AS spire-base
+FROM --platform=${BUILDPLATFORM} harbor.do.accuknox.com/baseimage/rfubu:26.04-scratch-fips-rfcurated AS spire-base
 WORKDIR /opt/spire
 CMD []
 COPY --link --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 # SPIRE Server
 FROM spire-base AS spire-server
+ARG spireuid=1000
+ARG spiregid=1000
 USER ${spireuid}:${spiregid}
 ENTRYPOINT ["/opt/spire/bin/spire-server", "run"]
 COPY --link --from=builder /spireserverroot /
@@ -81,6 +88,8 @@ COPY --link --from=builder /spire/bin/static/spire-server bin/
 
 # SPIRE Agent
 FROM spire-base AS spire-agent
+ARG spireuid=1000
+ARG spiregid=1000
 USER ${spireuid}:${spiregid}
 ENTRYPOINT ["/opt/spire/bin/spire-agent", "run"]
 COPY --link --from=builder /spireagentroot /
@@ -91,6 +100,8 @@ COPY --link --from=builder /etc/ssl/certs/ca-certificates.crt /config/ca-certifi
 
 # OIDC Discovery Provider
 FROM spire-base AS oidc-discovery-provider
+ARG spireuid=1000
+ARG spiregid=1000
 USER ${spireuid}:${spiregid}
 ENTRYPOINT ["/opt/spire/bin/oidc-discovery-provider"]
 COPY --link --from=builder /spire/bin/static/oidc-discovery-provider bin/
