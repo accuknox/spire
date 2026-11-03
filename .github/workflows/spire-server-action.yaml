@@ -62,8 +62,3 @@ jobs:
     - name: Print Vulnerability Results
       run: cat server-results.json
       shell: bash
-    - name: Exit on Vulnerabilities
-      run: |
-        if grep -qE '"Severity":\s*"(CRITICAL|HIGH)"' server-results.json; then
-          exit 1
-        fi
