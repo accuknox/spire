@@ -76,18 +76,14 @@ CMD []
 
 # SPIRE Server
 FROM spire-base AS spire-server
-ARG spireuid=1000
-ARG spiregid=1000
-USER ${spireuid}:${spiregid}
+USER root
 ENTRYPOINT ["/opt/spire/bin/spire-server", "run"]
 COPY --link --from=builder /spireserverroot /
 COPY --link --from=builder /spire/bin/spire-server bin/
 
 # SPIRE Agent
 FROM spire-base AS spire-agent
-ARG spireuid=1000
-ARG spiregid=1000
-USER ${spireuid}:${spiregid}
+USER root
 ENTRYPOINT ["/opt/spire/bin/spire-agent", "run"]
 COPY --link --from=builder /spireagentroot /
 COPY --link --from=builder /spire/bin/spire-agent bin/
@@ -97,8 +93,6 @@ COPY --link --from=builder /etc/ssl/certs/ca-certificates.crt /config/ca-certifi
 
 # OIDC Discovery Provider
 FROM spire-base AS oidc-discovery-provider
-ARG spireuid=1000
-ARG spiregid=1000
-USER ${spireuid}:${spiregid}
+USER root
 ENTRYPOINT ["/opt/spire/bin/oidc-discovery-provider"]
 COPY --link --from=builder /spire/bin/oidc-discovery-provider bin/
