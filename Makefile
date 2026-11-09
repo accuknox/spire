@@ -105,7 +105,8 @@ endif
 
 PLATFORMS ?= linux/amd64,linux/arm64
 
-binaries := spire-server spire-agent 
+binaries := spire-server spire-agent oidc-discovery-provider
+plugin_binaries := k8s-sat keymanager-k8s
 
 build_dir := $(DIR)/.build/$(os1)-$(arch1)
 
@@ -240,17 +241,22 @@ endif
 #############################################################################
 
 .PHONY: build
-build: tidy $(addprefix bin/,$(binaries))
+build: tidy $(addprefix bin/,$(binaries) $(plugin_binaries))
 
 go_build := $(go_path) go build $(go_flags) -ldflags '$(go_ldflags)' -o
+
+# Explicit rules win over pattern rules
+bin/k8s-sat: FORCE | go-check
+	@echo Building $@…
+	$(E)$(go_build) $@ ./spire-k8s-sat-plugin/cmd/...
+
+bin/keymanager-k8s: FORCE | go-check
+	@echo Building $@…
+	$(E)$(go_build) $@ ./spire-k8s-secret-plugin/
 
 bin/%: cmd/% FORCE | go-check
 	@echo Building $@…
 	$(E)$(go_build) $@$(exe) ./$<
-	@echo Building bin/k8s-sat…
-	$(E)$(go_build) bin/k8s-sat ./spire-k8s-sat-plugin/cmd/...
-	@echo Building bin/keymanager-k8s…
-	$(E)$(go_build) bin/keymanager-k8s ./spire-k8s-secret-plugin/
 
 bin/%: support/% FORCE | go-check
 	@echo Building $@…
@@ -263,25 +269,25 @@ bin/%: support/k8s/% FORCE | go-check
 #############################################################################
 # Build static binaries for docker images
 #############################################################################
-
 .PHONY: build-static
-# The build-static is intended to statically link to musl libc.
-# There are possibilities of unexpected errors when statically link to GLIBC.
-# https://7thzero.com/blog/golang-w-sqlite3-docker-scratch-image
-build-static: tidy $(addprefix bin/static/,$(binaries))
 
+# Intended to statically link against musl libc (build inside Alpine).
+# Statically linking against glibc can cause unexpected errors.
+# https://7thzero.com/blog/golang-w-sqlite3-docker-scratch-image
+build-static: tidy $(addprefix bin/static/,$(binaries) $(plugin_binaries))
 
 go_build_static := $(go_path) go build $(go_flags) -ldflags '$(go_ldflags) -linkmode external -extldflags "-static"' -o
 
-bin/static/%: cmd/% FORCE | go-check
+# Explicit rules win over pattern rules
+bin/static/k8s-sat: FORCE | go-check
 	@echo Building $@…
-	$(E)$(go_build_static) $@$(exe) ./$<
-	@echo Building bin/static/k8s-sat…
-	$(E)$(go_build_static) bin/static/k8s-sat ./spire-k8s-sat-plugin/cmd/...
-	@echo Building bin/static/keymanager-k8s…
-	$(E)$(go_build_static) bin/static/keymanager-k8s ./spire-k8s-secret-plugin/
+	$(E)$(go_build_static) $@ ./spire-k8s-sat-plugin/cmd/...
 
-bin/static/%: spire-k8s-sat-plugin/% FORCE
+bin/static/keymanager-k8s: FORCE | go-check
+	@echo Building $@…
+	$(E)$(go_build_static) $@ ./spire-k8s-secret-plugin/
+
+bin/static/%: cmd/% FORCE | go-check
 	@echo Building $@…
 	$(E)$(go_build_static) $@$(exe) ./$<
 
@@ -393,39 +399,36 @@ $1: $3
 
 endef
 
-
 .PHONY: windows-binaries
-windows-binaries: \
-	bin/spire-server.exe \
-	bin/spire-agent.exe \
-	bin/k8s-sat.exe \
-	bin/keymanager-k8s.exe 
-
+windows-binaries: $(addsuffix .exe,$(addprefix bin/,$(binaries) $(plugin_binaries)))
 
 windows_go_build = GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc $(go_path) go build $(go_flags) -ldflags '$(go_ldflags)' -o
+
+# Plugins (explicit rules first)
+bin/k8s-sat.exe: FORCE | go-check
+	@echo "Building Windows binary $@..."
+	$(E)$(windows_go_build) $@ ./spire-k8s-sat-plugin/cmd/...
+
+bin/keymanager-k8s.exe: FORCE | go-check
+	@echo "Building Windows binary $@..."
+	$(E)$(windows_go_build) $@ ./spire-k8s-secret-plugin/
 
 # Standard SPIRE binaries
 bin/%.exe: cmd/% FORCE | go-check
 	@echo "Building Windows binary $@..."
 	$(E)$(windows_go_build) $@ ./$<
 
-# k8s-sat plugin
-bin/k8s-sat.exe: FORCE | go-check
-	@echo "Building Windows binary bin/k8s-sat.exe..."
-	$(E)$(windows_go_build) $@ ./spire-k8s-sat-plugin/cmd/...
-
-# keymanager-k8s plugin
-bin/keymanager-k8s.exe: FORCE | go-check
-	@echo "Building Windows binary bin/keymanager-k8s.exe..."
-	$(E)$(windows_go_build) $@ ./spire-k8s-secret-plugin/
-
+# oidc-discovery-provider lives under support/
+bin/%.exe: support/% FORCE | go-check
+	@echo "Building Windows binary $@..."
+	$(E)$(windows_go_build) $@ ./$<
 
 define windows_image_rule
 .PHONY: $1
 $1: $3
 	@echo Building docker image $2…
-	$(E)docker build \
-		--build-arg goversion=$(go_version_full) \
+	$$(E)docker build \
+		--build-arg goversion=$$(go_version_full) \
 		--target $2 \
 		-t $2 -t $2:latest-local \
 		-f $3 \
@@ -433,7 +436,7 @@ $1: $3
 endef
 
 .PHONY: images-windows
-images-windows:  windows-binaries
+images-windows: windows-binaries
 	$(MAKE) $(addsuffix -windows-image,$(binaries))
 
 $(eval $(call windows_image_rule,spire-server-windows-image,spire-server-windows,Dockerfile.windows))
