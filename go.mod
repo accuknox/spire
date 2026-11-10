@@ -19,7 +19,7 @@ require (
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources v1.0.0
 	github.com/GoogleCloudPlatform/cloudsql-proxy v1.33.4
 	github.com/Microsoft/go-winio v0.6.2
-	github.com/accuknox/go-spiffe/v2 v2.0.0-20230228064230-b6ce2baf9373
+	github.com/accuknox/go-spiffe/v2 v2.2.1-ak
 	github.com/accuknox/spire-plugin-sdk v0.0.0-20230228130247-7f63972dff88
 	github.com/andres-erbsen/clock v0.0.0-20160526145045-9e14626cd129
 	github.com/armon/go-metrics v0.4.1
@@ -174,7 +174,6 @@ require (
 	github.com/fxamacker/cbor/v2 v2.9.0 // indirect
 	github.com/go-chi/chi/v5 v5.4.0 // indirect
 	github.com/go-ini/ini v1.67.0 // indirect
-	github.com/go-jose/go-jose/v3 v3.0.5 // indirect
 	github.com/go-logr/logr v1.4.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
