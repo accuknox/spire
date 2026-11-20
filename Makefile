@@ -22,54 +22,50 @@ default: build
 all: build lint test
 
 help:
-	@echo "$(bold)Usage:$(reset) make $(cyan)<target>$(reset)"; \
-	 echo; \
-	 echo "$(bold)Build:$(reset)"; \
-	 echo "  $(cyan)build$(reset)                                 - build all SPIRE binaries (default)"; \
-	 echo; \
-	 echo "$(bold)Test:$(reset)"; \
-	 echo "  $(cyan)test$(reset)                                  - run unit tests"; \
-	 echo "  $(cyan)race-test$(reset)                             - run unit tests with race detection"; \
-	 echo "  $(cyan)integration$(reset)                           - run integration tests (requires Docker images)"; \
-	 echo "                                          support 'SUITES' variable for executing specific tests"; \
-	 echo "                                          and 'IGNORE_SUITES' variable for ignoring tests"; \
-	 echo "                                          e.g. SUITES='suites/join-token suites/k8s' make integration"; \
-	 echo "  $(cyan)integration-windows$(reset)                   - run integration tests for windows (requires Docker images)"; \
-	 echo "                                          support 'SUITES' variable for executing specific tests"; \
-	 echo "                                          e.g. SUITES='windows-suites/windows-workload-attestor' make integration-windows"; \
-	 echo; \
-	 echo "$(bold)Lint:$(reset)"; \
-	 echo "  $(cyan)lint$(reset)                                  - lint the code and markdown files"; \
-	 echo "  $(cyan)lint-code$(reset)                             - lint the code"; \
-	 echo "  $(cyan)lint-md$(reset)                               - lint markdown files"; \
-	 echo; \
-	 echo "$(bold)Build, lint and test:$(reset)"; \
-	 echo "  $(cyan)all$(reset)                                   - build all SPIRE binaries, run linters and unit tests"; \
-	 echo; \
-	 echo "$(bold)Docker image:$(reset)"; \
-	 echo "  $(cyan)images$(reset)                                - build all SPIRE Docker images"; \
-	 echo "  $(cyan)images-no-load$(reset)                        - build all SPIRE Docker images but don't load them into the local docker registry"; \
-	 echo "  $(cyan)spire-server-image$(reset)                    - build SPIRE server Docker image"; \
-	 echo "  $(cyan)spire-agent-image$(reset)                     - build SPIRE agent Docker image"; \
-	 echo "  $(cyan)oidc-discovery-provider-image$(reset)         - build OIDC Discovery Provider Docker image"; \
-	 echo "$(bold)Windows docker image:$(reset)"; \
-	 echo "  $(cyan)images-windows$(reset)                        - build all SPIRE Docker images for windows"; \
-	 echo "  $(cyan)spire-server-image-windows$(reset)            - build SPIRE server Docker image for windows"; \
-	 echo "  $(cyan)spire-agent-image-windows$(reset)             - build SPIRE agent Docker image for windows"; \
-	 echo "  $(cyan)oidc-discovery-provider-image-windows$(reset) - build OIDC Discovery Provider Docker image for windows"; \
-	 echo "$(bold)Developer support:$(reset)"; \
-	 echo "  $(cyan)dev-image$(reset)                             - build the development Docker image"; \
-	 echo "  $(cyan)dev-shell$(reset)                             - run a shell in a development Docker container"; \
-	 echo; \
-	 echo "$(bold)Code generation:$(reset)"; \
-	 echo "  $(cyan)generate$(reset)                              - generate protocol buffers and plugin interface code"; \
-	 echo "  $(cyan)generate-check$(reset)                        - ensure generated code is up to date"; \
-	 echo; \
-	 echo "$(bold)Vulnerabilty checking:$(reset)"; \
-	 echo "  $(cyan)govulncheck$(reset)                           - run govulncheck over the whole project"; \
-	 echo; \
-	 echo "For verbose output set V=1"; \
-	 echo "  for example: $(cyan)make V=1 build$(reset)"
+	@echo "$(bold)Usage:$(reset) make $(cyan)<target>$(reset)"
+	@echo
+	@echo "$(bold)Build:$(reset)"
+	@echo "  $(cyan)build$(reset)                                 - build all SPIRE binaries (default)"
+	@echo "  $(cyan)artifact$(reset)                              - build SPIRE tarball artifact"
+	@echo
+	@echo "$(bold)Test:$(reset)"
+	@echo "  $(cyan)test$(reset)                                  - run unit tests"
+	@echo "  $(cyan)race-test$(reset)                             - run unit tests with race detection"
+	@echo "  $(cyan)integration$(reset)                           - run integration tests (requires Docker images)"
+	@echo "                                          support 'SUITES' variable for executing specific tests"
+	@echo "                                          e.g. SUITES='suites/join-token suites/k8s' make integration"
+	@echo "  $(cyan)integration-windows$(reset)                   - run integration tests for windows (requires Docker images)"
+	@echo "                                          support 'SUITES' variable for executing specific tests"
+	@echo "                                          e.g. SUITES='windows-suites/windows-workload-attestor' make integration-windows"
+	@echo
+	@echo "$(bold)Lint:$(reset)"
+	@echo "  $(cyan)lint$(reset)                                  - lint the code and markdown files"
+	@echo "  $(cyan)lint-code$(reset)                             - lint the code"
+	@echo "  $(cyan)lint-md$(reset)                               - lint markdown files"
+	@echo
+	@echo "$(bold)Build, lint and test:$(reset)"
+	@echo "  $(cyan)all$(reset)                                   - build all SPIRE binaries, run linters and unit tests"
+	@echo
+	@echo "$(bold)Docker image:$(reset)"
+	@echo "  $(cyan)images$(reset)                                - build all SPIRE Docker images"
+	@echo "  $(cyan)spire-server-image$(reset)                    - build SPIRE server Docker image"
+	@echo "  $(cyan)spire-agent-image$(reset)                     - build SPIRE agent Docker image"
+	@echo "  $(cyan)oidc-discovery-provider-image$(reset)         - build OIDC Discovery Provider Docker image"
+	@echo "$(bold)Windows docker image:$(reset)"
+	@echo "  $(cyan)images-windows$(reset)                        - build all SPIRE Docker images for windows"
+	@echo "  $(cyan)spire-server-image-windows$(reset)            - build SPIRE server Docker image for windows"
+	@echo "  $(cyan)spire-agent-image-windows$(reset)             - build SPIRE agent Docker image for windows"
+	@echo "  $(cyan)oidc-discovery-provider-image-windows$(reset) - build OIDC Discovery Provider Docker image for windows"
+	@echo "$(bold)Developer support:$(reset)"
+	@echo "  $(cyan)dev-image$(reset)                             - build the development Docker image"
+	@echo "  $(cyan)dev-shell$(reset)                             - run a shell in a development Docker container"
+	@echo
+	@echo "$(bold)Code generation:$(reset)"
+	@echo "  $(cyan)generate$(reset)                              - generate protocol buffers and plugin interface code"
+	@echo "  $(cyan)generate-check$(reset)                        - ensure generated code is up to date"
+	@echo
+	@echo "For verbose output set V=1"
+	@echo "  for example: $(cyan)make V=1 build$(reset)"
 
 # Used to force some rules to run every time
 FORCE: ;
@@ -99,22 +95,8 @@ else ifeq ($(arch1),aarch64)
 arch2=arm64
 else ifeq ($(arch1),arm64)
 arch2=arm64
-else ifeq ($(arch1),s390x)
-arch2=s390x
-else ifeq ($(arch1),ppc64le)
-arch2=ppc64le
 else
 $(error unsupported ARCH: $(arch1))
-endif
-
-ignore_suites := $(IGNORE_SUITES)
-
-############################################################################
-# Docker TLS detection for buildx
-############################################################################
-dockertls=
-ifeq ($(DOCKER_TLS_VERIFY), 1)
-dockertls=spire-buildx-tls
 endif
 
 ############################################################################
@@ -124,10 +106,12 @@ endif
 PLATFORMS ?= linux/amd64,linux/arm64
 
 binaries := spire-server spire-agent oidc-discovery-provider
+plugin_binaries := k8s-sat keymanager-k8s
 
 build_dir := $(DIR)/.build/$(os1)-$(arch1)
 
-go_version := $(shell cat .go-version)
+go_version_full := $(shell cat .go-version)
+go_version := $(go_version_full)
 go_dir := $(build_dir)/go/$(go_version)
 
 ifeq ($(os1),windows)
@@ -142,22 +126,19 @@ endif
 
 go_path := PATH="$(go_bin_dir):$(PATH)"
 
-golangci_lint_version := $(shell awk '/golangci-lint/{print $$2}' .spire-tool-versions)
+golangci_lint_version = v1.51.1
 golangci_lint_dir = $(build_dir)/golangci_lint/$(golangci_lint_version)
+golangci_lint_bin = $(golangci_lint_dir)/golangci-lint
 golangci_lint_cache = $(golangci_lint_dir)/cache
 
-markdown_lint_version := $(shell awk '/markdown_lint/{print $$2}' .spire-tool-versions)
+markdown_lint_version = v0.33.0
 markdown_lint_image = ghcr.io/igorshubovych/markdownlint-cli:$(markdown_lint_version)
 
-protoc_version := $(shell awk '/protoc/{print $$2}' .spire-tool-versions)
+protoc_version = 3.20.1
 ifeq ($(os1),windows)
 protoc_url = https://github.com/protocolbuffers/protobuf/releases/download/v$(protoc_version)/protoc-$(protoc_version)-win64.zip
 else ifeq ($(arch2),arm64)
 protoc_url = https://github.com/protocolbuffers/protobuf/releases/download/v$(protoc_version)/protoc-$(protoc_version)-$(os2)-aarch_64.zip
-else ifeq ($(arch2),s390x)
-protoc_url = https://github.com/protocolbuffers/protobuf/releases/download/v$(protoc_version)/protoc-$(protoc_version)-$(os2)-s390_64.zip
-else ifeq ($(arch2),ppc64le)
-protoc_url = https://github.com/protocolbuffers/protobuf/releases/download/v$(protoc_version)/protoc-$(protoc_version)-$(os2)-ppcle_64.zip
 else
 protoc_url = https://github.com/protocolbuffers/protobuf/releases/download/v$(protoc_version)/protoc-$(protoc_version)-$(os2)-$(arch1).zip
 endif
@@ -169,7 +150,7 @@ protoc_gen_go_base_dir := $(build_dir)/protoc-gen-go
 protoc_gen_go_dir := $(protoc_gen_go_base_dir)/$(protoc_gen_go_version)-go$(go_version)
 protoc_gen_go_bin := $(protoc_gen_go_dir)/protoc-gen-go
 
-protoc_gen_go_grpc_version := v1.3.0
+protoc_gen_go_grpc_version := v1.1.0
 protoc_gen_go_grpc_base_dir := $(build_dir)/protoc-gen-go-grpc
 protoc_gen_go_grpc_dir := $(protoc_gen_go_grpc_base_dir)/$(protoc_gen_go_grpc_version)-go$(go_version)
 protoc_gen_go_grpc_bin := $(protoc_gen_go_grpc_dir)/protoc-gen-go-grpc
@@ -196,11 +177,18 @@ plugin-protos := \
 
 service-protos := \
 
+# The following vars are used in rule construction
+comma := ,
+null  :=
+space := $(null) #
+
 #############################################################################
 # Utility functions and targets
 #############################################################################
 
 .PHONY: git-clean-check
+
+tolower = $(shell echo $1 | tr '[:upper:]' '[:lower:]')
 
 goenv = $(shell PATH="$(go_bin_dir):$(PATH)" go env $1)
 
@@ -220,8 +208,8 @@ endif
 # Flags passed to all invocations of go test
 go_test_flags :=
 ifeq ($(NIGHTLY),)
-	# Cap unit-test timout to 90s unless we're running nightlies.
-	go_test_flags += -timeout=90s
+	# Cap unit-test timout to 60s unless we're running nightlies.
+	go_test_flags += -timeout=60s
 endif
 
 go_flags :=
@@ -253,10 +241,11 @@ endif
 #############################################################################
 
 .PHONY: build
-build: tidy $(addprefix bin/,$(binaries))
+build: tidy $(addprefix bin/,$(binaries) $(plugin_binaries))
 
 go_build := $(go_path) go build $(go_flags) -ldflags '$(go_ldflags)' -o
 
+# Explicit rules win over pattern rules
 bin/%: cmd/% FORCE | go-check
 	@echo Building $@…
 	$(E)$(go_build) $@$(exe) ./$<
@@ -265,23 +254,34 @@ bin/%: support/% FORCE | go-check
 	@echo Building $@…
 	$(E)$(go_build) $@$(exe) ./$<
 
+bin/%: support/k8s/% FORCE | go-check
+	@echo Building $@…
+	$(E)$(go_build) $@$(exe) ./$<
+
 #############################################################################
 # Build static binaries for docker images
 #############################################################################
-
 .PHONY: build-static
-# The build-static is intended to statically link to musl libc.
-# There are possibilities of unexpected errors when statically link to GLIBC.
+
+# Intended to statically link against musl libc (build inside Alpine).
+# Statically linking against glibc can cause unexpected errors.
 # https://7thzero.com/blog/golang-w-sqlite3-docker-scratch-image
-build-static: tidy $(addprefix bin/static/,$(binaries))
+build-static: tidy $(addprefix bin/static/,$(binaries) $(plugin_binaries))
 
 go_build_static := $(go_path) go build $(go_flags) -ldflags '$(go_ldflags) -linkmode external -extldflags "-static"' -o
+
+# Explicit rules win over pattern rules
 
 bin/static/%: cmd/% FORCE | go-check
 	@echo Building $@…
 	$(E)$(go_build_static) $@$(exe) ./$<
 
 bin/static/%: support/% FORCE | go-check
+	@echo Building $@…
+	$(E)$(go_build_static) $@$(exe) ./$<
+
+bin/static/%: support/k8s/% FORCE | go-check
+	@echo Building $@…
 	$(E)$(go_build_static) $@$(exe) ./$<
 
 #############################################################################
@@ -308,33 +308,41 @@ integration:
 ifeq ($(os1), windows)
 	$(error Integration tests are not supported on windows)
 else
-	$(E)$(go_path) IGNORE_SUITES='$(ignore_suites)' ./test/integration/test.sh $(SUITES)
+	$(E)./test/integration/test.sh $(SUITES)
 endif
 
 integration-windows:
-	$(E)$(go_path) IGNORE_SUITES='$(ignore_suites)' ./test/integration/test-windows.sh $(SUITES)
+	$(E)./test/integration/test-windows.sh $(SUITES)
+
+#############################################################################
+# Build Artifact
+#############################################################################
+
+.PHONY: artifact
+
+artifact: build
+	$(E)OUTDIR="$(OUTDIR)" TAG="$(TAG)" ./script/build-artifact.sh
+
+.PHONY: artifacts
+
+artifacts: images
+	$(E)OUTDIR="$(OUTDIR)" TAG="$(TAG)" ./script/build-linux-artifact.sh
 
 #############################################################################
 # Docker Images
 #############################################################################
 
-.PHONY: spire-buildx-tls
-spire-buildx-tls:
-	$(E)docker context rm -f "$(dockertls)" > /dev/null
-	$(E)docker context create $(dockertls) --description "$(dockertls)" --docker "host=$(DOCKER_HOST),ca=$(DOCKER_CERT_PATH)/ca.pem,cert=$(DOCKER_CERT_PATH)/cert.pem,key=$(DOCKER_CERT_PATH)/key.pem" > /dev/null
-
 .PHONY: container-builder
-container-builder: $(dockertls)
-	$(E)docker buildx create $(dockertls) --platform $(PLATFORMS) --name container-builder --node container-builder0 --use
+container-builder:
+	$(E)docker buildx create --platform $(PLATFORMS) --name container-builder --node container-builder0 --use
 
 define image_rule
 .PHONY: $1
 $1: $3 container-builder
-	@echo Building docker image $2 $(PLATFORM)…
+	echo Building docker image $2 $(PLATFORM)…
 	$(E)docker buildx build \
 		--platform $(PLATFORMS) \
-		--build-arg goversion=$(go_version) \
-		--build-arg TAG=$(TAG) \
+		--build-arg goversion=$(go_version_full) \
 		--target $2 \
 		-o type=oci,dest=$2-image.tar \
 		-f $3 \
@@ -342,20 +350,23 @@ $1: $3 container-builder
 
 endef
 
+.PHONY: images
+images: $(addsuffix -image,$(binaries))
+
 $(eval $(call image_rule,spire-server-image,spire-server,Dockerfile))
 $(eval $(call image_rule,spire-agent-image,spire-agent,Dockerfile))
 $(eval $(call image_rule,oidc-discovery-provider-image,oidc-discovery-provider,Dockerfile))
+$(eval $(call image_rule,k8s-sat,Dockerfile))
 
-.PHONY: images-no-load
-images-no-load: $(addsuffix -image,$(binaries))
-
-.PHONY: images
-images: images-no-load
-	.github/workflows/scripts/load-oci-archives.sh
-
-.PHONY: load-images
 load-images:
 	.github/workflows/scripts/load-oci-archives.sh
+
+server-sidecar:
+
+	docker build \
+	-t spire-sidecar:latest \
+	-f Dockerfile.sidecar .
+
 
 #############################################################################
 # Windows Docker Images
@@ -363,9 +374,9 @@ load-images:
 define windows_image_rule
 .PHONY: $1
 $1: $3
-	@echo Building docker image $2…
+	echo Building docker image $2…
 	$(E)docker build \
-		--build-arg goversion=$(go_version) \
+		--build-arg goversion=$(go_version_full) \
 		--target $2 \
 		-t $2 -t $2:latest-local \
 		-f $3 \
@@ -373,8 +384,36 @@ $1: $3
 
 endef
 
+.PHONY: windows-binaries
+windows-binaries: $(addsuffix .exe,$(addprefix bin/,$(binaries) $(plugin_binaries)))
+
+windows_go_build = GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc $(go_path) go build $(go_flags) -ldflags '$(go_ldflags)' -o
+
+# Standard SPIRE binaries
+bin/%.exe: cmd/% FORCE | go-check
+	@echo "Building Windows binary $@..."
+	$(E)$(windows_go_build) $@ ./$<
+
+# oidc-discovery-provider lives under support/
+bin/%.exe: support/% FORCE | go-check
+	@echo "Building Windows binary $@..."
+	$(E)$(windows_go_build) $@ ./$<
+
+define windows_image_rule
+.PHONY: $1
+$1: $3
+	@echo Building docker image $2…
+	$$(E)docker build \
+		--build-arg goversion=$$(go_version_full) \
+		--target $2 \
+		-t $2 -t $2:latest-local \
+		-f $3 \
+		.
+endef
+
 .PHONY: images-windows
-images-windows: $(addsuffix -windows-image,$(binaries))
+images-windows: windows-binaries
+	$(MAKE) $(addsuffix -windows-image,$(binaries))
 
 $(eval $(call windows_image_rule,spire-server-windows-image,spire-server-windows,Dockerfile.windows))
 $(eval $(call windows_image_rule,spire-agent-windows-image,spire-agent-windows,Dockerfile.windows))
@@ -384,7 +423,7 @@ $(eval $(call windows_image_rule,oidc-discovery-provider-windows-image,oidc-disc
 # Code cleanliness
 #############################################################################
 
-.PHONY: tidy tidy-check lint lint-code lint-md
+.PHONY: tidy tidy-check lint lint-code
 tidy: | go-check
 	$(E)$(go_path) go mod tidy
 	$(E)cd proto/spire; $(go_path) go mod tidy
@@ -400,23 +439,11 @@ endif
 
 lint: lint-code lint-md
 
-lint-code: | go-check
-	$(E)mkdir -p $(golangci_lint_cache)
-	$(E)$(go_path) GOLANGCI_LINT_CACHE="$(golangci_lint_cache)" \
-		go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@$(golangci_lint_version) \
-		run --max-issues-per-linter=0 --max-same-issues=0 ./...
+lint-code: $(golangci_lint_bin)
+	$(E)PATH="$(go_bin_dir):$(PATH)" GOLANGCI_LINT_CACHE="$(golangci_lint_cache)" $(golangci_lint_bin) run ./...
 
 lint-md:
 	$(E)docker run --rm -v "$(DIR):/workdir" $(markdown_lint_image) "**/*.md"
-
-#############################################################################
-# Vulnerabilty checking
-#############################################################################
-
-.PHONY: govulncheck
-
-govulncheck:
-	$(E)$(go_path) go run golang.org/x/vuln/cmd/govulncheck@latest ./...
 
 #############################################################################
 # Code Generation
@@ -491,8 +518,6 @@ dev-shell: | go-check
 # Toolchain
 #############################################################################
 
-.PHONY: go-check go-bin-path install-toolchain install-protoc install-protoc-gen-go install-protoc-gen-go-grpc install-protoc-gen-go-spire
-
 # go-check checks to see if there is a version of Go available matching the
 # required version. The build cache is preferred. If not available, it is
 # downloaded into the build cache. Any rule needing to invoke tools in the go
@@ -519,7 +544,7 @@ endif
 go-bin-path: go-check
 	@echo "$(go_bin_dir):${PATH}"
 
-install-toolchain: install-protoc install-protoc-gen-go | go-check
+install-toolchain: install-protoc install-golangci-lint install-protoc-gen-go install-protoc-gen-doc | go-check
 
 install-protoc: $(protoc_bin)
 
@@ -528,6 +553,15 @@ $(protoc_bin):
 	$(E)rm -rf $(dir $(protoc_dir))
 	$(E)mkdir -p $(protoc_dir)
 	$(E)curl -sSfL $(protoc_url) -o $(build_dir)/tmp.zip; unzip -q -d $(protoc_dir) $(build_dir)/tmp.zip; rm $(build_dir)/tmp.zip
+
+install-golangci-lint: $(golangci_lint_bin)
+
+$(golangci_lint_bin): | go-check
+	@echo "Installing golangci-lint $(golangci_lint_version)..."
+	$(E)rm -rf $(dir $(golangci_lint_dir))
+	$(E)mkdir -p $(golangci_lint_dir)
+	$(E)mkdir -p $(golangci_lint_cache)
+	$(E)GOBIN=$(golangci_lint_dir) $(go_path) go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_lint_version)
 
 install-protoc-gen-go: $(protoc_gen_go_bin)
 
@@ -552,3 +586,14 @@ $(protoc_gen_go_spire_bin): | go-check
 	$(E)rm -rf $(protoc_gen_go_spire_base_dir)
 	$(E)mkdir -p $(protoc_gen_go_spire_dir)
 	$(E)GOBIN=$(protoc_gen_go_spire_dir) $(go_path) go install github.com/accuknox/spire-plugin-sdk/cmd/protoc-gen-go-spire@$(protoc_gen_go_spire_version)
+
+
+.PHONY: local-release
+local-release:
+ifeq (, $(shell which goreleaser))
+	@{ \
+	set -e ;\
+	go install github.com/goreleaser/goreleaser@latest ;\
+	}
+endif
+	cd $(CURDIR); VERSION=$(shell git describe --tags --always) goreleaser release --clean --skip=publish --skip=sign --skip=validate 
