@@ -241,7 +241,7 @@ endif
 #############################################################################
 
 .PHONY: build
-build: tidy $(addprefix bin/,$(binaries) $(plugin_binaries))
+build: tidy $(addprefix bin/,$(binaries))
 
 go_build := $(go_path) go build $(go_flags) -ldflags '$(go_ldflags)' -o
 
@@ -266,7 +266,7 @@ bin/%: support/k8s/% FORCE | go-check
 # Intended to statically link against musl libc (build inside Alpine).
 # Statically linking against glibc can cause unexpected errors.
 # https://7thzero.com/blog/golang-w-sqlite3-docker-scratch-image
-build-static: tidy $(addprefix bin/static/,$(binaries) $(plugin_binaries))
+build-static: tidy $(addprefix bin/static/,$(binaries))
 
 go_build_static := $(go_path) go build $(go_flags) -ldflags '$(go_ldflags) -linkmode external -extldflags "-static"' -o
 
@@ -356,7 +356,7 @@ images: $(addsuffix -image,$(binaries))
 $(eval $(call image_rule,spire-server-image,spire-server,Dockerfile))
 $(eval $(call image_rule,spire-agent-image,spire-agent,Dockerfile))
 $(eval $(call image_rule,oidc-discovery-provider-image,oidc-discovery-provider,Dockerfile))
-$(eval $(call image_rule,k8s-sat,Dockerfile))
+$(eval $(call image_rule,Dockerfile))
 
 load-images:
 	.github/workflows/scripts/load-oci-archives.sh
@@ -385,7 +385,7 @@ $1: $3
 endef
 
 .PHONY: windows-binaries
-windows-binaries: $(addsuffix .exe,$(addprefix bin/,$(binaries) $(plugin_binaries)))
+windows-binaries: $(addsuffix .exe,$(addprefix bin/,$(binaries)))
 
 windows_go_build = GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc $(go_path) go build $(go_flags) -ldflags '$(go_ldflags)' -o
 
